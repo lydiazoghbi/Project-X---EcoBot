@@ -11,7 +11,21 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  turtlebot_gazebo
+  rosbag
+  OpenCV3
+  rostest
 )
+
+
+catkin_package(
+#  INCLUDE_DIRS include
+#  LIBRARIES walker
+#  CATKIN_DEPENDS roscpp rospy std_msgs turtlebot_gazebo
+#  DEPENDS system_lib
+)
+## Generate added messages and services
+#generate_messages(DEPENDENCIES std_msgs std_srvs)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -102,12 +116,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## LIBRARIES: libraries you create in this project that dependent projects also need
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
-catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES project_x_ecobot
-#  CATKIN_DEPENDS roscpp rospy std_msgs
-#  DEPENDS system_lib
-)
+
 
 ###########
 ## Build ##
@@ -116,13 +125,14 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
-  ${catkin_INCLUDE_DIRS}
+ include
+ ${OpenCV3_INCLUDE_DIRS}
+ ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/project_x_ecobot.cpp
+#   src/${PROJECT_NAME}/walker.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -133,7 +143,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/project_x_ecobot_node.cpp)
+# add_executable(${PROJECT_NAME}_node src/walker_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -197,10 +207,21 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_project_x_ecobot.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_walker.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+
+
+
+add_executable(project_x_ecobot src/VelocityGenerator.cpp include/VelocityGenerator.hpp src/Point.cpp include/Point.hpp src/DebrisCollection.cpp include/DebrisCollection.hpp)
+add_rostest_gtest(tests_project_x_ecobot test/mynode.test test/my_node.cpp test/PointTest.cpp test/DebrisCollectionTest.cpp test/VelocityGeneratorTest.cpp)
+target_link_libraries(project_x_ecobot ${catkin_LIBRARIES})
+add_dependencies(project_x_ecobot ${OpenCV3_INCLUDE_DIRS} ${catkin_EXPORTED_TARGETS})
+
+
+
