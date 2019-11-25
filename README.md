@@ -35,7 +35,7 @@ To be completed.
 ## Running the Demo Using Launch
 To be completed.
 
-## Recording and PlayingBag Files
+## Recording and Playing Bag Files
 To be completed.
 
 ## Running GTests
