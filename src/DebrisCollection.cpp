@@ -1,10 +1,10 @@
 #ifndef INCLUDE_DEBRISCOLLECTION_HPP_
 #define INCLUDE_DEBRISCOLLECTION_HPP_
 
-#include <opencv3/opencv.hpp>
-#include <Point.hpp>
-#include <ros/ros.h>
 #include <vector>
+#include <Point.hpp>
+#include <opencv3/opencv.hpp>
+
 
 class DebrisCollection {
 
@@ -23,7 +23,7 @@ class DebrisCollection {
 		Point detectDebris(cv::Mat filteredImage);
 		addDebris(Point detectedDebris);
 		removeDebris();
-		std::vector<Point> sortDebrisLocation(std::vector<Point> * debrisLocations); 
+		std::vector<Point> sortDebrisLocation(std::vector<Point> * debrisLocations);
 }
 
 #endif //  INCLUDE_DEBRISCOLLECTION_HPP

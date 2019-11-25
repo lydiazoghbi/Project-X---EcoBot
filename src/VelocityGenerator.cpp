@@ -1,11 +1,10 @@
 #ifndef INCLUDE_VELOCITYGENERATOR_HPP_
 #define INCLUDE_VELOCITYGENERATOR_HPP_
 
+#include <vector>
 #include <opencv3/opencv.hpp>
 #include <DebrisCollection.hpp>
 #include <Point.hpp>
-#include <ros/ros.h>
-#include <vector>
 
 class VelocityGenerator {
 
