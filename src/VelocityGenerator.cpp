@@ -26,25 +26,25 @@
  *
  */
 
-#ifndef INCLUDE_VELOCITYGENERATOR_HPP_
-#define INCLUDE_VELOCITYGENERATOR_HPP_
-
+#include <tf/transform_broadcaster.h>
+#include "DebrisCollection.hpp"
+#include <ros/ros.h>
 #include <vector>
-#include <opencv2/opencv.hpp>
-#include <DebrisCollection.hpp>
-#include <Point.hpp>
+#include <cv_bridge/cv_bridge.h>
+#include <image_transport/image_transport.h>
+#include <string>
+#include "Point.hpp"
+#include <iostream>
+#include "VelocityGenerator.hpp"
 
 // Constructor for the class
-VelocityGenerator::VelocityGenerator()
+VelocityGenerator::VelocityGenerator() {}
 
 // Function for finding velocity commands given a desired goal position
-VelocityGenerator::computeFK(Point desiredPoint)
+void VelocityGenerator::computeFK(Point desiredPoint) {}
 
 // Callback function to get robot's current position
-VelocityGenerator::positionCallback();
+void VelocityGenerator::positionCallback() {};
 
 // Callback function to get robot's current orientation
-VelocityGenerator::orientationCallback(const tf &);
-}
-
-#endif //  INCLUDE_VELOCITYGENERATOR_HPP
+void VelocityGenerator::orientationCallback() {};
