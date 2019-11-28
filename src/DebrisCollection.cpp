@@ -26,35 +26,38 @@
  *
  */
 
-#ifndef INCLUDE_DEBRISCOLLECTION_HPP_
-#define INCLUDE_DEBRISCOLLECTION_HPP_
-
 #include <vector>
+#include "ros/ros.h"
+#include "DebrisCollection.hpp"
 #include <Point.hpp>
-#include <opencv3/opencv.hpp>
-
-// Reading image from the robot's camera
-DebrisCollection::imageRGBCallback(const sensor_msgs:::CompressedImage &)
-
-// Reading depth information from the robot's camera
-DebrisCollection::DepthCallback(const sensor_msgs::Image &)
+#include <string>
+#include <cv_bridge/cv_bridge.h>
+#include <image_transport/image_transport.h>
+#include "sensor_msgs/CompressedImage.h"
+#include "sensor_msgs/Image.h"
+#include <iostream>
 
 // Class constructor
-DebrisCollection::DebrisCollection()
+DebrisCollection::DebrisCollection() {}
+
+// Reading image from the robot's camera
+cv::Mat DebrisCollection::imageRGBCallback(const sensor_msgs::CompressedImage& readings) {}
+
+// Reading depth information from the robot's camera
+std::vector<double> DebrisCollection::DepthCallback(const sensor_msgs::Image &) {}
 
 // Applying HSV filter to detect debrid
-cv::Mat DebrisCollection::Filter()
+cv::Mat DebrisCollection::Filter() {}
 
 // Function for detecting debris after applying filter
-Point DebrisCollection::detectDebris(cv::Mat filteredImage)
+Point DebrisCollection::detectDebris(cv::Mat filteredImage) {}
 
 // Function for concatenating debris information if detected
-DebrisCollection::addDebris(Point detectedDebris)
+void DebrisCollection::addDebris(Point detectedDebris) {}
 
 // Function for removing debris from list after it is scooped
-DebrisCollection::removeDebris()
+void DebrisCollection::removeDebris() {}
 
 // Sorting the debris by closest to bin 
-std::vector<Point> DebrisCollection::sortDebrisLocation(std::vector<Point> * debrisLocations)
+std::vector<Point> DebrisCollection::sortDebrisLocation(std::vector<Point> * debrisLocations) {}
 
-#endif //  INCLUDE_DEBRISCOLLECTION_HPP
