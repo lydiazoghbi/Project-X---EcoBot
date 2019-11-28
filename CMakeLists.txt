@@ -20,7 +20,7 @@ catkin_package()
 include_directories(include ${OpenCV_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS})
 
 ## Declare a C++ Executable
-add_executable(project_x_ecobot src/VelocityGenerator.cpp src/Point.cpp src/DebrisCollection.cpp)
+add_executable(project_x_ecobot src/main.cpp src/VelocityGenerator.cpp src/Point.cpp src/DebrisCollection.cpp)
 
 ## Specify Target Libraries
 target_link_libraries(project_x_ecobot ${OpenCV_LIBS} ${catkin_LIBRARIES})
