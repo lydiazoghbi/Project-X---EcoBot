@@ -30,7 +30,7 @@
 #define INCLUDE_VELOCITYGENERATOR_HPP_
 
 #include <vector>
-#include <opencv3/opencv.hpp>
+#include <opencv2/opencv.hpp>
 #include <DebrisCollection.hpp>
 #include <Point.hpp>
 
