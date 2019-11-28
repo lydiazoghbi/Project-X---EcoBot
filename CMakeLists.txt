@@ -9,7 +9,7 @@ add_compile_options(-std=c++11)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
 
 ## Find catkin macros and libraries
-find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs rosbag rostest cv_bridge image_transport)
+find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs rosbag rostest cv_bridge image_transport tf)
 find_package(turtlebot_gazebo REQUIRED)
 find_package(OpenCV REQUIRED)
 
