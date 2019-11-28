@@ -41,7 +41,7 @@ class Point {
 		*  @param	   An initial point y
  		*  @return     None
  		*/
-		explicit Point(double startX, double startY);
+		explicit Point(double startX = 0, double startY = 0);
 
 		/**
  		*  @brief      Function to obtain x value
@@ -56,6 +56,6 @@ class Point {
  		*  @return     The y value that was stored from the constructor
  		*/
 		double getY();
-}
+};
 
 #endif //  INCLUDE_POINT_HPP
