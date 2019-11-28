@@ -26,18 +26,16 @@
  *
  */
 
-#ifndef INCLUDE_POINT_HPP_
-#define INCLUDE_POINT_HPP_
+#include "Point.hpp"
 
-// Constructor for the class Point
-explicit Point::Point(double startX, double startY)
-
-// Function for extracting the x position from the class
-double Point::getX()
-
-// Function for extracting the y position from the class
-double Point::getY()
-
+// Constructor which takes in x and y values and stores them in the class
+Point::Point(double startX, double startY) {
+	x = startX;
+	y = startY;
 }
 
-#endif //  INCLUDE_POINT_HPP
+// Function for extracting x value from class
+double Point::getX() {return x;}
+
+// Function for extracting y value from class
+double Point::getY() {return y;}
