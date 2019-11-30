@@ -81,7 +81,7 @@
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
     <model name='Part1'>
-      <link name='turtlebot_world'>
+      <link name='urdf_package'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <inertial>
           <pose frame=''>1.6811 -0.55929 1.1918 0 -0 0</pose>
@@ -95,12 +95,12 @@
             <izz>9442.58</izz>
           </inertia>
         </inertial>
-        <collision name='turtlebot_world_collision'>
+        <collision name='urdf_package_collision'>
           <pose frame=''>0 0 0 1.5708 -0 0</pose>
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/lydiazoghbi/catkin_ws/src/turtlebot_world/meshes/turtlebot_world_col.STL</uri>
+              <uri>/home/lydiazoghbi/catkin_ws/src/urdf_package/meshes/turtlebot_world_col.STL</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -117,12 +117,12 @@
             </friction>
           </surface>
         </collision>
-        <visual name='turtlebot_world_visual'>
+        <visual name='urdf_package_visual'>
           <pose frame=''>0 0 0 1.5708 -0 0</pose>
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/lydiazoghbi/catkin_ws/src/turtlebot_world/meshes/turtlebot_world.STL</uri>
+              <uri>/home/lydiazoghbi/catkin_ws/src/urdf_package/meshes/turtlebot_world.STL</uri>
             </mesh>
           </geometry>
         </visual>
@@ -133,18 +133,18 @@
       <pose frame=''>0 0 0 0 -0 0</pose>
     </model>
     <state world_name='default'>
-      <sim_time>495 286000000</sim_time>
-      <real_time>497 486620477</real_time>
-      <wall_time>1575066949 491601810</wall_time>
-      <iterations>495286</iterations>
+      <sim_time>76 548000000</sim_time>
+      <real_time>76 790833183</real_time>
+      <wall_time>1575074896 662366433</wall_time>
+      <iterations>76548</iterations>
       <model name='Part1'>
-        <pose frame=''>-0.5 -0.5 0 -1.5708 -0 0.023129</pose>
+        <pose frame=''>-0.599967 -0.600001 -3e-06 -1.5708 -0 1e-06</pose>
         <scale>1 1 1</scale>
-        <link name='turtlebot_world'>
-          <pose frame=''>-0.5 -0.5 0 -1.5708 -0 0.023129</pose>
+        <link name='urdf_package'>
+          <pose frame=''>-0.599967 -0.600001 -3e-06 -1.5708 -0 1e-06</pose>
           <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>-3.13559 0.506807 8.65504 -1.00758 -0.307626 -0.039888</acceleration>
-          <wrench>-18208 2942.98 50259 0 -0 0</wrench>
+          <acceleration>1.58421 -1.25459 -5.55786 -0.795428 -0.114626 -3.0903</acceleration>
+          <wrench>9199.36 -7285.27 -32273.9 0 -0 0</wrench>
         </link>
       </model>
       <model name='ground_plane'>
@@ -163,7 +163,7 @@
     </state>
     <gui fullscreen='0'>
       <camera name='user_camera'>
-        <pose frame=''>6.46444 -10.5985 10.3116 0.000362 0.643023 1.69735</pose>
+        <pose frame=''>8.04542 -5.10567 6.7282 -2e-05 0.519963 2.36891</pose>
         <view_controller>orbit</view_controller>
         <projection_type>perspective</projection_type>
       </camera>
