@@ -3,7 +3,7 @@
 <robot
   name="Part1">
   <link
-    name="turtlebot_world">
+    name="urdf_package">
     <inertial>
       <origin
         xyz="1.6811 -0.55929 1.1918"
@@ -24,7 +24,7 @@
         rpy="1.5707963267949 0 0" />
       <geometry>
         <mesh
-          filename="package://turtlebot_world/meshes/turtlebot_world.STL" />
+          filename="package://urdf_package/meshes/turtlebot_world.STL" />
       </geometry>
       <material
         name="">
@@ -38,7 +38,7 @@
         rpy="1.5707963267949 0 0" />
       <geometry>
         <mesh
-          filename="package://turtlebot_world/meshes/turtlebot_world_col.STL" />
+          filename="package://urdf_package/meshes/turtlebot_world_col.STL" />
       </geometry>
     </collision>
   </link>
