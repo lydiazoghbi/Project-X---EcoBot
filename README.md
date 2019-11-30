@@ -1,6 +1,7 @@
 # Project X - EcoBot
 [![Build Status](https://travis-ci.org/lydiazoghbi/project-x-ecobot.svg?branch=master)](https://travis-ci.org/lydiazoghbi/project-x-ecobot)
 [![Coverage Status](https://coveralls.io/repos/github/lydiazoghbi/project-x-ecobot/badge.svg?branch=master)](https://coveralls.io/github/lydiazoghbi/project-x-ecobot?branch=master)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## License
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
