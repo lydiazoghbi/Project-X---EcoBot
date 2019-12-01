@@ -32,3 +32,5 @@ if(CATKIN_ENABLE_TESTING)
 	target_link_libraries(project_x_ecobot ${OpenCV_LIBS} ${catkin_LIBRARIES})
 	add_dependencies(project_x_ecobot ${catkin_EXPORTED_TARGETS})
 endif()
+
+
