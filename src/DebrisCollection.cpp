@@ -34,14 +34,45 @@
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
 #include "sensor_msgs/CompressedImage.h"
+#include "sensor_msgs/image_encodings.h"
 #include "sensor_msgs/Image.h"
 #include <iostream>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 
 // Class constructor
-DebrisCollection::DebrisCollection() {}
+DebrisCollection::DebrisCollection() {
+  // do publishing and subscribing
+//  ros::NodeHandle nh;
+  sub = nh.subscribe("/camera/rgb/image_raw", 500, &DebrisCollection::imageRGBCallback, this);
+  ROS_INFO_STREAM("Subscription made.");
+  ros::Rate loop_rate(1);
+  while (ros::ok()) {
+    ros::spinOnce();
+    loop_rate.sleep();
+  }
+}
 
 // Reading image from the robot's camera
-cv::Mat DebrisCollection::imageRGBCallback(const sensor_msgs::CompressedImage& readings) {}
+// TODO: make return void
+void DebrisCollection::imageRGBCallback(const sensor_msgs::ImageConstPtr& message) {
+  ROS_INFO_STREAM("Entered image callback");
+  cv_bridge::CvImagePtr cv_ptr;
+  try {
+    cv_ptr = cv_bridge::toCvCopy(message, sensor_msgs::image_encodings::BGR8);
+  } catch (cv_bridge::Exception& e)
+  {
+  // TODO: error processing
+ROS_INFO_STREAM("Error");
+  }
+  cv::imshow("Window", cv_ptr->image);
+  ROS_INFO_STREAM("Image should be displayed");
+  cv::waitKey(1);
+  
+  //if (we want image) {
+  //  detectDebris(image);
+  //}
+}
 
 // Reading depth information from the robot's camera
 std::vector<double> DebrisCollection::DepthCallback(const sensor_msgs::Image &) {}
