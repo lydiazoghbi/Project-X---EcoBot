@@ -62,7 +62,7 @@ velocity.linear.x = 1.0;
   ROS_INFO_STREAM("Subscriptions made.");
   ros::Rate loop_rate(1);
   while (ros::ok()) {
-    pub.publish(velocity);
+    //pub.publish(velocity);
     ros::spinOnce();
     loop_rate.sleep();
   }
@@ -80,9 +80,11 @@ void DebrisCollection::imageRGBCallback(const sensor_msgs::ImageConstPtr& messag
   // TODO: error processing
 ROS_INFO_STREAM("Error");
   }
-  cv::imshow("Window", cv_ptr->image);
+
+  DebrisCollection::filter(cv_ptr->image);
+  //cv::imshow("Window", cv_ptr->image);
   ROS_INFO_STREAM("Image should be displayed");
-  cv::waitKey(1);
+  //cv::waitKey(1);
   
   //if (we want image) {
   //  detectDebris(image);
@@ -98,8 +100,23 @@ void DebrisCollection::odometryCallback(const nav_msgs::Odometry::ConstPtr& mess
 // Reading depth information from the robot's camera
 std::vector<double> DebrisCollection::DepthCallback(const sensor_msgs::Image &) {}
 
-// Applying HSV filter to detect debrid
-cv::Mat DebrisCollection::Filter() {}
+  // Applying HSV filter to detect debrid
+cv::Mat DebrisCollection::filter(cv::Mat rawImage) {
+
+  cv::Mat hsvImage, thresholdImage;
+
+  cv::cvtColor(rawImage, hsvImage, cv::COLOR_BGR2HSV);
+
+  cv::inRange(hsvImage, cv::Scalar(0, 33, 50), cv::Scalar(6, 255, 153), thresholdImage);
+			
+
+
+  cv::imshow("FilteredImage", thresholdImage);
+  ROS_INFO_STREAM("Image should be displayed");
+  cv::waitKey(1);
+
+  return thresholdImage;
+}
 
 // Function for detecting debris after applying filter
 Point DebrisCollection::detectDebris(cv::Mat filteredImage) {}
