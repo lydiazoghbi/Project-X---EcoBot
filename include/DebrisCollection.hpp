@@ -98,7 +98,7 @@ class DebrisCollection {
  		*  @param      None
  		*  @return     An image of type Mat
  		*/
-		cv::Mat Filter();
+		cv::Mat filter(cv::Mat rawImage);
 
 		/**
  		*  @brief      Function for detecting whether a debris is spotted or not in an image
