@@ -45,7 +45,8 @@ DebrisCollection::DebrisCollection() {
   // do publishing and subscribing
 //  ros::NodeHandle nh;
   sub = nh.subscribe("/camera/rgb/image_raw", 500, &DebrisCollection::imageRGBCallback, this);
-  ROS_INFO_STREAM("Subscription made.");
+  odomSub = nh.subscribe("/odom", 500, &DebrisCollection::odometryCallback, this);
+  ROS_INFO_STREAM("Subscriptions made.");
   ros::Rate loop_rate(1);
   while (ros::ok()) {
     ros::spinOnce();
@@ -73,6 +74,12 @@ ROS_INFO_STREAM("Error");
   //  detectDebris(image);
   //}
 }
+
+void DebrisCollection::odometryCallback(const nav_msgs::Odometry::ConstPtr& message) {
+//  message->pose.pose.
+  ROS_INFO_STREAM("Bot is at " << message->pose.pose.position.x << ", " << message->pose.pose.position.y);
+}
+
 
 // Reading depth information from the robot's camera
 std::vector<double> DebrisCollection::DepthCallback(const sensor_msgs::Image &) {}
