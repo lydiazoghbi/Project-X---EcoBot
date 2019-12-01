@@ -38,6 +38,7 @@
 #include "sensor_msgs/CompressedImage.h"
 #include "sensor_msgs/Image.h"
 #include <iostream>
+#include "nav_msgs/Odometry.h"
 
 /**
  *  @brief      Elements and members of DebrisCollection class
@@ -60,6 +61,7 @@ class DebrisCollection {
 
 		// Define a node subscriber
 		ros::Subscriber sub;
+                ros::Subscriber odomSub;
 
 	public:
 
@@ -76,6 +78,13 @@ class DebrisCollection {
  		*  @return     An image of type Mat (openCV type)
  		*/
 		void imageRGBCallback(const sensor_msgs::ImageConstPtr& message);
+
+		/**
+ 		*  @brief      Callback function to obtain the images
+ 		*  @param      A ros message which is the compressed image
+ 		*  @return     An image of type Mat (openCV type)
+ 		*/
+		void odometryCallback(const nav_msgs::Odometry::ConstPtr& message);
 
 		/**
  		*  @brief      Callback function to obtain depth information from the images
