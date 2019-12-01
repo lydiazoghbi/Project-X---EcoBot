@@ -52,6 +52,15 @@ class DebrisCollection {
 		double saturationThreshold;
 		std::vector<Point> debrisLocation;
 
+		// Create a node handle
+		ros::NodeHandle nh;
+
+		// Define a node publisher
+		ros::Publisher pub;
+
+		// Define a node subscriber
+		ros::Subscriber sub;
+
 	public:
 
 		/**
@@ -66,7 +75,7 @@ class DebrisCollection {
  		*  @param      A ros message which is the compressed image
  		*  @return     An image of type Mat (openCV type)
  		*/
-		cv::Mat imageRGBCallback(const sensor_msgs::CompressedImage& readings);
+		void imageRGBCallback(const sensor_msgs::ImageConstPtr& message);
 
 		/**
  		*  @brief      Callback function to obtain depth information from the images
