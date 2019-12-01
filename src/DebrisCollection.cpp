@@ -39,6 +39,7 @@
 #include <iostream>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include "geometry_msgs/Twist.h"
 
 // Class constructor
 DebrisCollection::DebrisCollection() {
@@ -46,9 +47,22 @@ DebrisCollection::DebrisCollection() {
 //  ros::NodeHandle nh;
   sub = nh.subscribe("/camera/rgb/image_raw", 500, &DebrisCollection::imageRGBCallback, this);
   odomSub = nh.subscribe("/odom", 500, &DebrisCollection::odometryCallback, this);
+  pub = nh.advertise<geometry_msgs::Twist>("/cmd_vel_mux/input/navi", 500);
+
+
+geometry_msgs::Twist velocity;
+velocity.linear.x = 1.0;
+	velocity.angular.z = 0;
+
+
+
+
+
+
   ROS_INFO_STREAM("Subscriptions made.");
   ros::Rate loop_rate(1);
   while (ros::ok()) {
+    pub.publish(velocity);
     ros::spinOnce();
     loop_rate.sleep();
   }
