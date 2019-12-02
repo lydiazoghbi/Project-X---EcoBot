@@ -28,9 +28,13 @@ target_link_libraries(project_x_ecobot ${OpenCV_LIBS} ${catkin_LIBRARIES})
 ## Add GTest Package for ROSTest
 if(CATKIN_ENABLE_TESTING)
 	find_package(rostest REQUIRED)
-	add_rostest_gtest(tests_project_x_ecobot test/PointTest.cpp test/DebrisCollectionTest.cpp test/VelocityGeneratorTest.cpp)
-	target_link_libraries(project_x_ecobot ${OpenCV_LIBS} ${catkin_LIBRARIES})
-	add_dependencies(project_x_ecobot ${catkin_EXPORTED_TARGETS})
+	add_rostest_gtest(tests_DebrisCollection test/DebrisCollectionTest.launch test/PointTest.cpp test/DebrisCollectionTest.cpp test/VelocityGeneratorTest.cpp)
+#	add_rostest_gtest(tests_project_x_ecobot test/PointTest.cpp test/DebrisCollectionTest.cpp test/VelocityGeneratorTest.cpp)
+#	target_link_libraries(project_x_ecobot ${OpenCV_LIBS} ${catkin_LIBRARIES})
+#	add_dependencies(project_x_ecobot ${catkin_EXPORTED_TARGETS})
+
+	target_link_libraries(tests_DebrisCollection ${OpenCV_LIBS} ${catkin_LIBRARIES})
+	add_dependencies(tests_DebrisCollection ${catkin_EXPORTED_TARGETS})
 endif()
 
 
