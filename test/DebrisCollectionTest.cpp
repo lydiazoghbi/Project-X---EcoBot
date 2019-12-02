@@ -15,11 +15,96 @@ The Apache Software Foundation (http://www.apache.org/).
 
 */
 
-#include <gtest/gtest.h>
+/*
+#include <vector>
+#include "ros/ros.h"
 
+#include <string>
+#include <cv_bridge/cv_bridge.h>
+#include <image_transport/image_transport.h>
+#include "sensor_msgs/CompressedImage.h"
+#include "sensor_msgs/image_encodings.h"
+#include "sensor_msgs/Image.h"
+#include <iostream>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include "geometry_msgs/Twist.h"
+*/
+
+
+#include <gtest/gtest.h>
+#include <ros/ros.h>
+
+/*
+#include <cv_bridge/cv_bridge.h>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
+
+#include <opencv2/opencv.hpp>
+#include <opencv2/core/core.hpp>
+*/
+
+
+//#include "project_x_ecobot/include/DebrisCollection.hpp"
+
+//using namespace cv;
 
 
 TEST(DebrisCollection, Dummy) {
+// Initiate node handle
+  //ros::NodeHandle nh;
 
+
+ 
+ //create an instance of debriscollection
+  //DebrisCollection debrisCollection;
+
+
+// wait for a few ms  
+
+
+//sub = nh.subscribe("/camera/rgb/image_raw", 500, &DebrisCollection::imageRGBCallback, this);
+//pub = nh.advertise<sensor_msgs::ImageConstPtr>("/camera/rgb/image_raw", 500);
+
+
+//start publishing images to debris collection)
+
+//load image
+
+//sensor_msgs::ImageConstPtr message;
+//*message = image;
+
+// load as an image
+
+
+
+//cv::Mat image = cv::imread("/home/oooo/catkin_ws/src/project_x_ecobot/test/testImages/red_1.png", 1);
+
+
+
+//cv::imshow("Loaded image", image);
+  //ROS_INFO_STREAM("Image should be displayed");
+  //cv::waitKey(0);
+
+
+//sensor_msgs::ImagePtr msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image).toImageMsg();
+
+
+//ImagePtr imagePtr = ???
+//pub.publish(msg);
+
+
+
+//do callback (which should then call filter, then addDebris)
+//call removedebris and verify that debris has been added
+
+
+  //EXPECT_STREQ("see if it works", srv.response.output.c_str());
 }
 
+
+int main(int argc, char **argv) {
+  testing::InitGoogleTest(&argc, argv);
+  ros::init(argc, argv, "tests_DebrisCollection");
+  return RUN_ALL_TESTS();
+}
