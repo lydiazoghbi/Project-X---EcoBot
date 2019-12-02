@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+
+<robot
+  name="Part1">
+  <link
+    name="urdf_package">
+    <inertial>
+      <origin
+        xyz="1.6811 -0.55929 1.1918"
+        rpy="0 0 0" />
+      <mass
+        value="5806.9" />
+      <inertia
+        ixx="6148.39131227298"
+        ixy="-0.71937952226709"
+        ixz="-2.11248003478483"
+        iyy="11071.9388979389"
+        iyz="32.9290439778994"
+        izz="9442.58158745421" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="1.5707963267949 0 0" />
+      <geometry>
+        <mesh
+          filename="package://urdf_package/meshes/turtlebot_world.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="1.5707963267949 0 0" />
+      <geometry>
+        <mesh
+          filename="package://urdf_package/meshes/turtlebot_world_col.STL" />
+      </geometry>
+    </collision>
+  </link>
+</robot>

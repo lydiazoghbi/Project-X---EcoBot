@@ -29,10 +29,20 @@
 #ifndef INCLUDE_DEBRISCOLLECTION_HPP_
 #define INCLUDE_DEBRISCOLLECTION_HPP_
 
-#include <opencv3/opencv.hpp>
-#include <Point.hpp>
+#include <cv_bridge/cv_bridge.h>
+#include <image_transport/image_transport.h>
 #include <ros/ros.h>
 #include <vector>
+#include <string>
+#include "Point.hpp"
+#include "sensor_msgs/CompressedImage.h"
+#include "sensor_msgs/Image.h"
+#include <iostream>
+#include "nav_msgs/Odometry.h"
+
+/**
+ *  @brief      Elements and members of DebrisCollection class
+ */
 
 class DebrisCollection {
 
@@ -43,21 +53,17 @@ class DebrisCollection {
 		double saturationThreshold;
 		std::vector<Point> debrisLocation;
 
+		// Create a node handle
+		ros::NodeHandle nh;
+
+		// Define a node publisher
+		ros::Publisher pub;
+
+		// Define a node subscriber
+		ros::Subscriber sub;
+                ros::Subscriber odomSub;
+
 	public:
-
-		/**
- 		*  @brief      Callback function to obtain the images
- 		*  @param      A ros message which is the compressed image
- 		*  @return     An image of type Mat (openCV type)
- 		*/
-		cv::Mat imageRGBCallback(const sensor_msgs:::CompressedImage &);
-
-		/**
- 		*  @brief      Callback function to obtain depth information from the images
- 		*  @param      A ros message which is the image
- 		*  @return     A double vector with depth information on each pixel
- 		*/
-		std::vector<double> DepthCallback(const sensor_msgs::Image &);
 
 		/**
  		*  @brief      Constructor
@@ -67,11 +73,32 @@ class DebrisCollection {
 		DebrisCollection();
 
 		/**
+ 		*  @brief      Callback function to obtain the images
+ 		*  @param      A ros message which is the compressed image
+ 		*  @return     An image of type Mat (openCV type)
+ 		*/
+		void imageRGBCallback(const sensor_msgs::ImageConstPtr& message);
+
+		/**
+ 		*  @brief      Callback function to obtain the images
+ 		*  @param      A ros message which is the compressed image
+ 		*  @return     An image of type Mat (openCV type)
+ 		*/
+		void odometryCallback(const nav_msgs::Odometry::ConstPtr& message);
+
+		/**
+ 		*  @brief      Callback function to obtain depth information from the images
+ 		*  @param      A ros message which is the image
+ 		*  @return     A double vector with depth information on each pixel
+ 		*/
+		std::vector<double> DepthCallback(const sensor_msgs::Image &);
+
+		/**
  		*  @brief      Function for applying filter to the read image
  		*  @param      None
  		*  @return     An image of type Mat
  		*/
-		cv::Mat Filter();
+		cv::Mat filter(cv::Mat rawImage);
 
 		/**
  		*  @brief      Function for detecting whether a debris is spotted or not in an image
@@ -85,14 +112,14 @@ class DebrisCollection {
  		*  @param      The location of a detected debris
  		*  @return     None
  		*/
-		addDebris(Point detectedDebris);
+		void addDebris(Point detectedDebris);
 
 		/**
  		*  @brief      Function for removing debris from list after being scooped
  		*  @param      None
  		*  @return     None
  		*/
-		removeDebris();
+		void removeDebris();
 
 		/**
  		*  @brief      Function for sorting debris according to a criterion
@@ -100,6 +127,6 @@ class DebrisCollection {
  		*  @return     Sorted debris locations in a vector
  		*/
 		std::vector<Point> sortDebrisLocation(std::vector<Point> * debrisLocations); 
-}
+};
 
 #endif //  INCLUDE_DEBRISCOLLECTION_HPP
