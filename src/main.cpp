@@ -16,26 +16,38 @@
   *
   */
 /**
- *  @file       Point.cpp
- *  @author     Lydia Zoghbi
+ *  @file       main.cpp
+ *  @author     Lydia Zoghbi and Ryan Bates
  *  @copyright  Copyright Apache 2.0 License
- *  @date       11/25/2019
+ *  @date       12/02/2019
  *  @version    1.0
  *
- *  @brief      Implementation class of Point class
+ *  @brief      Main function
  *
  */
 
+#include <iostream>
 #include "Point.hpp"
+#include "DebrisCollection.hpp"
+#include "VelocityGenerator.hpp"
+#include <cv_bridge/cv_bridge.h>
+#include "ros/ros.h"
 
-// Constructor which takes in x and y values and stores them in the class
-Point::Point(double startX, double startY) {
-	x = startX;
-	y = startY;
+/**
+*  @brief      Main loop
+*  @param      Argc and argv
+*  @return     None, exit status as 0
+*/
+int main(int argc, char **argv) {
+	// Initalize ROS node
+	ros::init(argc, argv, "DebrisCollection");
+
+	// Initialize node handle
+	ros::NodeHandle nh;
+
+	// Call DebrisCollection constructor
+	DebrisCollection debrisCollection;
+	ROS_INFO_STREAM("Node initialized.");
+
+	return 0;
 }
-
-// Function for extracting x value from class
-double Point::getX() {return x;}
-
-// Function for extracting y value from class
-double Point::getY() {return y;}

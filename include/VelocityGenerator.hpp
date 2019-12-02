@@ -29,11 +29,15 @@
 #ifndef INCLUDE_VELOCITYGENERATOR_HPP_
 #define INCLUDE_VELOCITYGENERATOR_HPP_
 
-#include <opencv3/opencv.hpp>
-#include <DebrisCollection.hpp>
-#include <Point.hpp>
+#include <tf/transform_broadcaster.h>
+#include "DebrisCollection.hpp"
 #include <ros/ros.h>
 #include <vector>
+#include <cv_bridge/cv_bridge.h>
+#include <image_transport/image_transport.h>
+#include <string>
+#include "Point.hpp"
+#include <iostream>
 
 class VelocityGenerator {
 
@@ -58,21 +62,21 @@ class VelocityGenerator {
  		*  @param      Desired position of the robot
  		*  @return     None
  		*/
-		computeFK(Point desiredPoint);
+		void computeFK(Point desiredPoint);
 
 		/**
  		*  @brief      Callback function for getting the robot's position
  		*  @param      None
  		*  @return     None
  		*/
-		positionCallback();
+		void positionCallback();
 
 		/**
  		*  @brief      Callback function for getting the robot's orientation
  		*  @param      Transform
  		*  @return     None
  		*/
-		orientationCallback(const tf &);
-}
+		void orientationCallback();
+};
 
 #endif //  INCLUDE_VELOCITYGENERATOR_HPP
