@@ -43,79 +43,71 @@
 
 // Class constructor
 DebrisCollection::DebrisCollection() {
-  // do publishing and subscribing
-//  ros::NodeHandle nh;
-  sub = nh.subscribe("/camera/rgb/image_raw", 500, &DebrisCollection::imageRGBCallback, this);
-  odomSub = nh.subscribe("/odom", 500, &DebrisCollection::odometryCallback, this);
-  pub = nh.advertise<geometry_msgs::Twist>("/cmd_vel_mux/input/navi", 500);
 
+	// Do publishing and subscribing
+	// ros::NodeHandle nh;
+	sub = nh.subscribe("/camera/rgb/image_raw", 500, &DebrisCollection::imageRGBCallback, this);
+	odomSub = nh.subscribe("/odom", 500, &DebrisCollection::odometryCallback, this);
+	pub = nh.advertise<geometry_msgs::Twist>("/cmd_vel_mux/input/navi", 500);
 
-geometry_msgs::Twist velocity;
-velocity.linear.x = 1.0;
+	geometry_msgs::Twist velocity;
+	velocity.linear.x = 1.0;
 	velocity.angular.z = 0;
 
+	ROS_INFO_STREAM("Subscriptions made.");
+	ros::Rate loop_rate(1);
 
-
-
-
-
-  ROS_INFO_STREAM("Subscriptions made.");
-  ros::Rate loop_rate(1);
-  while (ros::ok()) {
-    //pub.publish(velocity);
-    ros::spinOnce();
-    loop_rate.sleep();
-  }
+	while (ros::ok()) {
+		// pub.publish(velocity);
+		ros::spinOnce();
+		loop_rate.sleep();
+	}
 }
 
 // Reading image from the robot's camera
-// TODO: make return void
 void DebrisCollection::imageRGBCallback(const sensor_msgs::ImageConstPtr& message) {
-  ROS_INFO_STREAM("Entered image callback");
-  cv_bridge::CvImagePtr cv_ptr;
-  try {
-    cv_ptr = cv_bridge::toCvCopy(message, sensor_msgs::image_encodings::BGR8);
-  } catch (cv_bridge::Exception& e)
-  {
-  // TODO: error processing
-ROS_INFO_STREAM("Error");
-  }
+	ROS_INFO_STREAM("Entered image callback");
+	cv_bridge::CvImagePtr cv_ptr;
+	try {
+		cv_ptr = cv_bridge::toCvCopy(message, sensor_msgs::image_encodings::BGR8);
+	} catch (cv_bridge::Exception& e) {
+		// TODO: error processing
+		ROS_INFO_STREAM("Error");
+	}
 
-  DebrisCollection::filter(cv_ptr->image);
-  //cv::imshow("Window", cv_ptr->image);
-  ROS_INFO_STREAM("Image should be displayed");
-  //cv::waitKey(1);
+	DebrisCollection::filter(cv_ptr->image);
+	// cv::imshow("Window", cv_ptr->image);
+	ROS_INFO_STREAM("Image should be displayed");
+	// cv::waitKey(1);
   
-  //if (we want image) {
-  //  detectDebris(image);
-  //}
+	// if (we want image) {
+	//	 detectDebris(image);
+	//}
 }
 
+// Reading robot's odometry measurements
 void DebrisCollection::odometryCallback(const nav_msgs::Odometry::ConstPtr& message) {
-//  message->pose.pose.
-  ROS_INFO_STREAM("Bot is at " << message->pose.pose.position.x << ", " << message->pose.pose.position.y);
+	// message->pose.pose.
+	ROS_INFO_STREAM("Bot is at " << message->pose.pose.position.x << ", " << message->pose.pose.position.y);
 }
 
 
 // Reading depth information from the robot's camera
 std::vector<double> DebrisCollection::DepthCallback(const sensor_msgs::Image &) {}
 
-  // Applying HSV filter to detect debrid
+// Applying HSV filter to detect debrid
 cv::Mat DebrisCollection::filter(cv::Mat rawImage) {
+ 
+	cv::Mat hsvImage, thresholdImage;
+	// Convert image from RGB to HSV	
+	cv::cvtColor(rawImage, hsvImage, cv::COLOR_BGR2HSV);
+	// Apply Hue, Saturation and Value thresholds on HSV image
+	cv::inRange(hsvImage, cv::Scalar(0, 33, 50), cv::Scalar(6, 255, 153), thresholdImage);
+	cv::imshow("FilteredImage", thresholdImage);
+	ROS_INFO_STREAM("Image should be displayed");
+	cv::waitKey(1);
 
-  cv::Mat hsvImage, thresholdImage;
-
-  cv::cvtColor(rawImage, hsvImage, cv::COLOR_BGR2HSV);
-
-  cv::inRange(hsvImage, cv::Scalar(0, 33, 50), cv::Scalar(6, 255, 153), thresholdImage);
-			
-
-
-  cv::imshow("FilteredImage", thresholdImage);
-  ROS_INFO_STREAM("Image should be displayed");
-  cv::waitKey(1);
-
-  return thresholdImage;
+	return thresholdImage;
 }
 
 // Function for detecting debris after applying filter
