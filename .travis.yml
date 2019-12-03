@@ -39,7 +39,7 @@ install:
   - ln -s $CI_SOURCE_PATH .
 
 before_script:
-  - roscore &s
+  - roscore &
   - cd ~/catkin_ws/src
   - wstool init
   - if [[ -f $ROSINSTALL_FILE ]] ; then wstool merge $ROSINSTALL_FILE ; fi
