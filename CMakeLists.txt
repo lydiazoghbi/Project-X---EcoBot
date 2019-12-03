@@ -16,7 +16,7 @@ find_package(OpenCV REQUIRED)
 catkin_package()
 
 ## Specify additional locations of header files
-include_directories(include ${OpenCV_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS})
+include_directories(include ${OpenCV_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 
 ## Declare a C++ Executable
 add_executable(project_x_ecobot src/main.cpp src/VelocityGenerator.cpp src/Point.cpp src/DebrisCollection.cpp)
