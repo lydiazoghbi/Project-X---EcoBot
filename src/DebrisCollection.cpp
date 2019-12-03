@@ -124,7 +124,9 @@ cv::Mat DebrisCollection::filter(cv::Mat rawImage) {
 Point DebrisCollection::detectDebris(cv::Mat filteredImage) {}
 
 // Function for concatenating debris information if detected
-void DebrisCollection::addDebris(Point detectedDebris) {}
+void DebrisCollection::addDebris(Point detectedDebris) {
+	debrisLocation.push_back(detectedDebris);
+}
 
 // Function for removing debris from list after it is scooped
 void DebrisCollection::removeDebris() {}

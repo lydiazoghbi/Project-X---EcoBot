@@ -91,13 +91,13 @@ class DebrisCollection {
 		/**
  		*  @brief      Callback function to obtain depth information from the images
  		*  @param      A ros message which is the image
- 		*  @return     A double vector with depth information on each pixel
+ 		*  @return     None
  		*/
 		void DepthCallback(const sensor_msgs::ImageConstPtr& depthMessage);
 
 		/**
  		*  @brief      Function for applying filter to the read image
- 		*  @param      None
+ 		*  @param      The camera image
  		*  @return     An image of type Mat
  		*/
 		cv::Mat filter(cv::Mat rawImage);
