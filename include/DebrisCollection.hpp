@@ -39,6 +39,7 @@
 #include "sensor_msgs/Image.h"
 #include <iostream>
 #include "nav_msgs/Odometry.h"
+#include "image_transport/image_transport.h"
 
 /**
  *  @brief      Elements and members of DebrisCollection class
@@ -62,6 +63,7 @@ class DebrisCollection {
 		// Define a node subscriber
 		ros::Subscriber sub;
                 ros::Subscriber odomSub;
+		image_transport::Subscriber depthSub;
 
 	public:
 
@@ -91,7 +93,7 @@ class DebrisCollection {
  		*  @param      A ros message which is the image
  		*  @return     A double vector with depth information on each pixel
  		*/
-		std::vector<double> DepthCallback(const sensor_msgs::Image &);
+		void DepthCallback(const sensor_msgs::ImageConstPtr& depthMessage);
 
 		/**
  		*  @brief      Function for applying filter to the read image
@@ -127,6 +129,15 @@ class DebrisCollection {
  		*  @return     Sorted debris locations in a vector
  		*/
 		std::vector<Point> sortDebrisLocation(std::vector<Point> * debrisLocations); 
+
+		/**
+ 		*  @brief      Function for obtaining depth information at certain image pixel position
+ 		*  @param      Image pixel height
+ 		*  @param      Image pixel wdith
+ 		*  @param      Depth image from RGB-D camera
+ 		*  @return     Depth of specified pixel on image
+ 		*/
+		int ReadDepthData(unsigned int height_pos, unsigned int width_pos, sensor_msgs::ImageConstPtr depth_image);
 };
 
 #endif //  INCLUDE_DEBRISCOLLECTION_HPP
