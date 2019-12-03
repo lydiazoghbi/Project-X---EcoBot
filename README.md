@@ -1,5 +1,5 @@
 # Project X - EcoBot
-[![Build Status](https://travis-ci.org/lydiazoghbi/project-x-ecobot.svg?branch=master)](https://travis-ci.org/lydiazoghbi/project-x-ecobot)
+[![Build Status](https://travis-ci.org/lydiazoghbi/project-x-ecobot.svg?branch=Sprint-3)](https://travis-ci.org/lydiazoghbi/project-x-ecobot)
 [![Coverage Status](https://coveralls.io/repos/github/lydiazoghbi/project-x-ecobot/badge.svg?branch=master)](https://coveralls.io/github/lydiazoghbi/project-x-ecobot?branch=master)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
