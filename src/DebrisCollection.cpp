@@ -129,7 +129,9 @@ void DebrisCollection::addDebris(Point detectedDebris) {
 }
 
 // Function for removing debris from list after it is scooped
-void DebrisCollection::removeDebris() {}
+void DebrisCollection::removeDebris() {
+	debrisLocation.pop_back();
+}
 
 // Sorting the debris by closest to bin 
 std::vector<Point> DebrisCollection::sortDebrisLocation(std::vector<Point> * debrisLocations) {}
