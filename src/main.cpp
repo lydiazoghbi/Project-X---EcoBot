@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
 	// Initialize node handle
 	ros::NodeHandle nh;
 
-	// Call DebrisCollection constructor
+	// Call DebrisCollection constructor and output successful initialization
 	DebrisCollection debrisCollection;
 	ROS_INFO_STREAM("Node initialized.");
 

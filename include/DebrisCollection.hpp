@@ -137,7 +137,7 @@ class DebrisCollection {
  		*  @param      Depth image from RGB-D camera
  		*  @return     Depth of specified pixel on image
  		*/
-		int ReadDepthData(unsigned int height_pos, unsigned int width_pos, sensor_msgs::ImageConstPtr depth_image);
+		double ReadDepthData(unsigned int height_pos, unsigned int width_pos, sensor_msgs::ImageConstPtr depth_image);
 };
 
 #endif //  INCLUDE_DEBRISCOLLECTION_HPP

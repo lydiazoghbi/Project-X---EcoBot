@@ -104,7 +104,7 @@ TEST(DebrisCollection, Dummy) {
 
 
 int main(int argc, char **argv) {
+  ros::init(argc, argv, "allTests");
   testing::InitGoogleTest(&argc, argv);
-  ros::init(argc, argv, "tests_DebrisCollection");
   return RUN_ALL_TESTS();
 }

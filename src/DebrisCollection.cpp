@@ -101,7 +101,7 @@ void DebrisCollection::odometryCallback(const nav_msgs::Odometry::ConstPtr& mess
 
 // Reading depth information from the robot's camera
 void DebrisCollection::DepthCallback(const sensor_msgs::ImageConstPtr& depthMessage) {
-	int depth = DebrisCollection::ReadDepthData(100, 320, depthMessage);
+	double depth = DebrisCollection::ReadDepthData(100, 320, depthMessage);
 	ROS_INFO_STREAM("Depth:" << depth);	
 }
 
@@ -137,7 +137,7 @@ void DebrisCollection::removeDebris() {
 std::vector<Point> DebrisCollection::sortDebrisLocation(std::vector<Point> * debrisLocations) {}
 
 // Obtain depth data without using PCL Library (https://answers.ros.org/question/90696/get-depth-from-kinect-sensor-in-gazebo-simulator/https://answers.ros.org/question/90696/get-depth-from-kinect-sensor-in-gazebo-simulator/) 
-int DebrisCollection::ReadDepthData(unsigned int height_pos, unsigned int width_pos, sensor_msgs::ImageConstPtr depth_image) {
+double DebrisCollection::ReadDepthData(unsigned int height_pos, unsigned int width_pos, sensor_msgs::ImageConstPtr depth_image) {
     // If position is invalid
     if ((height_pos >= depth_image->height) || (width_pos >= depth_image->width))
         return -1;
@@ -153,7 +153,7 @@ int DebrisCollection::ReadDepthData(unsigned int height_pos, unsigned int width_
                 depth_data.byte_data[i] = depth_image->data[index + i];
             // Make sure data is valid (check if NaN)
             if (depth_data.float_data == depth_data.float_data)
-                return int(depth_data.float_data);
+                return double(depth_data.float_data);
             return -1;  // If depth data invalid
         }
         // else, one little endian, one big endian
@@ -161,11 +161,11 @@ int DebrisCollection::ReadDepthData(unsigned int height_pos, unsigned int width_
             depth_data.byte_data[i] = depth_image->data[3 + index - i];
         // Make sure data is valid (check if NaN)
         if (depth_data.float_data == depth_data.float_data)
-            return int(depth_data.float_data);
+            return double(depth_data.float_data);
         return -1;  // If depth data invalid
     }
     // Otherwise, data is 2 byte integers (raw depth image)
-   int temp_val;
+   double temp_val;
    // If big endian
    if (depth_image->is_bigendian)
        temp_val = (depth_image->data[index] << 8) + depth_image->data[index + 1];
