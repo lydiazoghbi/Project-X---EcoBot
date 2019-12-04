@@ -26,7 +26,6 @@
  *
  */
 
-#include <tf/transform_broadcaster.h>
 #include "DebrisCollection.hpp"
 #include <ros/ros.h>
 #include <vector>

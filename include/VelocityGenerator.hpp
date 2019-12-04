@@ -29,7 +29,6 @@
 #ifndef INCLUDE_VELOCITYGENERATOR_HPP_
 #define INCLUDE_VELOCITYGENERATOR_HPP_
 
-#include <tf/transform_broadcaster.h>
 #include "DebrisCollection.hpp"
 #include <ros/ros.h>
 #include <vector>
