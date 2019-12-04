@@ -1,0 +1,5 @@
+<launch>
+  <include file="$(find turtlebot_gazebo)/launch/turtlebot_world.launch"> </include>
+  <node pkg = "project_x_ecobot" name = "DebrisCollection" type = "DebrisCollection"> </node>
+  <test pkg = "project_x_ecobot" test-name = "allTests" type = "allTests"/>
+</launch>

@@ -49,4 +49,3 @@ TEST(Point, Constructor) {
 	EXPECT_EQ(0.1, xPosition);
 	EXPECT_EQ(0.2, yPosition);
 }
-

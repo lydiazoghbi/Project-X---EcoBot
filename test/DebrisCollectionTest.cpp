@@ -34,6 +34,10 @@ The Apache Software Foundation (http://www.apache.org/).
 
 #include <gtest/gtest.h>
 #include <ros/ros.h>
+#include "Point.hpp"
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include "DebrisCollection.hpp"
 
 /*
 #include <cv_bridge/cv_bridge.h>
@@ -102,9 +106,12 @@ TEST(DebrisCollection, Dummy) {
   //EXPECT_STREQ("see if it works", srv.response.output.c_str());
 }
 
+TEST(Filter, TestingImageSnapshot) {
+	cv::Mat testImage = cv::imread("../src/project_x_ecobot/test/testImages/red_1.png", 1);
+	DebrisCollection collectingDebris;
+	Point centroid = collectingDebris.detectDebris(testImage);
 
-int main(int argc, char **argv) {
-  ros::init(argc, argv, "allTests");
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
+	EXPECT_EQ(0.1, centroid.getX());
+	EXPECT_EQ(0.2, centroid.getY());
+
 }
