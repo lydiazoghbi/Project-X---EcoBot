@@ -100,7 +100,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/lydiazoghbi/catkin_ws/src/urdf_package/meshes/turtlebot_world_col.STL</uri>
+              <uri>../catkin_ws/src/urdf_package/meshes/turtlebot_world_col.STL</uri>
             </mesh>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -122,7 +122,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/lydiazoghbi/catkin_ws/src/urdf_package/meshes/turtlebot_world.STL</uri>
+              <uri>../catkin_ws/src/urdf_package/meshes/turtlebot_world.STL</uri>
             </mesh>
           </geometry>
         </visual>
