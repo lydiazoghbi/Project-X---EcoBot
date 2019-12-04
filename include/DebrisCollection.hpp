@@ -53,6 +53,7 @@ class DebrisCollection {
 		double valueThreshold;
 		double saturationThreshold;
 		std::vector<Point> debrisLocation;
+		cv::Mat lastSnapshot;
 
 		// Create a node handle
 		ros::NodeHandle nh;
@@ -66,6 +67,19 @@ class DebrisCollection {
 		image_transport::Subscriber depthSub;
 
 	public:
+		/**
+ 		*  @brief      Constructor for Image setter
+ 		*  @param      Image
+ 		*  @return     None
+ 		*/
+		void setImage(cv::Mat image);
+
+		/**
+ 		*  @brief      Getter for Image setter
+ 		*  @param      None
+ 		*  @return     Image
+ 		*/
+		cv::Mat getImage();
 
 		/**
  		*  @brief      Constructor
