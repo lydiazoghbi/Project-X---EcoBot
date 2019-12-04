@@ -102,7 +102,7 @@ void DebrisCollection::odometryCallback(const nav_msgs::Odometry::ConstPtr& mess
 // Reading depth information from the robot's camera
 void DebrisCollection::DepthCallback(const sensor_msgs::ImageConstPtr& depthMessage) {
 	double depth = DebrisCollection::ReadDepthData(100, 320, depthMessage);
-	ROS_INFO_STREAM("Depth:" << depth);	
+	//ROS_INFO_STREAM("Depth:" << depth);	
 }
 
 // Applying HSV filter to detect debrid
@@ -113,15 +113,29 @@ cv::Mat DebrisCollection::filter(cv::Mat rawImage) {
 	cv::cvtColor(rawImage, hsvImage, cv::COLOR_BGR2HSV);
 	// Apply Hue, Saturation and Value thresholds on HSV image
 	cv::inRange(hsvImage, cv::Scalar(0, 33, 50), cv::Scalar(6, 255, 153), thresholdImage);
-	// cv::imshow("FilteredImage", thresholdImage);
-	// ROS_INFO_STREAM("Image should be displayed");
-	// cv::waitKey(1);
+	cv::imshow("FilteredImage", thresholdImage);
+	ROS_INFO_STREAM("Image should be displayed");
+	cv::waitKey(1);
 
 	return thresholdImage;
 }
 
+// Function for setting image
+void DebrisCollection::setImage(cv::Mat image) {
+	lastSnapshot = image;
+}
+
+// Function for getting image back
+cv::Mat DebrisCollection::getImage() {
+	return lastSnapshot;
+}
+
 // Function for detecting debris after applying filter
-Point DebrisCollection::detectDebris(cv::Mat filteredImage) {}
+Point DebrisCollection::detectDebris(cv::Mat filteredImage) {
+	Point p(0.1, 0.2);
+	return p;
+
+}
 
 // Function for concatenating debris information if detected
 void DebrisCollection::addDebris(Point detectedDebris) {
