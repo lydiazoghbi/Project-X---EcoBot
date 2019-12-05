@@ -46,9 +46,6 @@
 #include <opencv2/imgcodecs/imgcodecs.hpp>
 
 #include "Point.hpp"
-#include "DebrisCollection.hpp"
-
-
 
 /**
  *  @brief      Elements and members of DebrisCollection class
