@@ -26,12 +26,20 @@
  *
  */
 
-#include <iostream>
-#include "Point.hpp"
-#include "DebrisCollection.hpp"
-#include "VelocityGenerator.hpp"
-#include <cv_bridge/cv_bridge.h>
+#include <vector>
 #include "ros/ros.h"
+#include "DebrisCollection.hpp"
+#include <Point.hpp>
+#include <string>
+#include <cv_bridge/cv_bridge.h>
+#include <image_transport/image_transport.h>
+#include "sensor_msgs/CompressedImage.h"
+#include "sensor_msgs/image_encodings.h"
+#include "sensor_msgs/Image.h"
+#include <iostream>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include "geometry_msgs/Twist.h"
 
 /**
 *  @brief      Main loop
@@ -40,7 +48,7 @@
 */
 int main(int argc, char **argv) {
 	// Initalize ROS node
-	ros::init(argc, argv, "DebrisCollection");
+	ros::init(argc, argv, "MainNode");
 
 	// Initialize node handle
 	ros::NodeHandle nh;
