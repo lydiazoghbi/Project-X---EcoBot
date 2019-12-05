@@ -52,10 +52,13 @@ int main(int argc, char **argv) {
 
 	// Initialize node handle
 	ros::NodeHandle nh;
-
+	ros::Rate loop_rate(1);
 	// Call DebrisCollection constructor and output successful initialization
 	DebrisCollection debrisCollection;
 	ROS_INFO_STREAM("Node initialized.");
-
+	while (ros::ok()) {
+		ros::spinOnce();
+		loop_rate.sleep();
+	}
 	return 0;
 }
