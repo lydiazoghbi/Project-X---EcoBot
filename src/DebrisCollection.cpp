@@ -19,113 +19,120 @@
  *  @file       DebrisCollection.cpp
  *  @author     Lydia Zoghbi and Ryan Bates
  *  @copyright  Copyright Apache 2.0 License
- *  @date       12/03/2019
+ *  @date       12/05/2019
  *  @version    1.0
  *
  *  @brief      Implementation class of DebrisCollection class
  *
  */
 
-#include <vector>
-#include "ros/ros.h"
-#include "DebrisCollection.hpp"
-#include <Point.hpp>
-#include <string>
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
-#include "sensor_msgs/CompressedImage.h"
-#include "sensor_msgs/image_encodings.h"
-#include "sensor_msgs/Image.h"
+
 #include <iostream>
+#include <vector>
+#include <string>
+
+#include "ros/ros.h"
+#include "sensor_msgs/Image.h"
+#include "nav_msgs/Odometry.h"
+#include "geometry_msgs/Twist.h"
+
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include "geometry_msgs/Twist.h"
 #include <opencv2/imgcodecs/imgcodecs.hpp>
 
-typedef union U_FloatParse {
-    float float_data;
-    unsigned char byte_data[4];
-} U_FloatConvert;
+#include "Point.hpp"
+#include "DebrisCollection.hpp"
 
-// Class constructor
+// Class constructor for debris collection
 DebrisCollection::DebrisCollection() {
 
-	// Do publishing and subscribing
+	// Subscribe to RGB images
 	sub = nh.subscribe("/camera/rgb/image_raw", 500, &DebrisCollection::imageRGBCallback, this);
+
+	// Subscribe to depth information
 	image_transport::ImageTransport it(nh);
 	depthSub = it.subscribe("/camera/depth/image_raw", 5, &DebrisCollection::DepthCallback, this);
+
+	// Subscribe to odometry readings
 	odomSub = nh.subscribe("/odom", 500, &DebrisCollection::odometryCallback, this);
+
+	// Publish velocities when needed
 	pub = nh.advertise<geometry_msgs::Twist>("/cmd_vel_mux/input/navi", 500);
 
 	geometry_msgs::Twist velocity;
 	velocity.linear.x = 1.0;
 	velocity.angular.z = 0;
 
-	ROS_INFO_STREAM("Subscriptions made.");
+	ROS_INFO_STREAM("Subscriptions made successfully");
 	ros::Rate loop_rate(1);
 
 }
 
-// Reading image from the robot's camera
+// Callback function for obtaining RGB images
 void DebrisCollection::imageRGBCallback(const sensor_msgs::ImageConstPtr& message) {
+
 	// ROS_INFO_STREAM("Entered image callback");
+	// Create image pointer
 	cv_bridge::CvImagePtr cv_ptr;
 	try {
 		cv_ptr = cv_bridge::toCvCopy(message, sensor_msgs::image_encodings::BGR8);
 	} catch (cv_bridge::Exception& e) {
-		// TODO: error processing
+		// Report error
 		ROS_INFO_STREAM("Error");
 	}
 
+	// Call filtering function to start analyzing possiblity of debris existence
 	DebrisCollection::filter(cv_ptr->image);
 	// cv::imshow("Window", cv_ptr->image);
 	// ROS_INFO_STREAM("Image should be displayed");
 	// cv::waitKey(1);
-  
-	// if (we want image) {
-	//	 detectDebris(image);
-	//}
 }
 
-// Reading robot's odometry measurements
+// Callback function for obtaining robot's odometry measurements
 void DebrisCollection::odometryCallback(const nav_msgs::Odometry::ConstPtr& message) {
 	// message->pose.pose.
 	// ROS_INFO_STREAM("Bot is at " << message->pose.pose.position.x << ", " << message->pose.pose.position.y);
 }
 
 
-// Reading depth information from the robot's camera
+// Callback function for obtaining depth information
 void DebrisCollection::DepthCallback(const sensor_msgs::ImageConstPtr& depthMessage) {
-	// Take image that is set, and get centroid of debris 	
+
+	// Take image from setterm and call detection function for finding debris centroid	
 	Point position = DebrisCollection::detectDebris(lastSnapshot);
+	// Function for obtaining depth without dealing with PCL library
 	double depth = DebrisCollection::ReadDepthData(position.getX(), position.getY(), depthMessage);
-	//ROS_INFO_STREAM("Depth:" << depth);	
+	//ROS_INFO_STREAM("Depth of debris:" << depth);	
 }
 
 // Applying HSV filter to detect debrid
 cv::Mat DebrisCollection::filter(cv::Mat rawImage) {
  
 	cv::Mat hsvImage, thresholdImage;
+
 	// Convert image from RGB to HSV	
 	cv::cvtColor(rawImage, hsvImage, cv::COLOR_BGR2HSV);
+
 	// Apply Hue, Saturation and Value thresholds on HSV image
 	cv::inRange(hsvImage, cv::Scalar(0, 33, 50), cv::Scalar(6, 255, 153), thresholdImage);
-	cv::imshow("FilteredImage", thresholdImage);
-	ROS_INFO_STREAM("Image should be displayed");
-	cv::waitKey(1);
-	
-	// This is for debugging purposes only
+
+	// cv::imshow("FilteredImage", thresholdImage);
+	// ROS_INFO_STREAM("Image should be displayed");
+	// cv::waitKey(1);
+
 	// Point randomName = DebrisCollection::detectDebris(thresholdImage);
 	// ROS_INFO_STREAM("Reading :"<<randomName.getX()<<" and "<<randomName.getY());
 	return thresholdImage;
 }
 
-// Function for setting image in black and white
+// Function for setting image and storing it in black and white
 void DebrisCollection::setImage(cv::Mat image) {
 	lastSnapshot = image;
 }
 
-// Function for getting image back
+// Function for getting image back from setter
 cv::Mat DebrisCollection::getImage() {
 	return lastSnapshot;
 }
@@ -133,12 +140,12 @@ cv::Mat DebrisCollection::getImage() {
 // Function for detecting debris after applying filter
 Point DebrisCollection::detectDebris(cv::Mat filteredImage) {
 
-// Input is b&w on red objects
-
-// 
+	// Apply moments function to obtain centroid of debris 
 	cv::Moments moment = moments(filteredImage, true);
 	cv::Point cvPoint(moment.m10/moment.m00, moment.m01/moment.m00);
 	// ROS_INFO_STREAM("The moments are outputting "<<moment.m10/moment.m00<<" and "<<moment.m01/moment.m00);
+
+	// Store centroid (x,y) pixel coordinates in a Point class
 	Point p(cvPoint.x, cvPoint.y);
 	return p;
 
@@ -157,45 +164,59 @@ void DebrisCollection::removeDebris() {
 // Sorting the debris by closest to bin 
 std::vector<Point> DebrisCollection::sortDebrisLocation(std::vector<Point> * debrisLocations) {}
 
-// Obtain depth data without using PCL Library (https://answers.ros.org/question/90696/get-depth-from-kinect-sensor-in-gazebo-simulator/https://answers.ros.org/question/90696/get-depth-from-kinect-sensor-in-gazebo-simulator/) 
+// Obtain depth data without using PCL Library, see link below
+// (https://answers.ros.org/question/90696/get-depth-from-kinect-sensor-in-gazebo-simulator/https://answers.ros.org/question/90696/get-depth-from-kinect-sensor-in-gazebo-simulator/) 
 double DebrisCollection::ReadDepthData(unsigned int height_pos, unsigned int width_pos, sensor_msgs::ImageConstPtr depth_image) {
-    // If position is invalid
-    if ((height_pos >= depth_image->height) || (width_pos >= depth_image->width))
-        return -1;
-    int index = (height_pos*depth_image->step) + (width_pos*(depth_image->step/depth_image->width));
-    // If data is 4 byte floats (rectified depth image)
-    if ((depth_image->step/depth_image->width) == 4) {
-        U_FloatConvert depth_data;
-        int i, endian_check = 1;
-        // If big endian
-        if ((depth_image->is_bigendian && (*(char*)&endian_check != 1)) ||  // Both big endian
-           ((!depth_image->is_bigendian) && (*(char*)&endian_check == 1))) { // Both lil endian
-            for (i = 0; i < 4; i++)
-                depth_data.byte_data[i] = depth_image->data[index + i];
-            // Make sure data is valid (check if NaN)
-            if (depth_data.float_data == depth_data.float_data)
-                return double(depth_data.float_data);
-            return -1;  // If depth data invalid
-        }
-        // else, one little endian, one big endian
-        for (i = 0; i < 4; i++) 
-            depth_data.byte_data[i] = depth_image->data[3 + index - i];
-        // Make sure data is valid (check if NaN)
-        if (depth_data.float_data == depth_data.float_data)
-            return double(depth_data.float_data);
-        return -1;  // If depth data invalid
-    }
-    // Otherwise, data is 2 byte integers (raw depth image)
-   double temp_val;
-   // If big endian
-   if (depth_image->is_bigendian)
-       temp_val = (depth_image->data[index] << 8) + depth_image->data[index + 1];
-   // If little endian
-   else
-       temp_val = depth_image->data[index] + (depth_image->data[index + 1] << 8);
-   // Make sure data is valid (check if NaN)
-   if (temp_val == temp_val)
-       return temp_val;
-   return -1;  // If depth data invalid
+
+	typedef union U_FloatParse {
+		float float_data;
+		unsigned char byte_data[4];
+	} U_FloatConvert;
+
+	// If position is invalid return error
+	if ((height_pos >= depth_image->height) || (width_pos >= depth_image->width))
+		return -1;
+
+	int index = (height_pos*depth_image->step) + (width_pos*(depth_image->step/depth_image->width));
+
+	// If data is 4 byte floats (rectified depth image)
+	if ((depth_image->step/depth_image->width) == 4) {
+		U_FloatConvert depth_data;
+		int i, endian_check = 1;
+		// If big endian
+		if ((depth_image->is_bigendian && (*(char*)&endian_check != 1)) ||  // Both big endian
+		((!depth_image->is_bigendian) && (*(char*)&endian_check == 1))) { // Both lil endian
+			for (i = 0; i < 4; i++)
+				depth_data.byte_data[i] = depth_image->data[index + i];
+			// Make sure data is valid (check if NaN)
+			if (depth_data.float_data == depth_data.float_data)
+				return double(depth_data.float_data);
+		return -1;  // If depth data invalid
+		}
+
+		// Else, one little endian, one big endian
+		for (i = 0; i < 4; i++) 
+			depth_data.byte_data[i] = depth_image->data[3 + index - i];
+		// Make sure data is valid (check if NaN)
+		if (depth_data.float_data == depth_data.float_data)
+			return double(depth_data.float_data);
+		return -1;  // If depth data invalid
+	}
+
+	// Otherwise, data is 2 byte integers (raw depth image)
+	double temp_val;
+
+	// If big endian
+	if (depth_image->is_bigendian)
+		temp_val = (depth_image->data[index] << 8) + depth_image->data[index + 1];
+
+	// If little endian
+	else
+		temp_val = depth_image->data[index] + (depth_image->data[index + 1] << 8);
+
+	// Make sure data is valid (check if NaN)
+	if (temp_val == temp_val)
+		return temp_val;
+	return -1;  // If depth data invalid
 }
 
