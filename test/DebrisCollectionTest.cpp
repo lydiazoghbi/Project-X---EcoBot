@@ -107,7 +107,10 @@ TEST(DebrisCollection, Dummy) {
 }
 
 TEST(DebrisDetection, TestingImageSnapshot) {
-	cv::Mat testImage = cv::imread("../src/project_x_ecobot/test/testImages/red_1.png", 1);
+	cv::Mat testImage = cv::imread("../catkin_ws/src/project_x_ecobot/test/testImages/red_1.png", 1);
+	cv::imshow("Result", testImage);
+	cv::waitKey(1);
+
 	DebrisCollection collectingDebris;
 	Point centroid = collectingDebris.detectDebris(testImage);
 
