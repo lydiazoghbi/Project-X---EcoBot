@@ -40,6 +40,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include "geometry_msgs/Twist.h"
+#include <opencv2/imgcodecs/imgcodecs.hpp>
 
 typedef union U_FloatParse {
     float float_data;
@@ -128,7 +129,13 @@ cv::Mat DebrisCollection::getImage() {
 // Function for detecting debris after applying filter
 Point DebrisCollection::detectDebris(cv::Mat filteredImage) {
 
-	Point p(0.1, 0.2);
+// Input is b&w on red objects
+
+// 
+	cv::Moments moment = moments(filteredImage, true);
+	cv::Point cvPoint(moment.m10/moment.m00, moment.m01/moment.m00);
+
+	Point p(cvPoint.x, cvPoint.y);
 	return p;
 
 }
