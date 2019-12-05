@@ -19,7 +19,7 @@
  *  @file       DebrisCollection.hpp
  *  @author     Lydia Zoghbi
  *  @copyright  Copyright Apache 2.0 License
- *  @date       11/25/2019
+ *  @date       12/05/2019
  *  @version    1.0
  *
  *  @brief      Header file for DebrisCollection class
@@ -29,17 +29,17 @@
 #ifndef INCLUDE_DEBRISCOLLECTION_HPP_
 #define INCLUDE_DEBRISCOLLECTION_HPP_
 
+#include <ros/ros.h>
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
-#include <ros/ros.h>
+
+#include <iostream>
 #include <vector>
 #include <string>
+
 #include "Point.hpp"
-#include "sensor_msgs/CompressedImage.h"
 #include "sensor_msgs/Image.h"
-#include <iostream>
 #include "nav_msgs/Odometry.h"
-#include "image_transport/image_transport.h"
 
 /**
  *  @brief      Elements and members of DebrisCollection class
@@ -48,38 +48,26 @@
 class DebrisCollection {
 
 	private:
-		cv::Mat rgbImage;
-		double hueThreshold;
-		double valueThreshold;
-		double saturationThreshold;
+		// Storage vector for all debris locations
 		std::vector<Point> debrisLocation;
+
+		// Image storage
 		cv::Mat lastSnapshot;
 
-		// Create a node handle
+		// Creating a node handle
 		ros::NodeHandle nh;
 
-		// Define a node publisher
+		// Defining a node publisher
 		ros::Publisher pub;
 
-		// Define a node subscriber
+		// Defining node subscriber for RGB image callback
 		ros::Subscriber sub;
+		// Defining node subscriber for odometry callback
                 ros::Subscriber odomSub;
+		// Defining node subscriber for RGB-D depth callback
 		image_transport::Subscriber depthSub;
 
 	public:
-		/**
- 		*  @brief      Constructor for Image setter
- 		*  @param      Image
- 		*  @return     None
- 		*/
-		void setImage(cv::Mat image);
-
-		/**
- 		*  @brief      Getter for Image setter
- 		*  @param      None
- 		*  @return     Image
- 		*/
-		cv::Mat getImage();
 
 		/**
  		*  @brief      Constructor
@@ -89,36 +77,51 @@ class DebrisCollection {
 		DebrisCollection();
 
 		/**
+ 		*  @brief      Constructor for Image setter
+ 		*  @param      RGB image
+ 		*  @return     None
+ 		*/
+		void setImage(cv::Mat image);
+
+		/**
+ 		*  @brief      Getter for Image setter
+ 		*  @param      None
+ 		*  @return     RGB image
+ 		*/
+		cv::Mat getImage();
+
+		/**
  		*  @brief      Callback function to obtain the images
- 		*  @param      A ros message which is the compressed image
- 		*  @return     An image of type Mat (openCV type)
+ 		*  @param      A ros message which is the RGB image
+ 		*  @return     An RGB image to the subscriber, nothing explicit from function
  		*/
 		void imageRGBCallback(const sensor_msgs::ImageConstPtr& message);
 
 		/**
  		*  @brief      Callback function to obtain the images
- 		*  @param      A ros message which is the compressed image
- 		*  @return     An image of type Mat (openCV type)
+ 		*  @param      A ros message which is odometry message
+ 		*  @return     Turtlebot position and orientation to the subscriber, nothing explicit from 
+		*              function
  		*/
 		void odometryCallback(const nav_msgs::Odometry::ConstPtr& message);
 
 		/**
  		*  @brief      Callback function to obtain depth information from the images
- 		*  @param      A ros message which is the image
- 		*  @return     None
+ 		*  @param      A ros message which is the depth reading
+ 		*  @return     Depth of selected point in image, nothing explicit
  		*/
 		void DepthCallback(const sensor_msgs::ImageConstPtr& depthMessage);
 
 		/**
- 		*  @brief      Function for applying filter to the read image
- 		*  @param      The camera image
- 		*  @return     An image of type Mat
+ 		*  @brief      Function for applying filter to an RGB image
+ 		*  @param      An RGB image
+ 		*  @return     A black and white filtered image, white being for the debris
  		*/
 		cv::Mat filter(cv::Mat rawImage);
 
 		/**
- 		*  @brief      Function for detecting whether a debris is spotted or not in an image
- 		*  @param      The filtered image
+ 		*  @brief      Function for detecting the centroid of the debris
+ 		*  @param      The black and white filtered image
  		*  @return     An (x,y) position for the detected debris, if any
  		*/
 		Point detectDebris(cv::Mat filteredImage);
@@ -138,11 +141,11 @@ class DebrisCollection {
 		void removeDebris();
 
 		/**
- 		*  @brief      Function for sorting debris according to a criterion
+ 		*  @brief      Function for sorting debris in the Debris vector
  		*  @param      Debris locations in a vector
  		*  @return     Sorted debris locations in a vector
  		*/
-		std::vector<Point> sortDebrisLocation(std::vector<Point> * debrisLocations); 
+		std::vector<Point> sortDebrisLocation(std::vector<Point> * debrisLocations);
 
 		/**
  		*  @brief      Function for obtaining depth information at certain image pixel position
@@ -154,4 +157,4 @@ class DebrisCollection {
 		double ReadDepthData(unsigned int height_pos, unsigned int width_pos, sensor_msgs::ImageConstPtr depth_image);
 };
 
-#endif //  INCLUDE_DEBRISCOLLECTION_HPP
+#endif  // INCLUDE_DEBRISCOLLECTION_HPP_
