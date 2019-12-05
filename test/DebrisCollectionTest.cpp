@@ -112,15 +112,14 @@ TEST(DebrisDetection, TestingImageSnapshot) {
 //	cv::Mat testImage = cv::imread("../catkin_ws/src/project_x_ecobot/test/testImages/red_1.png", 1);
 
 
-	//cv::Mat testImage = cv::imread("../catkin_ws/src/project_x_ecobot/test/testImages/filtered_1.png", cv::IMREAD_GRAYSCALE);
-	//cv::imshow("Result", testImage);
-	//cv::waitKey(1);
+	cv::Mat testImage = cv::imread("../catkin_ws/src/project_x_ecobot/test/testImages/filtered_1.png", cv::IMREAD_GRAYSCALE);
+	cv::imshow("Result", testImage);
+	cv::waitKey(1);
 
-	//DebrisCollection collectingDebris;
-	//Point centroid = collectingDebris.detectDebris(testImage);
-	//std::cout << "Centroid at " << centroid.getX() << std::endl;
-	//EXPECT_TRUE(centroid.getX() < 347);
-	//EXPECT_TRUE(centroid.getX() > 261);
+	DebrisCollection collectingDebris;
+	Point center = collectingDebris.detectDebris(testImage);
+	EXPECT_TRUE(center.getX() < 347);
+	EXPECT_TRUE(center.getX() > 261);
 
 
 }
