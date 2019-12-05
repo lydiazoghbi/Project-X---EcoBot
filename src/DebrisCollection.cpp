@@ -96,7 +96,9 @@ void DebrisCollection::odometryCallback(const nav_msgs::Odometry::ConstPtr& mess
 
 // Reading depth information from the robot's camera
 void DebrisCollection::DepthCallback(const sensor_msgs::ImageConstPtr& depthMessage) {
-	double depth = DebrisCollection::ReadDepthData(100, 320, depthMessage);
+	// Take image that is set, and get centroid of debris 	
+	Point position = DebrisCollection::detectDebris(lastSnapshot);
+	double depth = DebrisCollection::ReadDepthData(position.getX(), position.getY(), depthMessage);
 	//ROS_INFO_STREAM("Depth:" << depth);	
 }
 
@@ -118,7 +120,7 @@ cv::Mat DebrisCollection::filter(cv::Mat rawImage) {
 	return thresholdImage;
 }
 
-// Function for setting image
+// Function for setting image in black and white
 void DebrisCollection::setImage(cv::Mat image) {
 	lastSnapshot = image;
 }
