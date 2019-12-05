@@ -64,11 +64,6 @@ DebrisCollection::DebrisCollection() {
 	ROS_INFO_STREAM("Subscriptions made.");
 	ros::Rate loop_rate(1);
 
-	while (ros::ok()) {
-		// pub.publish(velocity);
-		ros::spinOnce();
-		loop_rate.sleep();
-	}
 }
 
 // Reading image from the robot's camera
@@ -132,6 +127,7 @@ cv::Mat DebrisCollection::getImage() {
 
 // Function for detecting debris after applying filter
 Point DebrisCollection::detectDebris(cv::Mat filteredImage) {
+
 	Point p(0.1, 0.2);
 	return p;
 
