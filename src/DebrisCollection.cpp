@@ -51,7 +51,6 @@ typedef union U_FloatParse {
 DebrisCollection::DebrisCollection() {
 
 	// Do publishing and subscribing
-	// ros::NodeHandle nh;
 	sub = nh.subscribe("/camera/rgb/image_raw", 500, &DebrisCollection::imageRGBCallback, this);
 	image_transport::ImageTransport it(nh);
 	depthSub = it.subscribe("/camera/depth/image_raw", 5, &DebrisCollection::DepthCallback, this);
@@ -112,7 +111,10 @@ cv::Mat DebrisCollection::filter(cv::Mat rawImage) {
 	cv::imshow("FilteredImage", thresholdImage);
 	ROS_INFO_STREAM("Image should be displayed");
 	cv::waitKey(1);
-
+	
+	// This is for debugging purposes only
+	// Point randomName = DebrisCollection::detectDebris(thresholdImage);
+	// ROS_INFO_STREAM("Reading :"<<randomName.getX()<<" and "<<randomName.getY());
 	return thresholdImage;
 }
 
@@ -134,7 +136,7 @@ Point DebrisCollection::detectDebris(cv::Mat filteredImage) {
 // 
 	cv::Moments moment = moments(filteredImage, true);
 	cv::Point cvPoint(moment.m10/moment.m00, moment.m01/moment.m00);
-
+	// ROS_INFO_STREAM("The moments are outputting "<<moment.m10/moment.m00<<" and "<<moment.m01/moment.m00);
 	Point p(cvPoint.x, cvPoint.y);
 	return p;
 
