@@ -54,6 +54,13 @@
 class DebrisCollection {
 
 	private:
+
+		// Storage Point for debris position in pixels
+		Point imageDebrisLocation;
+
+		// Storage Point for debris position i world frame (orientation, distance)
+		Point currentDebrisLocation;
+
 		// Storage vector for all debris locations
 		std::vector<Point> debrisLocation;
 
