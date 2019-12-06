@@ -93,7 +93,9 @@ void DebrisCollection::imageRGBCallback(const sensor_msgs::ImageConstPtr& messag
 
 // Callback function for obtaining robot's odometry measurements
 void DebrisCollection::odometryCallback(const nav_msgs::Odometry::ConstPtr& message) {
-	message->pose.pose;	
+	
+	orientation = message->pose.pose.orientation.z;
+	distanceTraveled = message->pose.pose.position.x;
 	// ROS_INFO_STREAM("Bot is at " << message->pose.pose.position.x << ", " << message->pose.pose.position.y);
 }
 
@@ -106,21 +108,22 @@ void DebrisCollection::DepthCallback(const sensor_msgs::ImageConstPtr& depthMess
 
 	// Function for obtaining depth without dealing with PCL library
 
-	//double depth = DebrisCollection::ReadDepthData(currentDebrisLocation.getX(), currentDebrisLocation.getY(), depthMessage);
-	//currentDebrisLocation = Point(0.0, depth);
+	double depth = DebrisCollection::ReadDepthData(imageDebrisLocation.getX(), imageDebrisLocation.getY(), depthMessage);
 	//ROS_INFO_STREAM("Depth of debris:" << depth);	
 }
 
-double DebrisCollection::getDepth() {
+void stopBeforeObstacle() {
 
-	return depth;
+		geometry_msgs::Twist velocity;
+	if (distanceTraveled >= (registeredDepth - 0.2)) {
+		velocity.linear.x = 0;
+		velocity.angular.z = 0;
 }
-
+}
 
 void DebrisCollection::pickupDebris() {
 
 		ROS_INFO_STREAM("Entered pickupDebris");
-
 		geometry_msgs::Twist velocity;
 	ros::Rate rate(10);
 	while (ros::ok()) {
@@ -143,7 +146,7 @@ void DebrisCollection::pickupDebris() {
 				velocity.angular.y = 0.0;
 				velocity.angular.z = 0.0;
 
-				pub.publish(velocity);
+				state = 1;
 
 			//}
 
@@ -156,9 +159,8 @@ void DebrisCollection::pickupDebris() {
 			velocity.angular.y = 0.0;
 			velocity.angular.z = 0.1;
 
-			pub.publish(velocity);
-
 		}
+	pub.publish(velocity);
 	ros::spinOnce();
 	rate.sleep();
 	}
