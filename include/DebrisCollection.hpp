@@ -54,12 +54,17 @@
 class DebrisCollection {
 
 	private:
+		// State 0 is searching for debris, state 1 found debris, state 2 going to disposal bin
+		int state = 0;
 
 		// Storage Point for debris position in pixels
 		Point imageDebrisLocation;
-
+		
+		double orientation;
+		double distanceTraveled;
 
 		double depth;
+		double registeredDepth;
 
 		// Storage Point for debris position i world frame (orientation, distance)
 		//Point currentDebrisLocation;
@@ -102,12 +107,6 @@ class DebrisCollection {
  		*/
 		void setImage(cv::Mat image);
 
-		/**
- 		*  @brief      Getter for Image setter
- 		*  @param      None
- 		*  @return     RGB image
- 		*/
-		double getDepth();
 		/**
  		*  @brief      Getter for Image setter
  		*  @param      None
@@ -182,6 +181,8 @@ class DebrisCollection {
 		double ReadDepthData(unsigned int height_pos, unsigned int width_pos, sensor_msgs::ImageConstPtr depth_image);
 
 		void pickupDebris();
+
+		void stopBeforeObstacle();
 
 
 		void dumpDebris(Point positionOfReceptacle);
