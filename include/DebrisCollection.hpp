@@ -58,8 +58,14 @@ class DebrisCollection {
 		// Storage Point for debris position in pixels
 		Point imageDebrisLocation;
 
+
+		double depth;
+
 		// Storage Point for debris position i world frame (orientation, distance)
-		Point currentDebrisLocation;
+		//Point currentDebrisLocation;
+
+
+		int proximityThreshold = 300;
 
 		// Storage vector for all debris locations
 		std::vector<Point> debrisLocation;
@@ -101,6 +107,12 @@ class DebrisCollection {
  		*  @param      None
  		*  @return     RGB image
  		*/
+		double getDepth();
+		/**
+ 		*  @brief      Getter for Image setter
+ 		*  @param      None
+ 		*  @return     RGB image
+ 		*/
 		cv::Mat getImage();
 
 		/**
@@ -137,7 +149,7 @@ class DebrisCollection {
  		*  @param      The black and white filtered image
  		*  @return     An (x,y) position for the detected debris, if any
  		*/
-		Point detectDebris(cv::Mat filteredImage);
+		void detectDebris(cv::Mat filteredImage);
 
 		/**
  		*  @brief      Function for concatenating debris into a vector if detected
@@ -168,6 +180,11 @@ class DebrisCollection {
  		*  @return     Depth of specified pixel on image
  		*/
 		double ReadDepthData(unsigned int height_pos, unsigned int width_pos, sensor_msgs::ImageConstPtr depth_image);
+
+		void pickupDebris();
+
+
+		void dumpDebris(Point positionOfReceptacle);
 };
 
 #endif  // INCLUDE_DEBRISCOLLECTION_HPP_
