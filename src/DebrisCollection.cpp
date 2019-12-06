@@ -108,9 +108,9 @@ void DebrisCollection::DepthCallback(const sensor_msgs::ImageConstPtr& depthMess
 
 	// Function for obtaining depth without dealing with PCL library
 
-	double depth = DebrisCollection::ReadDepthData(imageDebrisLocation.getX(), imageDebrisLocation.getY(), depthMessage);
+	depth = DebrisCollection::ReadDepthData(imageDebrisLocation.getX(), imageDebrisLocation.getY(), depthMessage);
 	//ROS_INFO_STREAM("Depth of debris:" << depth);	
-	ROS_INFO_STREAM("Registered depth is "<<depth);
+	//ROS_INFO_STREAM("Registered depth is "<<depth);
 }
 
 
@@ -147,8 +147,6 @@ void DebrisCollection::pickupDebris() {
 					velocity.angular.y = 0.0;
 					velocity.angular.z = 0.0;
 					//ROS_INFO_STREAM(imageDebrisLocation.getX()<< " : " <<imageDebrisLocation.getY());
-					ROS_INFO_STREAM("Registered depth is "<<depth);
-
 				}
 			break;
 
@@ -160,6 +158,7 @@ void DebrisCollection::pickupDebris() {
 			break;
 					
 		}
+	ROS_INFO_STREAM("Registered depth is "<<depth);
 
 	pub.publish(velocity);
 	ros::spinOnce();
