@@ -122,7 +122,7 @@ void DebrisCollection::pickupDebris() {
 		ROS_INFO_STREAM("Entered pickupDebris");
 
 		geometry_msgs::Twist velocity;
-	ros::rate Rate(10);
+	ros::Rate rate(10);
 	while (ros::ok()) {
 		//ros::spinOnce();
 		//loop_rate.sleep();
@@ -159,6 +159,7 @@ void DebrisCollection::pickupDebris() {
 			pub.publish(velocity);
 
 		}
+	ros::spinOnce();
 	rate.sleep();
 	}
 
