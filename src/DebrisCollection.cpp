@@ -61,12 +61,13 @@ DebrisCollection::DebrisCollection() {
 	// Publish velocities when needed
 	pub = nh.advertise<geometry_msgs::Twist>("/cmd_vel_mux/input/navi", 500);
 
-	geometry_msgs::Twist velocity;
-	velocity.linear.x = 1.0;
-	velocity.angular.z = 0;
+
+
 
 	ROS_INFO_STREAM("Subscriptions made successfully");
 	ros::Rate loop_rate(1);
+
+	DebrisCollection::pickupDebris();
 
 }
 
@@ -85,9 +86,9 @@ void DebrisCollection::imageRGBCallback(const sensor_msgs::ImageConstPtr& messag
 
 	// Call filtering function to start analyzing possiblity of debris existence
 	DebrisCollection::filter(cv_ptr->image);
-	// cv::imshow("Window", cv_ptr->image);
+	cv::imshow("Window", cv_ptr->image);
 	// ROS_INFO_STREAM("Image should be displayed");
-	// cv::waitKey(1);
+	cv::waitKey(1);
 }
 
 // Callback function for obtaining robot's odometry measurements
@@ -100,16 +101,70 @@ void DebrisCollection::odometryCallback(const nav_msgs::Odometry::ConstPtr& mess
 // Callback function for obtaining depth information
 void DebrisCollection::DepthCallback(const sensor_msgs::ImageConstPtr& depthMessage) {
 
-	// Take image from setterm and call detection function for finding debris centroid	
-	imageDebrisLocation = DebrisCollection::detectDebris(lastSnapshot);
+	// Take image from setterm and call detection function for finding debris centroid
+
+
 	// Function for obtaining depth without dealing with PCL library
 
-	if (imageDebrisLocation.getX() < 310 && imageDebrisLocation.getX() > 300 ) {
-		double depth = DebrisCollection::ReadDepthData(currentDebrisLocation.getX(), currentDebrisLocation.getY(), depthMessage);
-		currentDebrisLocation = Point(0.0, depth);
+	//double depth = DebrisCollection::ReadDepthData(currentDebrisLocation.getX(), currentDebrisLocation.getY(), depthMessage);
+	//currentDebrisLocation = Point(0.0, depth);
 	//ROS_INFO_STREAM("Depth of debris:" << depth);	
-	}
 }
+
+double DebrisCollection::getDepth() {
+
+	return depth;
+}
+
+
+void DebrisCollection::pickupDebris() {
+
+		ROS_INFO_STREAM("Entered pickupDebris");
+
+		geometry_msgs::Twist velocity;
+	ros::rate Rate(10);
+	while (ros::ok()) {
+		//ros::spinOnce();
+		//loop_rate.sleep();
+	
+		ROS_INFO_STREAM("The moments are outputting "<<imageDebrisLocation.getX()<<" and "<<imageDebrisLocation.getY());
+
+
+		if ((imageDebrisLocation.getX() > 310) && (imageDebrisLocation.getX() < 330)) {
+
+			//if (imageDebrisLocation.getY() > proximityThreshold) {
+				//we have it, go throw it away
+			
+			//} else { //object is not close enough, we need to go straight towards it
+				velocity.linear.x = 0.2;
+				velocity.linear.y = 0.0;
+				velocity.linear.z = 0.0;
+				velocity.angular.x = 0.0;
+				velocity.angular.y = 0.0;
+				velocity.angular.z = 0.0;
+
+				pub.publish(velocity);
+
+			//}
+
+		} else {
+
+			velocity.linear.x = 0.0;
+			velocity.linear.y = 0.0;
+			velocity.linear.z = 0.0;
+			velocity.angular.x = 0.0;
+			velocity.angular.y = 0.0;
+			velocity.angular.z = 0.1;
+
+			pub.publish(velocity);
+
+		}
+	rate.sleep();
+	}
+
+}
+
+
 
 // Applying HSV filter to detect debrid
 cv::Mat DebrisCollection::filter(cv::Mat rawImage) {
@@ -122,11 +177,12 @@ cv::Mat DebrisCollection::filter(cv::Mat rawImage) {
 	// Apply Hue, Saturation and Value thresholds on HSV image
 	cv::inRange(hsvImage, cv::Scalar(0, 33, 50), cv::Scalar(6, 255, 153), thresholdImage);
 
-	// cv::imshow("FilteredImage", thresholdImage);
+	cv::imshow("FilteredImage", thresholdImage);
 	// ROS_INFO_STREAM("Image should be displayed");
-	// cv::waitKey(1);
+	cv::waitKey(1);
 
 	// Point randomName = DebrisCollection::detectDebris(thresholdImage);
+	DebrisCollection::detectDebris(thresholdImage);
 	// ROS_INFO_STREAM("Reading :"<<randomName.getX()<<" and "<<randomName.getY());
 	return thresholdImage;
 }
@@ -142,17 +198,21 @@ cv::Mat DebrisCollection::getImage() {
 }
 
 // Function for detecting debris after applying filter
-Point DebrisCollection::detectDebris(cv::Mat filteredImage) {
+void DebrisCollection::detectDebris(cv::Mat filteredImage) {
+
+	//ROS_INFO_STREAM("Entered detectDebris");
 
 	// Apply moments function to obtain centroid of debris 
 	cv::Moments moment = moments(filteredImage, true);
 	cv::Point cvPoint(moment.m10/moment.m00, moment.m01/moment.m00);
-	// ROS_INFO_STREAM("The moments are outputting "<<moment.m10/moment.m00<<" and "<<moment.m01/moment.m00);
-
-	// Store centroid (x,y) pixel coordinates in a Point class
-	Point p(cvPoint.x, cvPoint.y);
-	return p;
-
+	if (cv::countNonZero(filteredImage) < 1) {
+		imageDebrisLocation = Point(-1.0, -1.0);
+//		Point p(cvPoint.x, cvPoint.y);
+	}
+	else {
+	imageDebrisLocation = Point(cvPoint.x, cvPoint.y);
+	}
+			// ROS_INFO_STREAM(imageDebrisLocation.getX()<<" : "<<imageDebrisLocation.getY());
 }
 
 // Function for concatenating debris information if detected
