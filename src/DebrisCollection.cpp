@@ -92,7 +92,7 @@ void DebrisCollection::imageRGBCallback(const sensor_msgs::ImageConstPtr& messag
 
 // Callback function for obtaining robot's odometry measurements
 void DebrisCollection::odometryCallback(const nav_msgs::Odometry::ConstPtr& message) {
-	// message->pose.pose.
+	message->pose.pose;	
 	// ROS_INFO_STREAM("Bot is at " << message->pose.pose.position.x << ", " << message->pose.pose.position.y);
 }
 
@@ -101,10 +101,14 @@ void DebrisCollection::odometryCallback(const nav_msgs::Odometry::ConstPtr& mess
 void DebrisCollection::DepthCallback(const sensor_msgs::ImageConstPtr& depthMessage) {
 
 	// Take image from setterm and call detection function for finding debris centroid	
-	Point position = DebrisCollection::detectDebris(lastSnapshot);
+	imageDebrisLocation = DebrisCollection::detectDebris(lastSnapshot);
 	// Function for obtaining depth without dealing with PCL library
-	double depth = DebrisCollection::ReadDepthData(position.getX(), position.getY(), depthMessage);
+
+	if (imageDebrisLocation.getX() < 310 && imageDebrisLocation.getX() > 300 ) {
+		double depth = DebrisCollection::ReadDepthData(currentDebrisLocation.getX(), currentDebrisLocation.getY(), depthMessage);
+		currentDebrisLocation = Point(0.0, depth);
 	//ROS_INFO_STREAM("Depth of debris:" << depth);	
+	}
 }
 
 // Applying HSV filter to detect debrid
