@@ -110,56 +110,57 @@ void DebrisCollection::DepthCallback(const sensor_msgs::ImageConstPtr& depthMess
 
 	double depth = DebrisCollection::ReadDepthData(imageDebrisLocation.getX(), imageDebrisLocation.getY(), depthMessage);
 	//ROS_INFO_STREAM("Depth of debris:" << depth);	
+	ROS_INFO_STREAM("Registered depth is "<<depth);
 }
 
-void stopBeforeObstacle() {
-
-		geometry_msgs::Twist velocity;
-	if (distanceTraveled >= (registeredDepth - 0.2)) {
-		velocity.linear.x = 0;
-		velocity.angular.z = 0;
-}
-}
 
 void DebrisCollection::pickupDebris() {
 
-		ROS_INFO_STREAM("Entered pickupDebris");
-		geometry_msgs::Twist velocity;
+	state = 0;
+	ROS_INFO_STREAM("Entered pickupDebris");
+	geometry_msgs::Twist velocity;
 	ros::Rate rate(10);
+
+	velocity.linear.x = 0.0;
+	velocity.linear.y = 0.0;
+	velocity.linear.z = 0.0;
+	velocity.angular.x = 0.0;
+	velocity.angular.y = 0.0;
+	velocity.angular.z = 0.1;
+	pub.publish(velocity);
+
 	while (ros::ok()) {
 		//ros::spinOnce();
 		//loop_rate.sleep();
 	
-		ROS_INFO_STREAM("The moments are outputting "<<imageDebrisLocation.getX()<<" and "<<imageDebrisLocation.getY());
+		// ROS_INFO_STREAM("The moments are outputting "<<imageDebrisLocation.getX()<<" and "<<imageDebrisLocation.getY());
 
+		switch(state) {
+			case 0:
+				if ((imageDebrisLocation.getX() > 310) && (imageDebrisLocation.getX() < 330)) {
+					state = 1;
+					registeredDepth = depth;
+					velocity.linear.x = 0.2;
+					velocity.linear.y = 0.0;
+					velocity.linear.z = 0.0;
+					velocity.angular.x = 0.0;
+					velocity.angular.y = 0.0;
+					velocity.angular.z = 0.0;
+					//ROS_INFO_STREAM(imageDebrisLocation.getX()<< " : " <<imageDebrisLocation.getY());
+					ROS_INFO_STREAM("Registered depth is "<<depth);
 
-		if ((imageDebrisLocation.getX() > 310) && (imageDebrisLocation.getX() < 330)) {
+				}
+			break;
 
-			//if (imageDebrisLocation.getY() > proximityThreshold) {
-				//we have it, go throw it away
-			
-			//} else { //object is not close enough, we need to go straight towards it
-				velocity.linear.x = 0.2;
-				velocity.linear.y = 0.0;
-				velocity.linear.z = 0.0;
-				velocity.angular.x = 0.0;
-				velocity.angular.y = 0.0;
-				velocity.angular.z = 0.0;
-
-				state = 1;
-
-			//}
-
-		} else {
-
-			velocity.linear.x = 0.0;
-			velocity.linear.y = 0.0;
-			velocity.linear.z = 0.0;
-			velocity.angular.x = 0.0;
-			velocity.angular.y = 0.0;
-			velocity.angular.z = 0.1;
-
+			case 1:
+				if (distanceTraveled >= (registeredDepth - 0.1)) {
+					velocity.linear.x = 0;
+					velocity.angular.z = 0;
+				}
+			break;
+					
 		}
+
 	pub.publish(velocity);
 	ros::spinOnce();
 	rate.sleep();
@@ -240,50 +241,43 @@ double DebrisCollection::ReadDepthData(unsigned int height_pos, unsigned int wid
 		unsigned char byte_data[4];
 	} U_FloatConvert;
 
-	// If position is invalid return error
-	if ((height_pos >= depth_image->height) || (width_pos >= depth_image->width))
-		return -1;
-
-	int index = (height_pos*depth_image->step) + (width_pos*(depth_image->step/depth_image->width));
-
-	// If data is 4 byte floats (rectified depth image)
-	if ((depth_image->step/depth_image->width) == 4) {
-		U_FloatConvert depth_data;
-		int i, endian_check = 1;
-		// If big endian
-		if ((depth_image->is_bigendian && (*(char*)&endian_check != 1)) ||  // Both big endian
-		((!depth_image->is_bigendian) && (*(char*)&endian_check == 1))) { // Both lil endian
-			for (i = 0; i < 4; i++)
-				depth_data.byte_data[i] = depth_image->data[index + i];
-			// Make sure data is valid (check if NaN)
-			if (depth_data.float_data == depth_data.float_data)
-				return double(depth_data.float_data);
-		return -1;  // If depth data invalid
-		}
-
-		// Else, one little endian, one big endian
-		for (i = 0; i < 4; i++) 
-			depth_data.byte_data[i] = depth_image->data[3 + index - i];
-		// Make sure data is valid (check if NaN)
-		if (depth_data.float_data == depth_data.float_data)
-			return double(depth_data.float_data);
-		return -1;  // If depth data invalid
-	}
-
-	// Otherwise, data is 2 byte integers (raw depth image)
-	double temp_val;
-
-	// If big endian
-	if (depth_image->is_bigendian)
-		temp_val = (depth_image->data[index] << 8) + depth_image->data[index + 1];
-
-	// If little endian
-	else
-		temp_val = depth_image->data[index] + (depth_image->data[index + 1] << 8);
-
-	// Make sure data is valid (check if NaN)
-	if (temp_val == temp_val)
-		return temp_val;
-	return -1;  // If depth data invalid
+    // If position is invalid
+    if ((height_pos >= depth_image->height) || (width_pos >= depth_image->width))
+        return -1;
+    int index = (height_pos*depth_image->step) + (width_pos*(depth_image->step/depth_image->width));
+    // If data is 4 byte floats (rectified depth image)
+    if ((depth_image->step/depth_image->width) == 4) {
+        U_FloatConvert depth_data;
+        int i, endian_check = 1;
+        // If big endian
+        if ((depth_image->is_bigendian && (*(char*)&endian_check != 1)) ||  // Both big endian
+           ((!depth_image->is_bigendian) && (*(char*)&endian_check == 1))) { // Both lil endian
+            for (i = 0; i < 4; i++)
+                depth_data.byte_data[i] = depth_image->data[index + i];
+            // Make sure data is valid (check if NaN)
+            if (depth_data.float_data == depth_data.float_data)
+                return double(depth_data.float_data);
+            return -1;  // If depth data invalid
+        }
+        // else, one little endian, one big endian
+        for (i = 0; i < 4; i++) 
+            depth_data.byte_data[i] = depth_image->data[3 + index - i];
+        // Make sure data is valid (check if NaN)
+        if (depth_data.float_data == depth_data.float_data)
+            return double(depth_data.float_data);
+        return -1;  // If depth data invalid
+    }
+    // Otherwise, data is 2 byte integers (raw depth image)
+   int temp_val;
+   // If big endian
+   if (depth_image->is_bigendian)
+       temp_val = (depth_image->data[index] << 8) + depth_image->data[index + 1];
+   // If little endian
+   else
+       temp_val = depth_image->data[index] + (depth_image->data[index + 1] << 8);
+   // Make sure data is valid (check if NaN)
+   if (temp_val == temp_val)
+       return temp_val;
+   return -1;  // If depth data invalid
 }
 
