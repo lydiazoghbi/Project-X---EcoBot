@@ -56,9 +56,6 @@ int main(int argc, char **argv) {
 	// Call DebrisCollection constructor and output successful initialization
 	DebrisCollection debrisCollection;
 	ROS_INFO_STREAM("Node initialized.");
-	while (ros::ok()) {
-		ros::spinOnce();
-		loop_rate.sleep();
-	}
+
 	return 0;
 }
