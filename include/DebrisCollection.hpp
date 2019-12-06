@@ -182,7 +182,6 @@ class DebrisCollection {
 
 		void pickupDebris();
 
-		void stopBeforeObstacle();
 
 
 		void dumpDebris(Point positionOfReceptacle);
