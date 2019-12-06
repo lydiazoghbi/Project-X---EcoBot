@@ -47,6 +47,12 @@ class VelocityGenerator {
 		Point binLocation;
 		DebrisCollection debrisCollection;
 
+		// Creating a node handle
+		ros::NodeHandle nh;
+
+		// Defining a node publisher
+		ros::Publisher pub;
+
 	public:
 
 		/**
@@ -69,6 +75,12 @@ class VelocityGenerator {
  		*  @return     None
  		*/
 		void positionCallback();
+
+
+		void pickupDebris(double depth);
+
+
+		void dumpDebris(Point positionOfR);
 
 		/**
  		*  @brief      Callback function for getting the robot's orientation
