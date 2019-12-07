@@ -2,13 +2,14 @@
 
   <arg name="base" default="kobuki"/>
   <arg name="stacks" default="hexagons"/>
-  <arg name="3d_sensor" default="astra"/>
+  <arg name="3d_sensor" default="kinect"/>
 
     <include file = "$(find gazebo_ros)/launch/empty_world.launch"> 
     	<arg name="world_name" value = "$(find project_x_ecobot)/World/system_test_simple_v1.world"/>
     </include>
   
-  <arg name="urdf_file" default="$(find xacro)/xacro.py '$(find turtlebot_description)/robots/$(arg base)_$(arg stacks)_$(arg 3d_sensor).urdf.xacro'" />
+
+  <arg name="urdf_file" default="$(find xacro)/xacro.py '$(find project_x_ecobot)/urdf_package/modifiedKobuki/kobuki_hexagons_astra.urdf.xacro'" />
   <param name="robot_description" command="$(arg urdf_file)" />
   
   <!-- Gazebo model spawner -->
@@ -22,8 +23,5 @@
     <param name="yaml_cfg_file" value="$(find turtlebot_bringup)/param/mux.yaml" />
     <remap from="cmd_vel_mux/output" to="mobile_base/commands/velocity"/>
   </node>
-
-  <!-- Bumper/cliff to pointcloud (not working, as it needs sensors/core messages) -->
-  <include file="$(find turtlebot_bringup)/launch/includes/kobuki/bumper2pc.launch.xml"/>
 
 </launch> 

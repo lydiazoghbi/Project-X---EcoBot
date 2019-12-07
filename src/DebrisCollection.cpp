@@ -64,9 +64,6 @@ DebrisCollection::DebrisCollection() {
 	// Publish velocities when needed
 	pub = nh.advertise<geometry_msgs::Twist>("/cmd_vel_mux/input/navi", 500);
 
-
-
-
 	ROS_INFO_STREAM("Subscriptions made successfully");
 	ros::Rate loop_rate(1);
 
@@ -181,7 +178,7 @@ void DebrisCollection::pickupDebris() {
 			break;
 
 			case 4:
-				if ((x <= 0.2) && (y <= 1.5)) {
+				if ((x <= 0.1) && (y <= 1.4)) {//if ((x <= 0.2) && (y <= 1.5)) {
 					velocity.linear.x = 0.0;
 					velocity.angular.z = 0.0;
 				}
