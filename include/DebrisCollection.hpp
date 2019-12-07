@@ -63,6 +63,7 @@ class DebrisCollection {
 		double orientation;
 		double distanceTraveled;
 
+
 		double depth;
 		double registeredDepth;
 
@@ -185,6 +186,8 @@ class DebrisCollection {
 
 
 		void dumpDebris(Point positionOfReceptacle);
+
+		Point goToBin(double currentOrientation, double currentDistance);
 };
 
 #endif  // INCLUDE_DEBRISCOLLECTION_HPP_
