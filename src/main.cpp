@@ -28,7 +28,7 @@
 
 #include <vector>
 #include "ros/ros.h"
-#include "DebrisCollection.hpp"
+#include "StateMachine.hpp"
 #include <Point.hpp>
 #include <string>
 #include <cv_bridge/cv_bridge.h>
@@ -53,8 +53,8 @@ int main(int argc, char **argv) {
 	// Initialize node handle
 	ros::NodeHandle nh;
 	ros::Rate loop_rate(1);
-	// Call DebrisCollection constructor and output successful initialization
-	DebrisCollection debrisCollection;
+	// Call StateMachine constructor and output successful initialization
+	StateMachine stateMachine;
 	ROS_INFO_STREAM("Node initialized.");
 
 	return 0;
