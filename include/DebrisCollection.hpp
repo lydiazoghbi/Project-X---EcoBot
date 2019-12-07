@@ -67,6 +67,9 @@ class DebrisCollection {
 		double depth;
 		double registeredDepth;
 
+		double x;
+		double y;
+
 		// Storage Point for debris position i world frame (orientation, distance)
 		//Point currentDebrisLocation;
 
@@ -187,7 +190,7 @@ class DebrisCollection {
 
 		void dumpDebris(Point positionOfReceptacle);
 
-		Point goToBin(double currentOrientation, double currentDistance);
+		double goToBin(double currentOrientation, double currentDistance);
 };
 
 #endif  // INCLUDE_DEBRISCOLLECTION_HPP_
