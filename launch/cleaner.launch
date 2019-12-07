@@ -2,7 +2,7 @@
 
   <arg name="base" default="kobuki"/>
   <arg name="stacks" default="hexagons"/>
-  <arg name="3d_sensor" default="astra"/>
+  <arg name="3d_sensor" default="kinect"/>
 
     <include file = "$(find gazebo_ros)/launch/empty_world.launch"> 
     	<arg name="world_name" value = "$(find project_x_ecobot)/World/system_test_simple_v1.world"/>
@@ -22,8 +22,5 @@
     <param name="yaml_cfg_file" value="$(find turtlebot_bringup)/param/mux.yaml" />
     <remap from="cmd_vel_mux/output" to="mobile_base/commands/velocity"/>
   </node>
-
-  <!-- Bumper/cliff to pointcloud (not working, as it needs sensors/core messages) -->
-  <include file="$(find turtlebot_bringup)/launch/includes/kobuki/bumper2pc.launch.xml"/>
 
 </launch> 
