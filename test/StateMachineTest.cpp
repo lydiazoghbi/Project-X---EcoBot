@@ -38,7 +38,8 @@ The Apache Software Foundation (http://www.apache.org/).
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/imgcodecs/imgcodecs.hpp>
-#include "DebrisCollection.hpp"
+#include "StateMachine.hpp"
+#include "ImageAnalysis.hpp"
 #include <iostream>
 
 /*
@@ -56,7 +57,7 @@ The Apache Software Foundation (http://www.apache.org/).
 //using namespace cv;
 
 
-TEST(DebrisCollection, Dummy) {
+TEST(StateMachine, Dummy) {
 // Initiate node handle
   //ros::NodeHandle nh;
 
@@ -108,18 +109,18 @@ TEST(DebrisCollection, Dummy) {
   //EXPECT_STREQ("see if it works", srv.response.output.c_str());
 }
 
-TEST(DebrisDetection, TestingImageSnapshot) {
+TEST(StateMachine, TestingImageSnapshot) {
 //	cv::Mat testImage = cv::imread("../catkin_ws/src/project_x_ecobot/test/testImages/red_1.png", 1);
 
 
-	cv::Mat testImage = cv::imread("../catkin_ws/src/project_x_ecobot/test/testImages/filtered_1.png", cv::IMREAD_GRAYSCALE);
-	cv::imshow("Result", testImage);
-	cv::waitKey(1);
+	// cv::Mat testImage = cv::imread("../catkin_ws/src/project_x_ecobot/test/testImages/filtered_1.png", cv::IMREAD_GRAYSCALE);
+	// cv::imshow("Result", testImage);
+	// cv::waitKey(1);
 
-	DebrisCollection collectingDebris;
-	Point center = collectingDebris.detectDebris(testImage);
-	EXPECT_TRUE(center.getX() < 347);
-	EXPECT_TRUE(center.getX() > 261);
+	// StateMachine collectingDebris;
+	// Point center = collectingDebris.detectDebris(testImage);
+	// EXPECT_TRUE(center.getX() < 347);
+	// EXPECT_TRUE(center.getX() > 261);
 
 
 }
