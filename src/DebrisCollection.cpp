@@ -181,7 +181,7 @@ void DebrisCollection::pickupDebris() {
 			break;
 
 			case 4:
-				if ((x <= 0.2) && (y <= 1.5)) {
+				if ((x <= 0.1) && (y <= 1.4)) {//if ((x <= 0.2) && (y <= 1.5)) {
 					velocity.linear.x = 0.0;
 					velocity.angular.z = 0.0;
 				}
