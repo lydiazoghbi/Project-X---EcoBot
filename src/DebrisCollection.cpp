@@ -97,8 +97,8 @@ void DebrisCollection::imageRGBCallback(const sensor_msgs::ImageConstPtr& messag
 // Callback function for obtaining robot's odometry measurements
 void DebrisCollection::odometryCallback(const nav_msgs::Odometry::ConstPtr& message) {
 	
-	double x = message->pose.pose.position.x;
-	double y = message->pose.pose.position.y;
+	x = message->pose.pose.position.x;
+	y = message->pose.pose.position.y;
 
 	tf::Quaternion q(message->pose.pose.orientation.x, message->pose.pose.orientation.y, message->pose.pose.orientation.z, message->pose.pose.orientation.w);
 	tf::Matrix3x3 m(q);
@@ -131,7 +131,7 @@ void DebrisCollection::pickupDebris() {
 	state = 0;
 	double currentOrientation;
 	double currentDistance;
-	Point params;
+	double angle;
 	ROS_INFO_STREAM("Entered pickupDebris");
 	geometry_msgs::Twist velocity;
 	ros::Rate rate(10);
@@ -172,8 +172,8 @@ void DebrisCollection::pickupDebris() {
 			break;
 
 			case 3:
-				params = goToBin(currentOrientation, currentDistance);
-				if (orientation >= params.getX()) {
+				angle = goToBin(currentOrientation, currentDistance);
+				if (orientation >= angle) {
 					velocity.linear.x = 0.2;
 					velocity.angular.z = 0;
 					state = 4;
@@ -181,15 +181,14 @@ void DebrisCollection::pickupDebris() {
 			break;
 
 			case 4:
-				if (distanceTraveled >= params.getY()) {
+				if ((x <= 0.2) && (y <= 1.5)) {
 					velocity.linear.x = 0.0;
 					velocity.angular.z = 0.0;
 				}
 			break;	
 		}
 	ROS_INFO_STREAM(state);
-	ROS_INFO_STREAM(orientation<<" "<<params.getX());
-
+	// ROS_INFO_STREAM(orientation<<" "<<params.getX());
 	pub.publish(velocity);
 	ros::spinOnce();
 	rate.sleep();
@@ -197,7 +196,7 @@ void DebrisCollection::pickupDebris() {
 
 }
 
-Point DebrisCollection::goToBin(double currentOrientation, double currentDistance) {
+double DebrisCollection::goToBin(double currentOrientation, double currentDistance) {
 
 	double xRobotPosition = currentDistance * cos(currentOrientation);
 	double yRobotPosition = currentDistance * sin(currentOrientation);
@@ -207,10 +206,7 @@ Point DebrisCollection::goToBin(double currentOrientation, double currentDistanc
 	double twist = atan(numerator/denominator);
 	double angle = M_PI - twist;
 
-	double distance = sqrt(abs(xRobotPosition - 0.2)^2 + abs(yRobotPosition - 3.0)^2) + currentDistance;
-
-	Point parameters(angle, distance);
-	return parameters;
+	return angle;
 
 }
 
