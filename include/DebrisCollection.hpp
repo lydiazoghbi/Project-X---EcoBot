@@ -186,8 +186,6 @@ class DebrisCollection {
 
 		void pickupDebris();
 
-
-
 		void dumpDebris(Point positionOfReceptacle);
 
 		double goToBin(double currentOrientation, double currentDistance);

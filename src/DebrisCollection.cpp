@@ -64,9 +64,6 @@ DebrisCollection::DebrisCollection() {
 	// Publish velocities when needed
 	pub = nh.advertise<geometry_msgs::Twist>("/cmd_vel_mux/input/navi", 500);
 
-
-
-
 	ROS_INFO_STREAM("Subscriptions made successfully");
 	ros::Rate loop_rate(1);
 
