@@ -19,12 +19,12 @@ catkin_package()
 include_directories(include ${OpenCV_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 
 ## Declare a C++ Executable
-add_executable(project_x_ecobot src/main.cpp src/ImageAnalysis.cpp src/Point.cpp src/StateMachine.cpp)
+add_executable(MainNode src/main.cpp src/ImageAnalysis.cpp src/Point.cpp src/StateMachine.cpp)
 
 option(COVERAGE "Generate Coverage Data" ON)
 
 ## Specify Target Libraries
-target_link_libraries(project_x_ecobot ${OpenCV_LIBS} ${catkin_LIBRARIES})
+target_link_libraries(MainNode ${OpenCV_LIBS} ${catkin_LIBRARIES})
 
 ## Add coverall
 if (COVERAGE)
