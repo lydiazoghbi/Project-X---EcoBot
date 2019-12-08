@@ -15,112 +15,87 @@ The Apache Software Foundation (http://www.apache.org/).
 
 */
 
-/*
-#include <vector>
-#include "ros/ros.h"
+#include <gtest/gtest.h>
 
-#include <string>
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
-#include "sensor_msgs/CompressedImage.h"
-#include "sensor_msgs/image_encodings.h"
-#include "sensor_msgs/Image.h"
+
+#include <cmath>
+#include <vector>
+#include <string>
 #include <iostream>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
+
+#include <math.h>
+#include "ros/ros.h"
+#include "sensor_msgs/Image.h"
+#include "nav_msgs/Odometry.h"
 #include "geometry_msgs/Twist.h"
-*/
+#include <tf/transform_datatypes.h>
 
-
-#include <gtest/gtest.h>
-#include <ros/ros.h>
-#include "Point.hpp"
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/imgcodecs/imgcodecs.hpp>
-#include "StateMachine.hpp"
+
+#include "Point.hpp"
 #include "ImageAnalysis.hpp"
-#include <iostream>
-
-/*
-#include <cv_bridge/cv_bridge.h>
-#include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/highgui/highgui.hpp>
-
-#include <opencv2/opencv.hpp>
-#include <opencv2/core/core.hpp>
-*/
+#include "StateMachine.hpp"
 
 
-//#include "project_x_ecobot/include/DebrisCollection.hpp"
+TEST(StateMachine, ImageRGBCallback) {
 
-//using namespace cv;
+	StateMachine stateMachine;
+	cv::Mat returnedImage;
+	ros::NodeHandle nh;
 
+	image_transport::ImageTransport it(nh);
+	image_transport::Publisher pub = it.advertise("/camera/rgb/image_raw", 1);
 
-TEST(StateMachine, Dummy) {
-// Initiate node handle
-  //ros::NodeHandle nh;
+	cv::Mat image = cv::imread("../catkin_ws/src/project_x_ecobot/test/testImages/red_1.png", CV_LOAD_IMAGE_COLOR);
+	sensor_msgs::ImagePtr msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image).toImageMsg();
 
+	pub.publish(msg);
 
- 
- //create an instance of debriscollection
-  //DebrisCollection debrisCollection;
+	for (int i=0; i<5; i++) {
+		returnedImage = stateMachine.getImage();
+		ros::spinOnce();
+	}
 
+	ImageAnalysis imageAnalysis;
+	imageAnalysis.detectDebris(returnedImage);
+	Point location = imageAnalysis.getDebrisImageLocation();
 
-// wait for a few ms  
-
-
-//sub = nh.subscribe("/camera/rgb/image_raw", 500, &DebrisCollection::imageRGBCallback, this);
-//pub = nh.advertise<sensor_msgs::ImageConstPtr>("/camera/rgb/image_raw", 500);
-
-
-//start publishing images to debris collection)
-
-//load image
-
-//sensor_msgs::ImageConstPtr message;
-//*message = image;
-
-// load as an image
-
-
-
-//cv::Mat image = cv::imread("/home/oooo/catkin_ws/src/project_x_ecobot/test/testImages/red_1.png", 1);
-
-
-
-//cv::imshow("Loaded image", image);
-  //ROS_INFO_STREAM("Image should be displayed");
-  //cv::waitKey(0);
-
-
-//sensor_msgs::ImagePtr msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image).toImageMsg();
-
-
-//ImagePtr imagePtr = ???
-//pub.publish(msg);
-
-
-
-//do callback (which should then call filter, then addDebris)
-//call removedebris and verify that debris has been added
-
-
-  //EXPECT_STREQ("see if it works", srv.response.output.c_str());
+	EXPECT_NEAR(170, location.getX(), 10);
+	EXPECT_NEAR(235, location.getY(), 10);
 }
 
-TEST(StateMachine, TestingImageSnapshot) {
-//	cv::Mat testImage = cv::imread("../catkin_ws/src/project_x_ecobot/test/testImages/red_1.png", 1);
+TEST(StateMachine, OdometryCallback) {
 
+	double x;
+	double y;
+	double yaw;
 
-	// cv::Mat testImage = cv::imread("../catkin_ws/src/project_x_ecobot/test/testImages/filtered_1.png", cv::IMREAD_GRAYSCALE);
-	// cv::imshow("Result", testImage);
-	// cv::waitKey(1);
+	StateMachine stateMachine;
+	ros::NodeHandle nh;
 
-	// StateMachine collectingDebris;
-	// Point center = collectingDebris.detectDebris(testImage);
-	// EXPECT_TRUE(center.getX() < 347);
-	// EXPECT_TRUE(center.getX() > 261);
+	ros::Publisher odom_pub = nh.advertise<nav_msgs::Odometry>("/odom", 50);
 
+	nav_msgs::Odometry odom;
 
+	odom.pose.pose.position.x = 0.5;
+	odom.pose.pose.position.y = 1.5;
+	geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(0.0);
+	odom.pose.pose.orientation = odom_quat;
+
+	odom_pub.publish(odom);
+
+	for (int i=0; i<5; i++) {
+		x = stateMachine.getRobotXPos();
+		y = stateMachine.getRobotYPos();
+		yaw = stateMachine.getRobotYaw();
+		ros::spinOnce();
+	}
+
+	EXPECT_EQ(0.5, x);
+	EXPECT_EQ(1.5, y);
+	EXPECT_EQ(0.0, yaw);
 }
