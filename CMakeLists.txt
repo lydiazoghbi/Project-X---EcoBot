@@ -19,7 +19,7 @@ catkin_package()
 include_directories(include ${OpenCV_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 
 ## Declare a C++ Executable
-add_executable(MainNode src/main.cpp src/ImageAnalysis.cpp src/Point.cpp src/StateMachine.cpp)
+add_executable(MainNode src/main.cpp src/ImageAnalysis.cpp src/Point.cpp src/StateMachine.cpp src/GreedyAlg.cpp src/LowXAlg.cpp)
 
 option(COVERAGE "Generate Coverage Data" ON)
 
@@ -30,7 +30,7 @@ target_link_libraries(MainNode ${OpenCV_LIBS} ${catkin_LIBRARIES})
 if (COVERAGE)
     include(CodeCoverage)
     setup_target_for_coverage(code_coverage ../devel/lib/project_x_ecobot/allTests coverage)
-    set(COVERAGE_SRCS app/main.cpp include/Point.hpp include/ImageAnalysis.hpp include/StateMachine.hpp)
+    set(COVERAGE_SRCS app/main.cpp include/Point.hpp include/ImageAnalysis.hpp include/StateMachine.hpp include/IPlanningAlg.hpp include/GreedyAlg.hpp include/LowXAlg.hpp)
 
     SET(CMAKE_CXX_FLAGS "-g -O0 --coverage -fprofile-arcs -ftest-coverage ${CMAKE_CXX_FLAGS} ${GAZEBO_CXX_FLAGS}")
     SET(CMAKE_C_FLAGS "-g -O0 --coverage -fprofile-arcs -ftest-coverage ${CMAKE_CXX_FLAGS} ${GAZEBO_CXX_FLAGS}")
@@ -40,7 +40,7 @@ endif()
 ## Add GTest Package for ROSTest
 if(CATKIN_ENABLE_TESTING)
 	find_package(rostest REQUIRED)
-	add_rostest_gtest(allTests test/NodeTest.launch test/main.cpp test/PointTest.cpp test/StateMachineTest.cpp test/ImageAnalysisTest.cpp src/Point.cpp src/StateMachine.cpp src/ImageAnalysis.cpp)
+	add_rostest_gtest(allTests test/NodeTest.launch test/main.cpp test/PointTest.cpp test/StateMachineTest.cpp test/ImageAnalysisTest.cpp src/Point.cpp src/StateMachine.cpp src/ImageAnalysis.cpp src/GreedyAlg.cpp src/LowXAlg.cpp)
 	target_link_libraries(allTests ${OpenCV_LIBS} ${catkin_LIBRARIES})
 	add_dependencies(allTests ${catkin_EXPORTED_TARGETS})
 endif()
