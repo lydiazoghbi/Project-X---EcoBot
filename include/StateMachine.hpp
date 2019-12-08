@@ -60,6 +60,8 @@ class StateMachine {
 		// Storage Point for debris position in pixels
 		Point imageDebrisLocation;
 		
+		int state;
+
 		double orientation;
 
 		double depth;
@@ -80,6 +82,15 @@ class StateMachine {
 		ros::Subscriber imgSub;
 		// Defining node subscriber for odometry callback
                 ros::Subscriber odomSub;
+
+//		ros::Subscriber depthSub;
+
+	 image_transport::Subscriber depthSub;
+
+	image_transport::ImageTransport *it;
+
+//image_transport::ImageTransport it;
+
 
 
 	public:
@@ -123,6 +134,12 @@ class StateMachine {
 		double readDepthData(unsigned int height_pos, unsigned int width_pos, sensor_msgs::ImageConstPtr depth_image);
 
 		void pickupDebris();
+
+		int getState();
+		cv::Mat getImage();
+		double getRobotXPos();
+		double getRobotYPos();
+		double getRobotYaw();
 
 };
 
