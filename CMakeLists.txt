@@ -27,7 +27,7 @@ target_link_libraries(project_x_ecobot ${OpenCV_LIBS} ${catkin_LIBRARIES})
 ## Add GTest Package for ROSTest
 if(CATKIN_ENABLE_TESTING)
 	find_package(rostest REQUIRED)
-	add_rostest_gtest(allTests test/NodeTest.launch test/main.cpp test/PointTest.cpp test/StateMachineTest.cpp src/Point.cpp src/StateMachine.cpp src/ImageAnalysis.cpp)
+	add_rostest_gtest(allTests test/NodeTest.launch test/main.cpp test/PointTest.cpp test/StateMachineTest.cpp test/ImageAnalysisTest.cpp src/Point.cpp src/StateMachine.cpp src/ImageAnalysis.cpp)
 	target_link_libraries(allTests ${OpenCV_LIBS} ${catkin_LIBRARIES})
 	add_dependencies(allTests ${catkin_EXPORTED_TARGETS})
 endif()
