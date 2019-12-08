@@ -85,9 +85,9 @@ cv::Mat ImageAnalysis::filter(cv::Mat rawImage) {
 	// Apply Hue, Saturation and Value thresholds on HSV image
 	cv::inRange(hsvImage, cv::Scalar(0, 33, 50), cv::Scalar(6, 255, 153), thresholdImage);
 
-	// Show image
-	cv::imshow("FilteredImage", thresholdImage);
-	cv::waitKey(1);
+	// Show image, uncomment if needed
+	// cv::imshow("FilteredImage", thresholdImage);
+	// cv::waitKey(1);
 
 	// Detect the debris in filtered image
 	ImageAnalysis::detectDebris(thresholdImage);

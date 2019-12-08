@@ -88,9 +88,9 @@ void StateMachine::imageRGBCallback(const sensor_msgs::ImageConstPtr& message) {
 	// Call filtering function to start analyzing possiblity of debris existence
 	imageAnalysis.filter(cv_ptr->image);
 
-	// Show image
-	cv::imshow("Window", cv_ptr->image);
-	cv::waitKey(1);
+	// Show image, uncomment if needed
+	// cv::imshow("Window", cv_ptr->image);
+	// cv::waitKey(1);
 }
 
 // Callback function for obtaining robot's odometry measurements
