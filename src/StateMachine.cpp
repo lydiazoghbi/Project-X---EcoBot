@@ -50,7 +50,10 @@
 #include "StateMachine.hpp"
 
 // Class constructor for debris collection
-StateMachine::StateMachine() {
+StateMachine::StateMachine(bool startImmediately) {
+
+	x = 0;
+	y = 0;
 
 	// Subscribe to RGB images
 	imgSub = nh.subscribe("/camera/rgb/image_raw", 500, &StateMachine::imageRGBCallback, this);
@@ -73,6 +76,10 @@ StateMachine::StateMachine() {
 
 	// Call function for running turtlebot to pick up the debris
 	//StateMachine::pickupDebris();
+
+	if (startImmediately) {
+		StateMachine::pickupDebris();
+	}
 }
 
 // Callback function for obtaining RGB images
@@ -122,16 +129,17 @@ void StateMachine::depthCallback(const sensor_msgs::ImageConstPtr& depthMessage)
 }
 
 // Function for controlling the turlebot
-void StateMachine::pickupDebris() {
+// int endState = -1, int startState = 0
+bool StateMachine::pickupDebris(int endState, int startState, double registeredDepth) {
 
 	// Define robot states
-	state = 0;
+	state = startState;
 
 	// Variables for tracking robot's orientation and distance traveled
 	double currentOrientation;
 	double distanceTraveled;
 	double currentDistance;
-	double registeredDepth;
+	//double registeredDepth;
 	double angle;
 
 	// Create velocity to publish velocities to turtlebot
@@ -149,7 +157,7 @@ void StateMachine::pickupDebris() {
 	// Publish the velocity to move the robot
 	pub.publish(velocity);
 
-	while (ros::ok()) {
+	while ((ros::ok()) && !(state == endState)) {
 
 	// Variable for storing distance traveled by robot
 	distanceTraveled = sqrt(x*x + y*y);
@@ -210,9 +218,14 @@ void StateMachine::pickupDebris() {
 		}
 
 	pub.publish(velocity);
-	ros::spinOnce();
+	ros::spinOnce();// TODO: see if there is a better loop sleep for a specific rate here
 	rate.sleep();
 	}
+if (state == endState) {
+	return true;
+} else {
+	return false;
+}
 }
 
 // Obtain depth data without using PCL Library, code obtained from link below
@@ -271,6 +284,13 @@ int StateMachine::getState() {
 cv::Mat StateMachine::getImage() {
 	return lastSnapshot;
 }
+
+
+//bool StateMachine::finishOnState(int stateToFinishOn) {
+//return false;
+//}
+
+
 
 double StateMachine::getRobotXPos() {return x;}
 double StateMachine::getRobotYPos() {return y;}

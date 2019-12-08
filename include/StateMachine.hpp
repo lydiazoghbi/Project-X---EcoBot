@@ -62,6 +62,8 @@ class StateMachine {
 		
 		int state;
 
+		//int endState;
+
 		double orientation;
 
 		double depth;
@@ -100,7 +102,7 @@ class StateMachine {
  		*  @param      None
  		*  @return     None
  		*/
-		StateMachine();
+		StateMachine(bool startImmediately = false);
 
 		/**
  		*  @brief      Callback function to obtain the images
@@ -133,13 +135,15 @@ class StateMachine {
  		*/
 		double readDepthData(unsigned int height_pos, unsigned int width_pos, sensor_msgs::ImageConstPtr depth_image);
 
-		void pickupDebris();
+		bool pickupDebris(int endState = -1, int startState = 0, double registeredDepth = 0.0);
 
 		int getState();
 		cv::Mat getImage();
 		double getRobotXPos();
 		double getRobotYPos();
 		double getRobotYaw();
+
+		//bool finishOnState(int stateToFinishOn);
 
 };
 
