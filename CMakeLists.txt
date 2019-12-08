@@ -24,6 +24,17 @@ add_executable(project_x_ecobot src/main.cpp src/ImageAnalysis.cpp src/Point.cpp
 ## Specify Target Libraries
 target_link_libraries(project_x_ecobot ${OpenCV_LIBS} ${catkin_LIBRARIES})
 
+## Add coverall
+if (COVERAGE)
+    include(CodeCoverage)
+    setup_target_for_coverage(code_coverage ../devel/lib/project_x_ecobot/allTests coverage)
+    set(COVERAGE_SRCS app/main.cpp include/Point.hpp include/ImageAnalysis include/StateMachine)
+
+    SET(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage ${CMAKE_CXX_FLAGS} ${GAZEBO_CXX_FLAGS}")
+    SET(CMAKE_C_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage ${CMAKE_CXX_FLAGS} ${GAZEBO_CXX_FLAGS}")
+    SET(CMAKE_EXE_LINKER_FLAGS "-fprofile-arcs -ftest-coverage ${CMAKE_CXX_FLAGS} ${GAZEBO_CXX_FLAGS}")
+endif()
+
 ## Add GTest Package for ROSTest
 if(CATKIN_ENABLE_TESTING)
 	find_package(rostest REQUIRED)
