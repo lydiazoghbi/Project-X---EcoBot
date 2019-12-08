@@ -63,7 +63,6 @@ StateMachine::StateMachine(bool startImmediately) {
 //it = image_transport::ImageTransport(nh);
 
 	it = new image_transport::ImageTransport(nh);
-
 	depthSub = it->subscribe("/camera/depth/image_raw", 5, &StateMachine::depthCallback, this);
 
 	// Subscribe to odometry readings
@@ -97,11 +96,12 @@ void StateMachine::imageRGBCallback(const sensor_msgs::ImageConstPtr& message) {
 	
 	// Call filtering function to start analyzing possiblity of debris existence
 	//lastSnapshot = cv_ptr->image;
+	//cv::imwrite("colored.png", cv_ptr->image);
 	lastSnapshot = imageAnalysis.filter(cv_ptr->image);
 
 	// Show image, uncomment if needed
-	cv::imshow("Window", cv_ptr->image);
-	cv::waitKey(1);
+	//cv::imshow("Window", cv_ptr->image);
+	//cv::waitKey(1);
 }
 
 // Callback function for obtaining robot's odometry measurements
@@ -123,9 +123,26 @@ void StateMachine::odometryCallback(const nav_msgs::Odometry::ConstPtr& message)
 
 // Callback function for obtaining depth information without using PCL library
 void StateMachine::depthCallback(const sensor_msgs::ImageConstPtr& depthMessage) {
+	
+	// Create image pointer
+	cv_bridge::CvImagePtr cv_ptr;
+
+	// Get image, if an error occurs, reports it in the catch
+	try {
+		cv_ptr = cv_bridge::toCvCopy(depthMessage, sensor_msgs::image_encodings::TYPE_32FC1);
+	} catch (cv_bridge::Exception& e) {
+		ROS_INFO_STREAM("Error");
+	}
+	
+	// Call filtering function to start analyzing possiblity of debris existence
+	//lastSnapshot = cv_ptr->image;
+	// cv::imshow("Window", cv_ptr->image);
+	//cv::imwrite("depth.png", cv_ptr->image);
+	//cv::waitKey(10);
 
 	// Obtain depth information on a single pixel in image
 	depth = StateMachine::readDepthData(imageAnalysis.getDebrisImageLocation().getX(), imageAnalysis.getDebrisImageLocation().getY(), depthMessage);
+	//depth = StateMachine::readDepthData(320, 310, depthMessage);
 }
 
 // Function for controlling the turlebot
@@ -291,7 +308,7 @@ cv::Mat StateMachine::getImage() {
 //}
 
 
-
+double StateMachine::getDepth() {return depth;}
 double StateMachine::getRobotXPos() {return x;}
 double StateMachine::getRobotYPos() {return y;}
 double StateMachine::getRobotYaw() {return orientation;}

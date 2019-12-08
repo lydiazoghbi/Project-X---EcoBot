@@ -142,6 +142,7 @@ class StateMachine {
 		double getRobotXPos();
 		double getRobotYPos();
 		double getRobotYaw();
+		double getDepth();
 
 		//bool finishOnState(int stateToFinishOn);
 
