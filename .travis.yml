@@ -78,7 +78,7 @@ before_install:
   - sudo rosdep init
   - rosdep update --include-eol-distros  # Support EOL distros.
   - sudo apt-get install -y lcov
-  - sudo apt-get coveralls-lcov
+  - gem install coveralls-lcov
 
 # Create a catkin workspace with the package under integration.
 install:
