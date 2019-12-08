@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
 	//ros::Rate loop_rate(1);
 
 	// Call StateMachine constructor and output successful initialization
-	StateMachine stateMachine;
+	StateMachine stateMachine(false);
 	stateMachine.pickupDebris();
 	ROS_INFO_STREAM("Node initialized.");
 
