@@ -52,9 +52,11 @@ int main(int argc, char **argv) {
 
 	// Initialize node handle
 	ros::NodeHandle nh;
-	ros::Rate loop_rate(1);
+	//ros::Rate loop_rate(1);
+
 	// Call StateMachine constructor and output successful initialization
 	StateMachine stateMachine;
+	stateMachine.pickupDebris();
 	ROS_INFO_STREAM("Node initialized.");
 
 	return 0;
