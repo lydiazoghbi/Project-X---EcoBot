@@ -56,9 +56,12 @@ StateMachine::StateMachine() {
 	imgSub = nh.subscribe("/camera/rgb/image_raw", 500, &StateMachine::imageRGBCallback, this);
 
 	// Subscribe to depth information
-	image_transport::ImageTransport it(nh);
-	image_transport::Subscriber depthSub;
-	depthSub = it.subscribe("/camera/depth/image_raw", 5, &StateMachine::depthCallback, this);
+	
+//it = image_transport::ImageTransport(nh);
+
+	it = new image_transport::ImageTransport(nh);
+
+	depthSub = it->subscribe("/camera/depth/image_raw", 5, &StateMachine::depthCallback, this);
 
 	// Subscribe to odometry readings
 	odomSub = nh.subscribe("/odom", 500, &StateMachine::odometryCallback, this);
@@ -69,7 +72,7 @@ StateMachine::StateMachine() {
 	ROS_INFO_STREAM("Subscriptions made successfully");
 
 	// Call function for running turtlebot to pick up the debris
-	StateMachine::pickupDebris();
+	//StateMachine::pickupDebris();
 }
 
 // Callback function for obtaining RGB images
@@ -84,13 +87,14 @@ void StateMachine::imageRGBCallback(const sensor_msgs::ImageConstPtr& message) {
 	} catch (cv_bridge::Exception& e) {
 		ROS_INFO_STREAM("Error");
 	}
-
+	
 	// Call filtering function to start analyzing possiblity of debris existence
-	imageAnalysis.filter(cv_ptr->image);
+	//lastSnapshot = cv_ptr->image;
+	lastSnapshot = imageAnalysis.filter(cv_ptr->image);
 
 	// Show image, uncomment if needed
-	// cv::imshow("Window", cv_ptr->image);
-	// cv::waitKey(1);
+	cv::imshow("Window", cv_ptr->image);
+	cv::waitKey(1);
 }
 
 // Callback function for obtaining robot's odometry measurements
@@ -121,7 +125,7 @@ void StateMachine::depthCallback(const sensor_msgs::ImageConstPtr& depthMessage)
 void StateMachine::pickupDebris() {
 
 	// Define robot states
-	int state = 0;
+	state = 0;
 
 	// Variables for tracking robot's orientation and distance traveled
 	double currentOrientation;
@@ -260,3 +264,14 @@ double StateMachine::readDepthData(unsigned int height_pos, unsigned int width_p
    return -1;  // If depth data invalid
 }
 
+int StateMachine::getState() {
+	return state;
+}
+
+cv::Mat StateMachine::getImage() {
+	return lastSnapshot;
+}
+
+double StateMachine::getRobotXPos() {return x;}
+double StateMachine::getRobotYPos() {return y;}
+double StateMachine::getRobotYaw() {return orientation;}
