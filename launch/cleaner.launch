@@ -8,6 +8,7 @@
     	<arg name="world_name" value = "$(find project_x_ecobot)/World/system_test_simple_v1.world"/>
     </include>
   
+  <arg name="record" default="false" />
 
   <arg name="urdf_file" default="$(find xacro)/xacro.py '$(find project_x_ecobot)/urdf_package/modifiedKobuki/kobuki_hexagons_astra.urdf.xacro'" />
   <param name="robot_description" command="$(arg urdf_file)" />
@@ -24,5 +25,9 @@
     <remap from="cmd_vel_mux/output" to="mobile_base/commands/velocity"/>
   </node>
   <node pkg="project_x_ecobot" name="MainNode" type="MainNode"/>
+
+  <node pkg="rosbag" type="record" name="record"
+        args="-a -x /camera(.*) -O $(find project_x_ecobot)/results/walker.bag" output="screen"
+        if="$(arg record)" />
 
 </launch> 
