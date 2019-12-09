@@ -50,10 +50,17 @@
 #include "StateMachine.hpp"
 
 // Class constructor for debris collection
-StateMachine::StateMachine(bool startImmediately) {
+StateMachine::StateMachine(bool startImmediately, bool useLowXAlgorithm) {
 
 	x = 0;
 	y = 0;
+
+	if (useLowXAlgorithm) {
+		algorithm = new LowXAlg();
+	} else {
+		algorithm = new GreedyAlg();
+	}
+
 
 	// Subscribe to RGB images
 	imgSub = nh.subscribe("/camera/rgb/image_raw", 500, &StateMachine::imageRGBCallback, this);
@@ -147,8 +154,10 @@ void StateMachine::depthCallback(const sensor_msgs::ImageConstPtr& depthMessage)
 
 // Function for controlling the turlebot
 // int endState = -1, int startState = 0
-bool StateMachine::pickupDebris(int endState, int startState, double registeredDepth) {
+bool StateMachine::pickupDebris(State endState, State startState, double registeredDepth) {
 
+	double angleThreshold = 0.03;//0.087;
+	Point currentTarget;
 	// Define robot states
 	state = startState;
 
@@ -158,6 +167,8 @@ bool StateMachine::pickupDebris(int endState, int startState, double registeredD
 	double currentDistance;
 	//double registeredDepth;
 	double angle;
+
+	bool haveJustSeenDebris = false;
 
 	// Create velocity to publish velocities to turtlebot
 	geometry_msgs::Twist velocity;
@@ -178,25 +189,58 @@ bool StateMachine::pickupDebris(int endState, int startState, double registeredD
 
 	// Variable for storing distance traveled by robot
 	distanceTraveled = sqrt(x*x + y*y);
-
+		ROS_INFO_STREAM("State is " << state);
 		// Switch to modify robot's states
 		switch(state) {
 			// Keep searching for debris
-			case 0:
+			case initialScanForDebris:
 				// If a debris is found in the middle of an image
 				if ((imageAnalysis.getDebrisImageLocation().getX() > 310) && (imageAnalysis.getDebrisImageLocation().getX() < 330)) {
-					// Find depth of debris
-					registeredDepth = depth;
-					// Move towards debris
-					velocity.linear.x = 0.2;
-					velocity.angular.z = 0.0;
-					// Switch to state 1
-					state = 1;
+
+					if (!haveJustSeenDebris) {
+						haveJustSeenDebris = true;
+						// Find depth of debris
+						registeredDepth = depth;
+						// Move towards debris
+						//velocity.linear.x = 0.2;
+						//velocity.angular.z = 0.0;
+						// Switch to state 1
+						Point newTarget(registeredDepth * cos(orientation), registeredDepth * sin(orientation));
+						// TODO: take depth and orientation of robot to create point and give to planning algorithm
+						algorithm->push(newTarget);
+						ROS_INFO_STREAM("	We saw new red - registered new target at " << newTarget.getX() << ", " << newTarget.getY());
+					} else {
+						ROS_INFO_STREAM("	Still seeing same red object.");
+					}
+					//state = approachDebris;
+				} else {
+					haveJustSeenDebris = false;
+					ROS_INFO_STREAM("	No red object seen in center.");
+				}
+
+
+				// TODO
+				// if we have turned 90 degrees
+				if (orientation > 1.571) {
+					currentTarget = algorithm->pop(Point(x, y));
+					if ((currentTarget.getX() < 0.0) && (currentTarget.getY() < 0.0)) {
+						state = done;
+						ROS_INFO_STREAM("	STATE TRANSITION: no trash objects left, state is now " << done);
+						velocity.linear.x = 0.0;
+						velocity.angular.z = 0.0;
+					} else {
+						// get first object from planning algorithm
+						// change state to turn towards first object
+						velocity.linear.x = 0.0;
+						velocity.angular.z = -0.1;
+						state = turnTowardsTarget;
+						ROS_INFO_STREAM("	STATE TRANSITION: turned past 90 degrees, now to state " << turnTowardsTarget);
+					}
 				}
 			break;
 
 			// Move towards debris
-			case 1:
+			case approachDebris:
 				// If the robot gets close enough to the debris
 				if (distanceTraveled >= (registeredDepth - 0.45)) {
 					// Stop and rotate towards bin
@@ -206,12 +250,13 @@ bool StateMachine::pickupDebris(int endState, int startState, double registeredD
 					currentOrientation = orientation;
 					currentDistance = distanceTraveled;
 					// Switch to state 2
-					state = 2;
+					state = turnTowardsBin;
+					ROS_INFO_STREAM("	STATE TRANSITION: close to target debris, now to state " << turnTowardsBin);
 				}
 			break;
 
 			// Rotate towards bin
-			case 2:
+			case turnTowardsBin:
 				// Find angle to rotate the robot
 				angle = imageAnalysis.getRotationAngle(currentOrientation, currentDistance);
 				// If robot turned completely to bin
@@ -220,18 +265,52 @@ bool StateMachine::pickupDebris(int endState, int startState, double registeredD
 					velocity.linear.x = 0.2;
 					velocity.angular.z = 0;
 					// Switch to state 3
-					state = 3;
+					state = driveTowardsBin;
+					ROS_INFO_STREAM("	STATE TRANSITION: pointed to trash bin, now to state " << driveTowardsBin);
 				}
 			break;
 
 			// Stop before bin
-			case 3:
+			case driveTowardsBin:
 				// If we reached close enough to the bin
-				if ((x <= 0.1) && (y <= 1.4)) {
-					velocity.linear.x = 0.0;
-					velocity.angular.z = 0.0;
+				if ((x <= 0.2) && (y <= 1.5)) {//if ((x <= 0.1) && (y <= 1.4)) {
+
+
+
+
+					currentTarget = algorithm->pop(Point(x, y));
+					if ((currentTarget.getX() < 0.0) && (currentTarget.getY() < 0.0)) {
+						state = done;
+						ROS_INFO_STREAM("	STATE TRANSITION: no trash objects left, state is now " << done);
+						velocity.linear.x = 0.0;
+						velocity.angular.z = 0.0;
+					} else {
+						velocity.linear.x = 0.0;
+						velocity.angular.z = 0.1;
+						state = turnTowardsTarget;
+						ROS_INFO_STREAM("	STATE TRANSITION: close to trash bin, now to state " << turnTowardsTarget);
+					}
 				}
 			break;	
+
+			case turnTowardsTarget:
+				
+
+				double targetAngle = atan((currentTarget.getY() - y) / (currentTarget.getX() - x));
+				if ((x - currentTarget.getX()) > 0.0) {
+					targetAngle = -1.0 * targetAngle;
+				}
+				ROS_INFO_STREAM("	We are pointing " << orientation << " and want to be at " << targetAngle);
+				if ((orientation - targetAngle) < angleThreshold) {
+					velocity.linear.x = 0.2;
+					velocity.angular.z = 0;
+					state = approachDebris;
+					ROS_INFO_STREAM("	STATE TRANSITION: pointed to target, now to state " << approachDebris);
+				}
+				
+			break;
+			//case done:
+			//	ROS_INFO_STREAM("	DONE!");
 		}
 
 	pub.publish(velocity);

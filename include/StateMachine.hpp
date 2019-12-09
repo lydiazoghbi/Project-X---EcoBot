@@ -58,13 +58,79 @@
 
 class StateMachine {
 
+	public:
+enum State: int {
+placeholderState = -1,
+	initialScanForDebris = 0,
+approachDebris = 1,
+turnTowardsBin = 2,
+driveTowardsBin = 3,
+
+turnTowardsTarget = 4,
+done = 5
+
+
+
+};
+		/**
+ 		*  @brief      Constructor
+ 		*  @param      None
+ 		*  @return     None
+ 		*/
+		StateMachine(bool startImmediately = false, bool useLowXAlgorithm = false);
+
+		/**
+ 		*  @brief      Callback function to obtain the images
+ 		*  @param      A ros message which is the RGB image
+ 		*  @return     An RGB image to the subscriber, nothing explicit from function
+ 		*/
+		void imageRGBCallback(const sensor_msgs::ImageConstPtr& message);
+
+		/**
+ 		*  @brief      Callback function to obtain the images
+ 		*  @param      A ros message which is odometry message
+ 		*  @return     Turtlebot position and orientation to the subscriber, nothing explicit from 
+		*              function
+ 		*/
+		void odometryCallback(const nav_msgs::Odometry::ConstPtr& message);
+
+		/**
+ 		*  @brief      Callback function to obtain depth information from the images
+ 		*  @param      A ros message which is the depth reading
+ 		*  @return     Depth of selected point in image, nothing explicit
+ 		*/
+		void depthCallback(const sensor_msgs::ImageConstPtr& depthMessage);
+
+		/**
+ 		*  @brief      Function for obtaining depth information at certain image pixel position
+ 		*  @param      Image pixel height
+ 		*  @param      Image pixel wdith
+ 		*  @param      Depth image from RGB-D camera
+ 		*  @return     Depth of specified pixel on image
+ 		*/
+		double readDepthData(unsigned int height_pos, unsigned int width_pos, sensor_msgs::ImageConstPtr depth_image);
+
+		bool pickupDebris(State endState = placeholderState, State startState = initialScanForDebris, double registeredDepth = 0.0);
+
+		int getState();
+		cv::Mat getImage();
+		double getRobotXPos();
+		double getRobotYPos();
+		double getRobotYaw();
+		double getDepth();
+
+		//bool finishOnState(int stateToFinishOn);
+
 	private:
+		IPlanningAlg * algorithm;
+
 		ImageAnalysis imageAnalysis;
 
 		// Storage Point for debris position in pixels
 		Point imageDebrisLocation;
 		
-		int state;
+//		int state;
+State state;
 
 		//int endState;
 
@@ -99,56 +165,7 @@ class StateMachine {
 
 
 
-	public:
 
-		/**
- 		*  @brief      Constructor
- 		*  @param      None
- 		*  @return     None
- 		*/
-		StateMachine(bool startImmediately = false);
-
-		/**
- 		*  @brief      Callback function to obtain the images
- 		*  @param      A ros message which is the RGB image
- 		*  @return     An RGB image to the subscriber, nothing explicit from function
- 		*/
-		void imageRGBCallback(const sensor_msgs::ImageConstPtr& message);
-
-		/**
- 		*  @brief      Callback function to obtain the images
- 		*  @param      A ros message which is odometry message
- 		*  @return     Turtlebot position and orientation to the subscriber, nothing explicit from 
-		*              function
- 		*/
-		void odometryCallback(const nav_msgs::Odometry::ConstPtr& message);
-
-		/**
- 		*  @brief      Callback function to obtain depth information from the images
- 		*  @param      A ros message which is the depth reading
- 		*  @return     Depth of selected point in image, nothing explicit
- 		*/
-		void depthCallback(const sensor_msgs::ImageConstPtr& depthMessage);
-
-		/**
- 		*  @brief      Function for obtaining depth information at certain image pixel position
- 		*  @param      Image pixel height
- 		*  @param      Image pixel wdith
- 		*  @param      Depth image from RGB-D camera
- 		*  @return     Depth of specified pixel on image
- 		*/
-		double readDepthData(unsigned int height_pos, unsigned int width_pos, sensor_msgs::ImageConstPtr depth_image);
-
-		bool pickupDebris(int endState = -1, int startState = 0, double registeredDepth = 0.0);
-
-		int getState();
-		cv::Mat getImage();
-		double getRobotXPos();
-		double getRobotYPos();
-		double getRobotYaw();
-		double getDepth();
-
-		//bool finishOnState(int stateToFinishOn);
 
 };
 
