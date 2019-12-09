@@ -71,7 +71,7 @@ image_transport::ImageTransport it(nh);
 	pub.publish(msg);
 
 
-	//for (int i=0; i<5; i++) {
+	//for (auto i=0; i<5; i++) {
 	//	x = stateMachine.getRobotXPos();
 	//	y = stateMachine.getRobotYPos();
 	//	yaw = stateMachine.getRobotYaw();
@@ -81,7 +81,7 @@ image_transport::ImageTransport it(nh);
 	EXPECT_TRUE(stateMachine.pickupDebris(StateMachine::State::approachDebris, StateMachine::State::turnTowardsBin, 0.01, 0.01));
 	//EXPECT_TRUE(stateMachine.pickupDebris(StateMachine::State::turnTowardsBin, StateMachine::State::approachDebris, 0.46));
 	
-	for (int i=0; i<5; i++) {
+	for (auto i=0; i<5; i++) {
 		x = stateMachine.getRobotXPos();
 		y = stateMachine.getRobotYPos();
 		yaw = stateMachine.getRobotYaw();
@@ -127,7 +127,7 @@ image_transport::ImageTransport it(nh);
 	pub.publish(msg);
 
 
-	//for (int i=0; i<5; i++) {
+	//for (auto i=0; i<5; i++) {
 	//	x = stateMachine.getRobotXPos();
 	//	y = stateMachine.getRobotYPos();
 	//	yaw = stateMachine.getRobotYaw();
@@ -137,7 +137,7 @@ image_transport::ImageTransport it(nh);
 	EXPECT_TRUE(stateMachine.pickupDebris(StateMachine::State::approachDebris, StateMachine::State::turnTowardsBin, 0.01, 0.01));
 	//EXPECT_TRUE(stateMachine.pickupDebris(StateMachine::State::turnTowardsBin, StateMachine::State::approachDebris, 0.46));
 	
-	for (int i=0; i<5; i++) {
+	for (auto i=0; i<5; i++) {
 		x = stateMachine.getRobotXPos();
 		y = stateMachine.getRobotYPos();
 		yaw = stateMachine.getRobotYaw();
@@ -280,7 +280,7 @@ TEST(StateMachine, ImageRGBCallback) {
 
 	pub.publish(msg);
 
-	for (int i=0; i<5; i++) {
+	for (auto i=0; i<5; i++) {
 		returnedImage = stateMachine.getImage();
 		ros::spinOnce();
 	}
@@ -317,7 +317,7 @@ TEST(StateMachine, OdometryCallback) {
 
 	EXPECT_TRUE(stateMachine.pickupDebris(StateMachine::State::turnTowardsBin, StateMachine::State::approachDebris, 0.46));
 
-	for (int i=0; i<5; i++) {
+	for (auto i=0; i<5; i++) {
 		x = stateMachine.getRobotXPos();
 		y = stateMachine.getRobotYPos();
 		yaw = stateMachine.getRobotYaw();
@@ -354,7 +354,7 @@ TEST(StateMachine, DepthCallback) {
 
 	pub.publish(msg2);
 
-	for (int i=0; i<5; i++) {
+	for (auto i=0; i<5; i++) {
 		depth = stateMachine.getDepth();
 		ros::spinOnce();
 	}
@@ -393,7 +393,7 @@ TEST(StateMachine, DeepDepthCallback) {
 
 	pub.publish(msg2);
 
-	for (int i=0; i<5; i++) {
+	for (auto i=0; i<5; i++) {
 		depth = stateMachine.getRawDepth();
 		ros::spinOnce();
 	}
