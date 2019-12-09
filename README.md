@@ -164,7 +164,7 @@ sudo apt install doxygen
 ```
 Chances are high that you aready have it, but nevertheless, never a bad idea to double check. Then run:
 ```
-cd ~/catkin_ws/src/
+cd ~/catkin_ws/src/project_x_ecobot
 doxygen DoxyFile
 ```
 This will generate doxygen files in the /docs folder. To view them in a browser, type:
