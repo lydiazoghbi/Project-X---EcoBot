@@ -116,8 +116,8 @@ cv::rectangle(rawIm, cv::Point(430, 0), cv::Point(640, 480), cv::Scalar(0, 0, 0)
 	lastSnapshot = imageAnalysis.filter(rawIm);
 
 	// Show image, uncomment if needed
-	cv::imshow("Window", rawIm);
-	cv::waitKey(1);
+	//cv::imshow("Window", rawIm);
+	//cv::waitKey(1);
 }
 
 // Callback function for obtaining robot's odometry measurements
