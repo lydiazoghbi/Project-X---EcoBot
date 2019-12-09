@@ -50,7 +50,7 @@ TEST(StateMachine, ImageRGBCallback) {
 	image_transport::ImageTransport it(nh);
 	image_transport::Publisher pub = it.advertise("/camera/rgb/image_raw", 1);
 
-	cv::Mat image = cv::imread("../catkin_ws/src/project_x_ecobot/test/testImages/red_1.png", CV_LOAD_IMAGE_COLOR);
+	cv::Mat image = cv::imread("../catkin_ws/src/project_x_ecobot/test/testImages/colored.png", CV_LOAD_IMAGE_COLOR);
 	sensor_msgs::ImagePtr msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image).toImageMsg();
 
 	pub.publish(msg);
@@ -64,8 +64,8 @@ TEST(StateMachine, ImageRGBCallback) {
 	imageAnalysis.detectDebris(returnedImage);
 	Point location = imageAnalysis.getDebrisImageLocation();
 
-	EXPECT_NEAR(170, location.getX(), 10);
-	EXPECT_NEAR(235, location.getY(), 10);
+	EXPECT_NEAR(320, location.getX(), 10);
+	EXPECT_NEAR(310, location.getY(), 10);
 }
 
 
