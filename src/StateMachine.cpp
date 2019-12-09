@@ -56,9 +56,11 @@ StateMachine::StateMachine(bool startImmediately, bool useLowXAlgorithm) {
 	y = 0;
 
 	if (useLowXAlgorithm) {
-		algorithm = new LowXAlg();
+		//algorithm = new LowXAlg();
+		algorithm.reset(new LowXAlg());
 	} else {
-		algorithm = new GreedyAlg();
+		//algorithm = new GreedyAlg();
+		algorithm.reset(new GreedyAlg());
 	}
 
 
@@ -69,7 +71,10 @@ StateMachine::StateMachine(bool startImmediately, bool useLowXAlgorithm) {
 	
 //it = image_transport::ImageTransport(nh);
 
-	it = new image_transport::ImageTransport(nh);
+	//it = new image_transport::ImageTransport(nh);
+
+	it.reset(new image_transport::ImageTransport(nh));
+	
 	depthSub = it->subscribe("/camera/depth/image_raw", 5, &StateMachine::depthCallback, this);
 
 	// Subscribe to odometry readings

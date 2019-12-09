@@ -51,6 +51,8 @@
 
 #include "Point.hpp"
 #include "ImageAnalysis.hpp"
+#include <memory>
+#include <utility>
 
 /**
  *  @brief      Elements and members of StateMachine class
@@ -122,7 +124,7 @@ done = 5
 		//bool finishOnState(int stateToFinishOn);
 
 	private:
-		IPlanningAlg * algorithm;
+		std::unique_ptr<IPlanningAlg> algorithm;
 
 		ImageAnalysis imageAnalysis;
 
@@ -159,7 +161,8 @@ State state;
 
 	 image_transport::Subscriber depthSub;
 
-	image_transport::ImageTransport *it;
+//	image_transport::ImageTransport *it;
+std::unique_ptr<image_transport::ImageTransport> it;
 
 //image_transport::ImageTransport it;
 
