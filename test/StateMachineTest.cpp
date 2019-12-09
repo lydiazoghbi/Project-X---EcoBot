@@ -90,7 +90,7 @@ TEST(StateMachine, OdometryCallback) {
 
 	odom_pub.publish(odom);
 
-	EXPECT_TRUE(stateMachine.pickupDebris(2, 1, 0.46));
+	EXPECT_TRUE(stateMachine.pickupDebris(StateMachine::State::turnTowardsBin, StateMachine::State::approachDebris, 0.46));
 
 	for (int i=0; i<5; i++) {
 		x = stateMachine.getRobotXPos();
@@ -103,6 +103,7 @@ TEST(StateMachine, OdometryCallback) {
 	EXPECT_EQ(0.5, x);
 	EXPECT_EQ(1.5, y);
 	EXPECT_EQ(0.0, yaw);
+
 }
 
 TEST(StateMachine, DepthCallback) {
