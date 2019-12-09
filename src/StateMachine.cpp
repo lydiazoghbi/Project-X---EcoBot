@@ -101,13 +101,17 @@ void StateMachine::imageRGBCallback(const sensor_msgs::ImageConstPtr& message) {
 		ROS_INFO_STREAM("Error");
 	}
 	
+	cv::Mat rawIm = cv_ptr->image;
+cv::rectangle(rawIm, cv::Point(0, 0), cv::Point(210, 480), cv::Scalar(0, 0, 0), cv::FILLED, cv::LINE_8);
+
+cv::rectangle(rawIm, cv::Point(430, 0), cv::Point(640, 480), cv::Scalar(0, 0, 0), cv::FILLED, cv::LINE_8);
 	// Call filtering function to start analyzing possiblity of debris existence
 	//lastSnapshot = cv_ptr->image;
 	//cv::imwrite("colored.png", cv_ptr->image);
-	lastSnapshot = imageAnalysis.filter(cv_ptr->image);
+	lastSnapshot = imageAnalysis.filter(rawIm);
 
 	// Show image, uncomment if needed
-	cv::imshow("Window", cv_ptr->image);
+	cv::imshow("Window", rawIm);
 	cv::waitKey(1);
 }
 
@@ -170,6 +174,17 @@ bool StateMachine::pickupDebris(State endState, State startState, double registe
 
 	int trashCount = 0;
 
+
+double targetAngle = 0.0;
+
+				double effectiveOrientation = 0.0;
+
+
+double targetAngleBin = 0.0;
+
+				double effectiveOrientationBin = 0.0;
+
+
 	bool haveJustSeenDebris = false;
 
 
@@ -195,7 +210,7 @@ double holeDistance = 0.35;
 
 	// Variable for storing distance traveled by robot
 	distanceTraveled = sqrt(x*x + y*y);
-		ROS_INFO_STREAM("State is " << state);
+		//ROS_INFO_STREAM("State is " << state);
 		// Switch to modify robot's states
 		switch(state) {
 			// Keep searching for debris
@@ -251,7 +266,8 @@ double holeDistance = 0.35;
 			// Move towards debris
 			case approachDebris:
 				// If the robot gets close enough to the debris
-				if (distanceTraveled >= (registeredDepth - 0.45)) {
+				ROS_INFO_STREAM("	" << state << ": We are " << distanceTraveled << " out of " << registeredDepth);
+				if (distanceTraveled >= (registeredDepth - 0.35)) {
 					// Stop and rotate towards bin
 					velocity.linear.x = 0;
 					velocity.angular.z = 0.1;
@@ -266,10 +282,39 @@ double holeDistance = 0.35;
 
 			// Rotate towards bin
 			case turnTowardsBin:
+				// invalidate depth
+				registeredDepth = 99999999.0;
 				// Find angle to rotate the robot
-				angle = imageAnalysis.getRotationAngle(currentOrientation, currentDistance);
+
+				targetAngleBin = M_PI - atan((1.5 - y) / (0.2 + x));//targetAngleBin = atan((1.5 - y) / (-0.2 - x));
+				//if ((x + 0.2) > 0.0) {
+				//	targetAngleBin = -1.0 * targetAngleBin;
+				//}
+
+				effectiveOrientationBin = orientation;
+
+
+				while (effectiveOrientationBin < 0) {
+					effectiveOrientationBin+=2.0*M_PI;
+				}
+
+				while (effectiveOrientationBin > (2.0*M_PI)) {
+					effectiveOrientationBin-=2.0*M_PI;
+				}
+
+				while (targetAngleBin < 0) {
+					targetAngleBin+=2.0*M_PI;
+				}
+
+				while (targetAngleBin > (2.0*M_PI)) {
+					targetAngleBin-=2.0*M_PI;
+				}
+
+ROS_INFO_STREAM("	" << state << ": We are pointing " << effectiveOrientationBin << " and want to be at " << targetAngleBin);
+				//angle = imageAnalysis.getRotationAngle(currentOrientation, currentDistance);
 				// If robot turned completely to bin
-				if (orientation >= angle) {
+				//if (orientation >= angle) {
+				if (((effectiveOrientationBin - targetAngleBin) * (effectiveOrientationBin - targetAngleBin)) < (angleThreshold * angleThreshold)) {
 					// Move to bin
 					velocity.linear.x = 0.2;
 					velocity.angular.z = 0;
@@ -283,9 +328,9 @@ double holeDistance = 0.35;
 			case driveTowardsBin:
 				// If we reached close enough to the bin
 				//if ((x <= 0.2) && (y <= 1.5)) {//if ((x <= 0.1) && (y <= 1.4)) {
-				holeDistance = 0.5;//.35;
+				holeDistance = 0.42;//0.5;//.35;
 				calculatedDistance = sqrt(((0.2 + x) * (0.2 + x)) + ((1.5 - y) * (1.5 - y)));
-				ROS_INFO_STREAM("	We are " << calculatedDistance << " out of " << holeDistance);
+				ROS_INFO_STREAM("	" << state << ": We are " << calculatedDistance << " out of " << holeDistance);
 				if (calculatedDistance < holeDistance) {
 
 
@@ -307,14 +352,38 @@ double holeDistance = 0.35;
 			case turnTowardsTarget:
 				
 
-				double targetAngle = atan((currentTarget.getY() - y) / (currentTarget.getX() - x));
+				targetAngle = atan((currentTarget.getY() - y) / (currentTarget.getX() - x));
 				if ((x - currentTarget.getX()) > 0.0) {
 					targetAngle = -1.0 * targetAngle;
 				}
-				ROS_INFO_STREAM("	We are pointing " << orientation << " and want to be at " << targetAngle);
-				if ((orientation - targetAngle) < angleThreshold) {
+
+				effectiveOrientation = orientation;
+
+
+				while (effectiveOrientation < 0) {
+					effectiveOrientation+=2.0*M_PI;
+				}
+
+				while (effectiveOrientation > (2.0*M_PI)) {
+					effectiveOrientation-=2.0*M_PI;
+				}
+
+				while (targetAngle < 0) {
+					targetAngle+=2.0*M_PI;
+				}
+
+				while (targetAngle > (2.0*M_PI)) {
+					targetAngle-=2.0*M_PI;
+				}
+
+
+
+
+				ROS_INFO_STREAM("	" << state << ": We are pointing " << effectiveOrientation << " and want to be at " << targetAngle);
+				if (((effectiveOrientation - targetAngle) * (effectiveOrientation - targetAngle)) < (angleThreshold * angleThreshold)) {
 					velocity.linear.x = 0.2;
 					velocity.angular.z = 0;
+					registeredDepth = depth;
 					state = approachDebris;
 					ROS_INFO_STREAM("	STATE TRANSITION: pointed to target, now to state " << approachDebris);
 				}
