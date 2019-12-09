@@ -19,7 +19,7 @@
  *  @file       PointTest.cpp
  *  @author     Ryan Bates and Lydia Zoghbi
  *  @copyright  Copyright Apache 2.0 License
- *  @date       12/03/2019
+ *  @date       12/09/2019
  *  @version    1.0
  *
  *  @brief      Level 1 unit test for Point class

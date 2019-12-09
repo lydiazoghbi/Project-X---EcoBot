@@ -26,21 +26,13 @@
  *
  */
 
+#include <math.h>
 #include <gtest/gtest.h>
-
-#include <vector>
-#include <cv_bridge/cv_bridge.h>
-#include <image_transport/image_transport.h>
-#include <string>
-#include "Point.hpp"
-#include <iostream>
 
 #include <cmath>
 #include <vector>
 #include <string>
 #include <iostream>
-
-#include <math.h>
 
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -73,6 +65,13 @@ TEST(ImageAnalysis, AngleComputation) {
 	EXPECT_NEAR(2.38, angle, 0.1);
 }
 
+/**
+ *  @brief      Test function for Image Analysis class
+ *  @param      Name of Class to be tested
+ *  @param      Type of testing
+ *  @return     Pass if the test passes
+ */
+
 TEST(ImageAnalysis, PositiveImageThresholding) {
 
 	// Read image and initialize status
@@ -85,22 +84,28 @@ TEST(ImageAnalysis, PositiveImageThresholding) {
 	// Apply filter
 	cv::Mat filteredImage = imageAnalysis.filter(testImage);
 
-	// Apply moments function to obtain centroid of debris 
+	// Apply moments function to obtain centroid of debris
 	cv::Moments moment = moments(filteredImage, true);
 	cv::Point cvPoint(moment.m10/moment.m00, moment.m01/moment.m00);
 
 	// If a debris is not detected return false
 	if (cv::countNonZero(filteredImage) < 1) {
 		status = false;
-	}
-	// If a debris is detected true
-	else {
+	} else {
+		// If a debris is detected true
 		status = true;
 	}
 
 	// Check if values returned match expected output
 	ASSERT_TRUE(status);
 }
+
+/**
+ *  @brief      Test function for Image Analysis class
+ *  @param      Name of Class to be tested
+ *  @param      Type of testing
+ *  @return     Pass if the test passes
+ */
 
 TEST(ImageAnalysis, NegativeImageThresholding) {
 
@@ -114,22 +119,28 @@ TEST(ImageAnalysis, NegativeImageThresholding) {
 	// Apply filter
 	cv::Mat filteredImage = imageAnalysis.filter(testImage);
 
-	// Apply moments function to obtain centroid of debris 
+	// Apply moments function to obtain centroid of debris
 	cv::Moments moment = moments(filteredImage, true);
 	cv::Point cvPoint(moment.m10/moment.m00, moment.m01/moment.m00);
 
 	// If a debris is not detected return false
 	if (cv::countNonZero(filteredImage) < 1) {
 		status = false;
-	}
-	// If a debris is detected true
-	else {
+	} else {
+		// If a debris is detected true
 		status = true;
 	}
 
 	// Check if values returned match expected output
 	ASSERT_FALSE(status);
 }
+
+/**
+ *  @brief      Test function for Image Analysis class
+ *  @param      Name of Class to be tested
+ *  @param      Type of testing
+ *  @return     Pass if the test passes
+ */
 
 TEST(ImageAnalysis, DebrisDetection) {
 
@@ -150,6 +161,13 @@ TEST(ImageAnalysis, DebrisDetection) {
 	ASSERT_NEAR(170.0, position.getX(), 15.0);
 	ASSERT_NEAR(235.0, position.getY(), 15.0);
 }
+
+/**
+ *  @brief      Test function for Image Analysis class
+ *  @param      Name of Class to be tested
+ *  @param      Type of testing
+ *  @return     Pass if the test passes
+ */
 
 TEST(ImageAnalysis, GetDebrisLocation) {
 

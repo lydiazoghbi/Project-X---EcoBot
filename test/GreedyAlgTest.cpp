@@ -16,45 +16,56 @@
   *
   */
 /**
- *  @file       PointTest.cpp
+ *  @file       GreedyAlgTest.cpp
  *  @author     Ryan Bates and Lydia Zoghbi
  *  @copyright  Copyright Apache 2.0 License
- *  @date       12/03/2019
+ *  @date       12/09/2019
  *  @version    1.0
  *
- *  @brief      Level 1 unit test for Point class
+ *  @brief      Level 1 unit tests for GreedyAlgTest
  *
  */
 
 #include <gtest/gtest.h>
-#include <Point.hpp>
-#include <GreedyAlg.hpp>
+
+#include <vector>
+#include <algorithm>
+
+#include "Point.hpp"
+#include "GreedyAlg.hpp"
+#include "IPlanningAlg.hpp"
+
 /**
- *  @brief      Test function for constructing a Point class
+ *  @brief      Test function for GreedyAlg class for adding debris
  *  @param      Name of Class to be tested
  *  @param      Type of testing
  *  @return     Pass if the test passes
  */
+TEST(GreedyAlg, FirstDebris) {
 
-TEST(GreedyAlg, firstDebris) {
-
+	// Initialize class
 	GreedyAlg alg;
 
-
+	// Initialize robot's start position
 	Point robotStartLocation(2.0, 2.0);
 
+	// Initialize positions of debris
 	Point debrisNear(1.0, 1.0);
 	Point debrisFar(10.0, 10.0);
 
+	// Add debris into the algorithm
 	alg.push(debrisFar);
 	alg.push(debrisNear);
 
+	// Create a plan for moving the robot
 	alg.createPlan(robotStartLocation);
 
-	// no need to plan for the greedy algorithm - it is dynamic
+	// No need to plan for the greedy algorithm - it is dynamic
 
+	// Get the sorted first debris
 	Point firstTarget = alg.pop(robotStartLocation);
 
+	// Compare output to expected one
 	EXPECT_EQ(firstTarget.getX(), debrisNear.getX());
 	EXPECT_EQ(firstTarget.getY(), debrisNear.getY());
 }
