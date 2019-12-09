@@ -1,0 +1,467 @@
+\hypertarget{classStateMachine}{}\section{State\+Machine Class Reference}
+\label{classStateMachine}\index{State\+Machine@{State\+Machine}}
+
+
+{\ttfamily \#include $<$State\+Machine.\+hpp$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum \hyperlink{classStateMachine_a08a90356de9073dd0ee4d56b74d2e823}{State} \+: int \{ \\*
+\hyperlink{classStateMachine_a08a90356de9073dd0ee4d56b74d2e823a016d5abef569ab6b71056250fe22521d}{placeholder\+State} = -\/1, 
+\hyperlink{classStateMachine_a08a90356de9073dd0ee4d56b74d2e823aab795cc7ada954f7046748f8e88917a8}{initial\+Scan\+For\+Debris} = 0, 
+\hyperlink{classStateMachine_a08a90356de9073dd0ee4d56b74d2e823a9b5e93ae092b0bac501ec9e841cc0fd5}{approach\+Debris} = 1, 
+\hyperlink{classStateMachine_a08a90356de9073dd0ee4d56b74d2e823a389652ffeb926cc37fd7503492a63d7b}{turn\+Towards\+Bin} = 2, 
+\\*
+\hyperlink{classStateMachine_a08a90356de9073dd0ee4d56b74d2e823a25a1d720a624c4c11aa7c972337a1d39}{drive\+Towards\+Bin} = 3, 
+\hyperlink{classStateMachine_a08a90356de9073dd0ee4d56b74d2e823a0ed933bb47dc0771235542bda24b609e}{turn\+Towards\+Target} = 4, 
+\hyperlink{classStateMachine_a08a90356de9073dd0ee4d56b74d2e823ad30b1a10a1847f4f5d533d06c46a269f}{done} = 5
+ \}\begin{DoxyCompactList}\small\item\em Enum state elements. \end{DoxyCompactList}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classStateMachine_a6e640066c98dd3acd70e63d8a2c2282b}{State\+Machine} (bool start\+Immediately=false, bool use\+Low\+X\+Algorithm=false)
+\begin{DoxyCompactList}\small\item\em Constructor for \hyperlink{classStateMachine}{State\+Machine}. \end{DoxyCompactList}\item 
+void \hyperlink{classStateMachine_aab9afe1c41b8c88e9fe2e2c4be227bfb}{image\+R\+G\+B\+Callback} (const sensor\+\_\+msgs\+::\+Image\+Const\+Ptr \&message)
+\begin{DoxyCompactList}\small\item\em Callback function to obtain the images. \end{DoxyCompactList}\item 
+void \hyperlink{classStateMachine_a64cd46adabf0963ea057535ab8bba849}{odometry\+Callback} (const nav\+\_\+msgs\+::\+Odometry\+::\+Const\+Ptr \&message)
+\begin{DoxyCompactList}\small\item\em Callback function to obtain the odometry. \end{DoxyCompactList}\item 
+void \hyperlink{classStateMachine_a1502417471ac1ab34c2e9e3a34bf8f4c}{depth\+Callback} (const sensor\+\_\+msgs\+::\+Image\+Const\+Ptr \&depth\+Message)
+\begin{DoxyCompactList}\small\item\em Callback function to obtain depth information from the images. \end{DoxyCompactList}\item 
+double \hyperlink{classStateMachine_ae70aff20d71caa15c22b5ae5de8f76af}{read\+Depth\+Data} (unsigned int height\+Pos, unsigned int width\+Pos, sensor\+\_\+msgs\+::\+Image\+Const\+Ptr depth\+Image)
+\begin{DoxyCompactList}\small\item\em Function for obtaining depth information at certain image pixel position. \end{DoxyCompactList}\item 
+bool \hyperlink{classStateMachine_a68b85b66b901ee8fbd9c7be93487f28f}{pickup\+Debris} (\hyperlink{classStateMachine_a08a90356de9073dd0ee4d56b74d2e823}{State} end\+State=\hyperlink{classStateMachine_a08a90356de9073dd0ee4d56b74d2e823a016d5abef569ab6b71056250fe22521d}{placeholder\+State}, \hyperlink{classStateMachine_a08a90356de9073dd0ee4d56b74d2e823}{State} start\+State=\hyperlink{classStateMachine_a08a90356de9073dd0ee4d56b74d2e823aab795cc7ada954f7046748f8e88917a8}{initial\+Scan\+For\+Debris}, double registered\+Depth=0.\+0, double fake\+Depth=-\/1.\+0)
+\begin{DoxyCompactList}\small\item\em Function for running the main ros loop. \end{DoxyCompactList}\item 
+double \hyperlink{classStateMachine_a4bdbecd6cf56fb8fff20c7e0232dd33b}{get\+Raw\+Depth} ()
+\begin{DoxyCompactList}\small\item\em Getter function for taking depth as input. \end{DoxyCompactList}\item 
+int \hyperlink{classStateMachine_ae386ede5033e27c114e88bdd830a6ff2}{get\+State} ()
+\begin{DoxyCompactList}\small\item\em Getter function for reading robot\textquotesingle{}s state. \end{DoxyCompactList}\item 
+cv\+::\+Mat \hyperlink{classStateMachine_a3f545ec499f6136057d9ecf44663d3a3}{get\+Image} ()
+\begin{DoxyCompactList}\small\item\em Getter function for taking in the image. \end{DoxyCompactList}\item 
+double \hyperlink{classStateMachine_a99887795ff6b06f6002779f72928d330}{get\+Robot\+X\+Pos} ()
+\begin{DoxyCompactList}\small\item\em Getter function for obtaining robot\textquotesingle{}s x position. \end{DoxyCompactList}\item 
+double \hyperlink{classStateMachine_a4bc3adc3985724e42ab8509457b59ad0}{get\+Robot\+Y\+Pos} ()
+\begin{DoxyCompactList}\small\item\em Getter function for obtaining robot\textquotesingle{}s y position. \end{DoxyCompactList}\item 
+double \hyperlink{classStateMachine_ab9c545cbbf1ccae25a4c68e4d1323751}{get\+Robot\+Yaw} ()
+\begin{DoxyCompactList}\small\item\em Getter function for obtaining robot\textquotesingle{}s yaw angle (orientation) \end{DoxyCompactList}\item 
+double \hyperlink{classStateMachine_a82c53e5941ba7b2b96eff859bbf9d754}{get\+Depth} ()
+\begin{DoxyCompactList}\small\item\em Getter function for obtaining depth read from camera. \end{DoxyCompactList}\item 
+double \hyperlink{classStateMachine_ae489fcd0f460527700e3e4de549b5bf6}{verify\+Angle} (double raw\+Angle)
+\begin{DoxyCompactList}\small\item\em Function for casting angle between 0 and 2\+PI. \end{DoxyCompactList}\item 
+geometry\+\_\+msgs\+::\+Twist \hyperlink{classStateMachine_a78b255b75372d19a0f89634b268fe5da}{stop} (geometry\+\_\+msgs\+::\+Twist velocity)
+\begin{DoxyCompactList}\small\item\em Function to stop robot\textquotesingle{}s motion. \end{DoxyCompactList}\item 
+geometry\+\_\+msgs\+::\+Twist \hyperlink{classStateMachine_a6718533fefd33ee2b73f4ede6aa53e22}{move\+Straight} (geometry\+\_\+msgs\+::\+Twist velocity)
+\begin{DoxyCompactList}\small\item\em Function to move the robot forward (straight) \end{DoxyCompactList}\item 
+geometry\+\_\+msgs\+::\+Twist \hyperlink{classStateMachine_a1c3bfb5713c29ff24f440c2105308769}{turn\+Right} (geometry\+\_\+msgs\+::\+Twist velocity)
+\begin{DoxyCompactList}\small\item\em Function to turn the robot to the right. \end{DoxyCompactList}\item 
+geometry\+\_\+msgs\+::\+Twist \hyperlink{classStateMachine_ac1e4e9e429332b41f7c35300302f0c75}{turn\+Left} (geometry\+\_\+msgs\+::\+Twist velocity)
+\begin{DoxyCompactList}\small\item\em Function to turn the robot to the left. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Member Enumeration Documentation}
+\index{State\+Machine@{State\+Machine}!State@{State}}
+\index{State@{State}!State\+Machine@{State\+Machine}}
+\subsubsection[{\texorpdfstring{State}{State}}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf State\+Machine\+::\+State} \+: int}\hypertarget{classStateMachine_a08a90356de9073dd0ee4d56b74d2e823}{}\label{classStateMachine_a08a90356de9073dd0ee4d56b74d2e823}
+
+
+Enum state elements. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em None} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Enum 
+\end{DoxyReturn}
+\begin{Desc}
+\item[Enumerator]\par
+\begin{description}
+\index{placeholder\+State@{placeholder\+State}!State\+Machine@{State\+Machine}}\index{State\+Machine@{State\+Machine}!placeholder\+State@{placeholder\+State}}\item[{\em 
+placeholder\+State\hypertarget{classStateMachine_a08a90356de9073dd0ee4d56b74d2e823a016d5abef569ab6b71056250fe22521d}{}\label{classStateMachine_a08a90356de9073dd0ee4d56b74d2e823a016d5abef569ab6b71056250fe22521d}
+}]\index{initial\+Scan\+For\+Debris@{initial\+Scan\+For\+Debris}!State\+Machine@{State\+Machine}}\index{State\+Machine@{State\+Machine}!initial\+Scan\+For\+Debris@{initial\+Scan\+For\+Debris}}\item[{\em 
+initial\+Scan\+For\+Debris\hypertarget{classStateMachine_a08a90356de9073dd0ee4d56b74d2e823aab795cc7ada954f7046748f8e88917a8}{}\label{classStateMachine_a08a90356de9073dd0ee4d56b74d2e823aab795cc7ada954f7046748f8e88917a8}
+}]\index{approach\+Debris@{approach\+Debris}!State\+Machine@{State\+Machine}}\index{State\+Machine@{State\+Machine}!approach\+Debris@{approach\+Debris}}\item[{\em 
+approach\+Debris\hypertarget{classStateMachine_a08a90356de9073dd0ee4d56b74d2e823a9b5e93ae092b0bac501ec9e841cc0fd5}{}\label{classStateMachine_a08a90356de9073dd0ee4d56b74d2e823a9b5e93ae092b0bac501ec9e841cc0fd5}
+}]\index{turn\+Towards\+Bin@{turn\+Towards\+Bin}!State\+Machine@{State\+Machine}}\index{State\+Machine@{State\+Machine}!turn\+Towards\+Bin@{turn\+Towards\+Bin}}\item[{\em 
+turn\+Towards\+Bin\hypertarget{classStateMachine_a08a90356de9073dd0ee4d56b74d2e823a389652ffeb926cc37fd7503492a63d7b}{}\label{classStateMachine_a08a90356de9073dd0ee4d56b74d2e823a389652ffeb926cc37fd7503492a63d7b}
+}]\index{drive\+Towards\+Bin@{drive\+Towards\+Bin}!State\+Machine@{State\+Machine}}\index{State\+Machine@{State\+Machine}!drive\+Towards\+Bin@{drive\+Towards\+Bin}}\item[{\em 
+drive\+Towards\+Bin\hypertarget{classStateMachine_a08a90356de9073dd0ee4d56b74d2e823a25a1d720a624c4c11aa7c972337a1d39}{}\label{classStateMachine_a08a90356de9073dd0ee4d56b74d2e823a25a1d720a624c4c11aa7c972337a1d39}
+}]\index{turn\+Towards\+Target@{turn\+Towards\+Target}!State\+Machine@{State\+Machine}}\index{State\+Machine@{State\+Machine}!turn\+Towards\+Target@{turn\+Towards\+Target}}\item[{\em 
+turn\+Towards\+Target\hypertarget{classStateMachine_a08a90356de9073dd0ee4d56b74d2e823a0ed933bb47dc0771235542bda24b609e}{}\label{classStateMachine_a08a90356de9073dd0ee4d56b74d2e823a0ed933bb47dc0771235542bda24b609e}
+}]\index{done@{done}!State\+Machine@{State\+Machine}}\index{State\+Machine@{State\+Machine}!done@{done}}\item[{\em 
+done\hypertarget{classStateMachine_a08a90356de9073dd0ee4d56b74d2e823ad30b1a10a1847f4f5d533d06c46a269f}{}\label{classStateMachine_a08a90356de9073dd0ee4d56b74d2e823ad30b1a10a1847f4f5d533d06c46a269f}
+}]\end{description}
+\end{Desc}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{State\+Machine@{State\+Machine}!State\+Machine@{State\+Machine}}
+\index{State\+Machine@{State\+Machine}!State\+Machine@{State\+Machine}}
+\subsubsection[{\texorpdfstring{State\+Machine(bool start\+Immediately=false, bool use\+Low\+X\+Algorithm=false)}{StateMachine(bool startImmediately=false, bool useLowXAlgorithm=false)}}]{\setlength{\rightskip}{0pt plus 5cm}State\+Machine\+::\+State\+Machine (
+\begin{DoxyParamCaption}
+\item[{bool}]{start\+Immediately = {\ttfamily false}, }
+\item[{bool}]{use\+Low\+X\+Algorithm = {\ttfamily false}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [explicit]}}\hypertarget{classStateMachine_a6e640066c98dd3acd70e63d8a2c2282b}{}\label{classStateMachine_a6e640066c98dd3acd70e63d8a2c2282b}
+
+
+Constructor for \hyperlink{classStateMachine}{State\+Machine}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Boolean} & for starting immediately or waiting \\
+\hline
+{\em Boolean} & for choosing which algorithm to use \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+None 
+\end{DoxyReturn}
+
+
+\subsection{Member Function Documentation}
+\index{State\+Machine@{State\+Machine}!depth\+Callback@{depth\+Callback}}
+\index{depth\+Callback@{depth\+Callback}!State\+Machine@{State\+Machine}}
+\subsubsection[{\texorpdfstring{depth\+Callback(const sensor\+\_\+msgs\+::\+Image\+Const\+Ptr \&depth\+Message)}{depthCallback(const sensor_msgs::ImageConstPtr &depthMessage)}}]{\setlength{\rightskip}{0pt plus 5cm}void State\+Machine\+::depth\+Callback (
+\begin{DoxyParamCaption}
+\item[{const sensor\+\_\+msgs\+::\+Image\+Const\+Ptr \&}]{depth\+Message}
+\end{DoxyParamCaption}
+)}\hypertarget{classStateMachine_a1502417471ac1ab34c2e9e3a34bf8f4c}{}\label{classStateMachine_a1502417471ac1ab34c2e9e3a34bf8f4c}
+
+
+Callback function to obtain depth information from the images. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em A} & ros message which is the depth reading \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Depth of selected point in image, nothing explicit 
+\end{DoxyReturn}
+\index{State\+Machine@{State\+Machine}!get\+Depth@{get\+Depth}}
+\index{get\+Depth@{get\+Depth}!State\+Machine@{State\+Machine}}
+\subsubsection[{\texorpdfstring{get\+Depth()}{getDepth()}}]{\setlength{\rightskip}{0pt plus 5cm}double State\+Machine\+::get\+Depth (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classStateMachine_a82c53e5941ba7b2b96eff859bbf9d754}{}\label{classStateMachine_a82c53e5941ba7b2b96eff859bbf9d754}
+
+
+Getter function for obtaining depth read from camera. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em None} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Double depth value 
+\end{DoxyReturn}
+\index{State\+Machine@{State\+Machine}!get\+Image@{get\+Image}}
+\index{get\+Image@{get\+Image}!State\+Machine@{State\+Machine}}
+\subsubsection[{\texorpdfstring{get\+Image()}{getImage()}}]{\setlength{\rightskip}{0pt plus 5cm}cv\+::\+Mat State\+Machine\+::get\+Image (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classStateMachine_a3f545ec499f6136057d9ecf44663d3a3}{}\label{classStateMachine_a3f545ec499f6136057d9ecf44663d3a3}
+
+
+Getter function for taking in the image. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em None} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returned image 
+\end{DoxyReturn}
+\index{State\+Machine@{State\+Machine}!get\+Raw\+Depth@{get\+Raw\+Depth}}
+\index{get\+Raw\+Depth@{get\+Raw\+Depth}!State\+Machine@{State\+Machine}}
+\subsubsection[{\texorpdfstring{get\+Raw\+Depth()}{getRawDepth()}}]{\setlength{\rightskip}{0pt plus 5cm}double State\+Machine\+::get\+Raw\+Depth (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classStateMachine_a4bdbecd6cf56fb8fff20c7e0232dd33b}{}\label{classStateMachine_a4bdbecd6cf56fb8fff20c7e0232dd33b}
+
+
+Getter function for taking depth as input. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em None} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Double depth 
+\end{DoxyReturn}
+\index{State\+Machine@{State\+Machine}!get\+Robot\+X\+Pos@{get\+Robot\+X\+Pos}}
+\index{get\+Robot\+X\+Pos@{get\+Robot\+X\+Pos}!State\+Machine@{State\+Machine}}
+\subsubsection[{\texorpdfstring{get\+Robot\+X\+Pos()}{getRobotXPos()}}]{\setlength{\rightskip}{0pt plus 5cm}double State\+Machine\+::get\+Robot\+X\+Pos (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classStateMachine_a99887795ff6b06f6002779f72928d330}{}\label{classStateMachine_a99887795ff6b06f6002779f72928d330}
+
+
+Getter function for obtaining robot\textquotesingle{}s x position. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em None} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Double x position 
+\end{DoxyReturn}
+\index{State\+Machine@{State\+Machine}!get\+Robot\+Yaw@{get\+Robot\+Yaw}}
+\index{get\+Robot\+Yaw@{get\+Robot\+Yaw}!State\+Machine@{State\+Machine}}
+\subsubsection[{\texorpdfstring{get\+Robot\+Yaw()}{getRobotYaw()}}]{\setlength{\rightskip}{0pt plus 5cm}double State\+Machine\+::get\+Robot\+Yaw (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classStateMachine_ab9c545cbbf1ccae25a4c68e4d1323751}{}\label{classStateMachine_ab9c545cbbf1ccae25a4c68e4d1323751}
+
+
+Getter function for obtaining robot\textquotesingle{}s yaw angle (orientation) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em None} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Orientattion 
+\end{DoxyReturn}
+\index{State\+Machine@{State\+Machine}!get\+Robot\+Y\+Pos@{get\+Robot\+Y\+Pos}}
+\index{get\+Robot\+Y\+Pos@{get\+Robot\+Y\+Pos}!State\+Machine@{State\+Machine}}
+\subsubsection[{\texorpdfstring{get\+Robot\+Y\+Pos()}{getRobotYPos()}}]{\setlength{\rightskip}{0pt plus 5cm}double State\+Machine\+::get\+Robot\+Y\+Pos (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classStateMachine_a4bc3adc3985724e42ab8509457b59ad0}{}\label{classStateMachine_a4bc3adc3985724e42ab8509457b59ad0}
+
+
+Getter function for obtaining robot\textquotesingle{}s y position. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em None} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Double y position 
+\end{DoxyReturn}
+\index{State\+Machine@{State\+Machine}!get\+State@{get\+State}}
+\index{get\+State@{get\+State}!State\+Machine@{State\+Machine}}
+\subsubsection[{\texorpdfstring{get\+State()}{getState()}}]{\setlength{\rightskip}{0pt plus 5cm}int State\+Machine\+::get\+State (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classStateMachine_ae386ede5033e27c114e88bdd830a6ff2}{}\label{classStateMachine_ae386ede5033e27c114e88bdd830a6ff2}
+
+
+Getter function for reading robot\textquotesingle{}s state. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em None} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Integer robot\textquotesingle{}s state 
+\end{DoxyReturn}
+\index{State\+Machine@{State\+Machine}!image\+R\+G\+B\+Callback@{image\+R\+G\+B\+Callback}}
+\index{image\+R\+G\+B\+Callback@{image\+R\+G\+B\+Callback}!State\+Machine@{State\+Machine}}
+\subsubsection[{\texorpdfstring{image\+R\+G\+B\+Callback(const sensor\+\_\+msgs\+::\+Image\+Const\+Ptr \&message)}{imageRGBCallback(const sensor_msgs::ImageConstPtr &message)}}]{\setlength{\rightskip}{0pt plus 5cm}void State\+Machine\+::image\+R\+G\+B\+Callback (
+\begin{DoxyParamCaption}
+\item[{const sensor\+\_\+msgs\+::\+Image\+Const\+Ptr \&}]{message}
+\end{DoxyParamCaption}
+)}\hypertarget{classStateMachine_aab9afe1c41b8c88e9fe2e2c4be227bfb}{}\label{classStateMachine_aab9afe1c41b8c88e9fe2e2c4be227bfb}
+
+
+Callback function to obtain the images. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em A} & ros message which is the R\+GB image \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+An R\+GB image to the subscriber, nothing explicit from function 
+\end{DoxyReturn}
+\index{State\+Machine@{State\+Machine}!move\+Straight@{move\+Straight}}
+\index{move\+Straight@{move\+Straight}!State\+Machine@{State\+Machine}}
+\subsubsection[{\texorpdfstring{move\+Straight(geometry\+\_\+msgs\+::\+Twist velocity)}{moveStraight(geometry_msgs::Twist velocity)}}]{\setlength{\rightskip}{0pt plus 5cm}geometry\+\_\+msgs\+::\+Twist State\+Machine\+::move\+Straight (
+\begin{DoxyParamCaption}
+\item[{geometry\+\_\+msgs\+::\+Twist}]{velocity}
+\end{DoxyParamCaption}
+)}\hypertarget{classStateMachine_a6718533fefd33ee2b73f4ede6aa53e22}{}\label{classStateMachine_a6718533fefd33ee2b73f4ede6aa53e22}
+
+
+Function to move the robot forward (straight) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Geometry} & message velocity \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Geometry message velocity 
+\end{DoxyReturn}
+\index{State\+Machine@{State\+Machine}!odometry\+Callback@{odometry\+Callback}}
+\index{odometry\+Callback@{odometry\+Callback}!State\+Machine@{State\+Machine}}
+\subsubsection[{\texorpdfstring{odometry\+Callback(const nav\+\_\+msgs\+::\+Odometry\+::\+Const\+Ptr \&message)}{odometryCallback(const nav_msgs::Odometry::ConstPtr &message)}}]{\setlength{\rightskip}{0pt plus 5cm}void State\+Machine\+::odometry\+Callback (
+\begin{DoxyParamCaption}
+\item[{const nav\+\_\+msgs\+::\+Odometry\+::\+Const\+Ptr \&}]{message}
+\end{DoxyParamCaption}
+)}\hypertarget{classStateMachine_a64cd46adabf0963ea057535ab8bba849}{}\label{classStateMachine_a64cd46adabf0963ea057535ab8bba849}
+
+
+Callback function to obtain the odometry. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em A} & ros message which is odometry message \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Turtlebot position and orientation to the subscriber, nothing explicit from function 
+\end{DoxyReturn}
+\index{State\+Machine@{State\+Machine}!pickup\+Debris@{pickup\+Debris}}
+\index{pickup\+Debris@{pickup\+Debris}!State\+Machine@{State\+Machine}}
+\subsubsection[{\texorpdfstring{pickup\+Debris(\+State end\+State=placeholder\+State, State start\+State=initial\+Scan\+For\+Debris, double registered\+Depth=0.\+0, double fake\+Depth=-\/1.\+0)}{pickupDebris(State endState=placeholderState, State startState=initialScanForDebris, double registeredDepth=0.0, double fakeDepth=-1.0)}}]{\setlength{\rightskip}{0pt plus 5cm}bool State\+Machine\+::pickup\+Debris (
+\begin{DoxyParamCaption}
+\item[{{\bf State}}]{end\+State = {\ttfamily {\bf placeholder\+State}}, }
+\item[{{\bf State}}]{start\+State = {\ttfamily {\bf initial\+Scan\+For\+Debris}}, }
+\item[{double}]{registered\+Depth = {\ttfamily 0.0}, }
+\item[{double}]{fake\+Depth = {\ttfamily -\/1.0}}
+\end{DoxyParamCaption}
+)}\hypertarget{classStateMachine_a68b85b66b901ee8fbd9c7be93487f28f}{}\label{classStateMachine_a68b85b66b901ee8fbd9c7be93487f28f}
+
+
+Function for running the main ros loop. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em State} & enum for a placeholder\+State \\
+\hline
+{\em State} & enum for the end state \\
+\hline
+{\em Depth} & parameter, added for testing purposes \\
+\hline
+{\em Depth} & parameter, added for testing purposes \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Boolean true on successful loop termination 
+\end{DoxyReturn}
+\index{State\+Machine@{State\+Machine}!read\+Depth\+Data@{read\+Depth\+Data}}
+\index{read\+Depth\+Data@{read\+Depth\+Data}!State\+Machine@{State\+Machine}}
+\subsubsection[{\texorpdfstring{read\+Depth\+Data(unsigned int height\+Pos, unsigned int width\+Pos, sensor\+\_\+msgs\+::\+Image\+Const\+Ptr depth\+Image)}{readDepthData(unsigned int heightPos, unsigned int widthPos, sensor_msgs::ImageConstPtr depthImage)}}]{\setlength{\rightskip}{0pt plus 5cm}double State\+Machine\+::read\+Depth\+Data (
+\begin{DoxyParamCaption}
+\item[{unsigned int}]{height\+Pos, }
+\item[{unsigned int}]{width\+Pos, }
+\item[{sensor\+\_\+msgs\+::\+Image\+Const\+Ptr}]{depth\+Image}
+\end{DoxyParamCaption}
+)}\hypertarget{classStateMachine_ae70aff20d71caa15c22b5ae5de8f76af}{}\label{classStateMachine_ae70aff20d71caa15c22b5ae5de8f76af}
+
+
+Function for obtaining depth information at certain image pixel position. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Image} & pixel height \\
+\hline
+{\em Image} & pixel wdith \\
+\hline
+{\em Depth} & image from R\+G\+B-\/D camera \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Depth of specified pixel on image 
+\end{DoxyReturn}
+\index{State\+Machine@{State\+Machine}!stop@{stop}}
+\index{stop@{stop}!State\+Machine@{State\+Machine}}
+\subsubsection[{\texorpdfstring{stop(geometry\+\_\+msgs\+::\+Twist velocity)}{stop(geometry_msgs::Twist velocity)}}]{\setlength{\rightskip}{0pt plus 5cm}geometry\+\_\+msgs\+::\+Twist State\+Machine\+::stop (
+\begin{DoxyParamCaption}
+\item[{geometry\+\_\+msgs\+::\+Twist}]{velocity}
+\end{DoxyParamCaption}
+)}\hypertarget{classStateMachine_a78b255b75372d19a0f89634b268fe5da}{}\label{classStateMachine_a78b255b75372d19a0f89634b268fe5da}
+
+
+Function to stop robot\textquotesingle{}s motion. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Geometry} & message velocity \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Geometry message velocity 
+\end{DoxyReturn}
+\index{State\+Machine@{State\+Machine}!turn\+Left@{turn\+Left}}
+\index{turn\+Left@{turn\+Left}!State\+Machine@{State\+Machine}}
+\subsubsection[{\texorpdfstring{turn\+Left(geometry\+\_\+msgs\+::\+Twist velocity)}{turnLeft(geometry_msgs::Twist velocity)}}]{\setlength{\rightskip}{0pt plus 5cm}geometry\+\_\+msgs\+::\+Twist State\+Machine\+::turn\+Left (
+\begin{DoxyParamCaption}
+\item[{geometry\+\_\+msgs\+::\+Twist}]{velocity}
+\end{DoxyParamCaption}
+)}\hypertarget{classStateMachine_ac1e4e9e429332b41f7c35300302f0c75}{}\label{classStateMachine_ac1e4e9e429332b41f7c35300302f0c75}
+
+
+Function to turn the robot to the left. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Geometry} & message velocity \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Geometry message velocity 
+\end{DoxyReturn}
+\index{State\+Machine@{State\+Machine}!turn\+Right@{turn\+Right}}
+\index{turn\+Right@{turn\+Right}!State\+Machine@{State\+Machine}}
+\subsubsection[{\texorpdfstring{turn\+Right(geometry\+\_\+msgs\+::\+Twist velocity)}{turnRight(geometry_msgs::Twist velocity)}}]{\setlength{\rightskip}{0pt plus 5cm}geometry\+\_\+msgs\+::\+Twist State\+Machine\+::turn\+Right (
+\begin{DoxyParamCaption}
+\item[{geometry\+\_\+msgs\+::\+Twist}]{velocity}
+\end{DoxyParamCaption}
+)}\hypertarget{classStateMachine_a1c3bfb5713c29ff24f440c2105308769}{}\label{classStateMachine_a1c3bfb5713c29ff24f440c2105308769}
+
+
+Function to turn the robot to the right. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Geometry} & message velocity \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Geometry message velocity 
+\end{DoxyReturn}
+\index{State\+Machine@{State\+Machine}!verify\+Angle@{verify\+Angle}}
+\index{verify\+Angle@{verify\+Angle}!State\+Machine@{State\+Machine}}
+\subsubsection[{\texorpdfstring{verify\+Angle(double raw\+Angle)}{verifyAngle(double rawAngle)}}]{\setlength{\rightskip}{0pt plus 5cm}double State\+Machine\+::verify\+Angle (
+\begin{DoxyParamCaption}
+\item[{double}]{raw\+Angle}
+\end{DoxyParamCaption}
+)}\hypertarget{classStateMachine_ae489fcd0f460527700e3e4de549b5bf6}{}\label{classStateMachine_ae489fcd0f460527700e3e4de549b5bf6}
+
+
+Function for casting angle between 0 and 2\+PI. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em An} & angle in radians \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+An angle in radians between 0 and 2\+PI 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/lydiazoghbi/catkin\+\_\+ws/src/project\+\_\+x\+\_\+ecobot/include/\hyperlink{StateMachine_8hpp}{State\+Machine.\+hpp}\end{DoxyCompactItemize}

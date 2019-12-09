@@ -1,0 +1,136 @@
+\hypertarget{classLowXAlg}{}\section{Low\+X\+Alg Class Reference}
+\label{classLowXAlg}\index{Low\+X\+Alg@{Low\+X\+Alg}}
+
+
+{\ttfamily \#include $<$Low\+X\+Alg.\+hpp$>$}
+
+
+
+Inheritance diagram for Low\+X\+Alg\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=151pt]{classLowXAlg__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Low\+X\+Alg\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=151pt]{classLowXAlg__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classLowXAlg_a63964d352845bacbdecbccac3c753b17}{$\sim$\+Low\+X\+Alg} ()
+\begin{DoxyCompactList}\small\item\em Destructor for the \hyperlink{classLowXAlg}{Low\+X\+Alg} class. \end{DoxyCompactList}\item 
+void \hyperlink{classLowXAlg_a570c9f04bf3b37b38619e6e6c6f31591}{create\+Plan} (\hyperlink{classPoint}{Point} robot\+Location)
+\begin{DoxyCompactList}\small\item\em Plan creation for how to pick up the debris. \end{DoxyCompactList}\item 
+void \hyperlink{classLowXAlg_ac7fdd27ebd0d53ac7d6cbac213324645}{push} (\hyperlink{classPoint}{Point} debris\+Location)
+\begin{DoxyCompactList}\small\item\em Function for adding the debris into a debris vector. \end{DoxyCompactList}\item 
+\hyperlink{classPoint}{Point} \hyperlink{classLowXAlg_a3f331a3ec443d39e07378a7412c2d2f0}{pop} (\hyperlink{classPoint}{Point} robot\+Location)
+\begin{DoxyCompactList}\small\item\em Function for extracting the debris on the top of the vector. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Low\+X\+Alg@{Low\+X\+Alg}!````~Low\+X\+Alg@{$\sim$\+Low\+X\+Alg}}
+\index{````~Low\+X\+Alg@{$\sim$\+Low\+X\+Alg}!Low\+X\+Alg@{Low\+X\+Alg}}
+\subsubsection[{\texorpdfstring{$\sim$\+Low\+X\+Alg()}{~LowXAlg()}}]{\setlength{\rightskip}{0pt plus 5cm}Low\+X\+Alg\+::$\sim$\+Low\+X\+Alg (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classLowXAlg_a63964d352845bacbdecbccac3c753b17}{}\label{classLowXAlg_a63964d352845bacbdecbccac3c753b17}
+
+
+Destructor for the \hyperlink{classLowXAlg}{Low\+X\+Alg} class. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em None} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+None 
+\end{DoxyReturn}
+
+
+\subsection{Member Function Documentation}
+\index{Low\+X\+Alg@{Low\+X\+Alg}!create\+Plan@{create\+Plan}}
+\index{create\+Plan@{create\+Plan}!Low\+X\+Alg@{Low\+X\+Alg}}
+\subsubsection[{\texorpdfstring{create\+Plan(\+Point robot\+Location)}{createPlan(Point robotLocation)}}]{\setlength{\rightskip}{0pt plus 5cm}void Low\+X\+Alg\+::create\+Plan (
+\begin{DoxyParamCaption}
+\item[{{\bf Point}}]{robot\+Location}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\hypertarget{classLowXAlg_a570c9f04bf3b37b38619e6e6c6f31591}{}\label{classLowXAlg_a570c9f04bf3b37b38619e6e6c6f31591}
+
+
+Plan creation for how to pick up the debris. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Robot\textquotesingle{}s} & current (x,y) location \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+None 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classIPlanningAlg_abae4e6198042e0acf9abec46e624cd14}{I\+Planning\+Alg}.
+
+\index{Low\+X\+Alg@{Low\+X\+Alg}!pop@{pop}}
+\index{pop@{pop}!Low\+X\+Alg@{Low\+X\+Alg}}
+\subsubsection[{\texorpdfstring{pop(\+Point robot\+Location)}{pop(Point robotLocation)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Point} Low\+X\+Alg\+::pop (
+\begin{DoxyParamCaption}
+\item[{{\bf Point}}]{robot\+Location}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\hypertarget{classLowXAlg_a3f331a3ec443d39e07378a7412c2d2f0}{}\label{classLowXAlg_a3f331a3ec443d39e07378a7412c2d2f0}
+
+
+Function for extracting the debris on the top of the vector. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Robot\textquotesingle{}s} & current (x,y) location \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Position of debris 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classIPlanningAlg_a4f881df301b194754b1b81ddccad1ed4}{I\+Planning\+Alg}.
+
+\index{Low\+X\+Alg@{Low\+X\+Alg}!push@{push}}
+\index{push@{push}!Low\+X\+Alg@{Low\+X\+Alg}}
+\subsubsection[{\texorpdfstring{push(\+Point debris\+Location)}{push(Point debrisLocation)}}]{\setlength{\rightskip}{0pt plus 5cm}void Low\+X\+Alg\+::push (
+\begin{DoxyParamCaption}
+\item[{{\bf Point}}]{debris\+Location}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\hypertarget{classLowXAlg_ac7fdd27ebd0d53ac7d6cbac213324645}{}\label{classLowXAlg_ac7fdd27ebd0d53ac7d6cbac213324645}
+
+
+Function for adding the debris into a debris vector. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Observed} & debris location \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+None 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classIPlanningAlg_a2bda969cf89a041cb9fbbc7574e7b94f}{I\+Planning\+Alg}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/lydiazoghbi/catkin\+\_\+ws/src/project\+\_\+x\+\_\+ecobot/include/\hyperlink{LowXAlg_8hpp}{Low\+X\+Alg.\+hpp}\end{DoxyCompactItemize}

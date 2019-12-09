@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+<!--  <arg name="gui" default="false"/>
+  <include file="$(find turtlebot_gazebo)/launch/turtlebot_world.launch"> 
+    <arg name="gui" value="$(arg gui)"/>
+  </include>-->
+  <test pkg = "project_x_ecobot" test-name = "allTests" type = "allTests"/>
+</launch>

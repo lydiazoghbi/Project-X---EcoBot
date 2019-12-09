@@ -1,6 +1,0 @@
-<launch>
-
-  <node pkg = "project_x_ecobot" name = "DebrisCollection" type = "DebrisCollection"/>
-  <test pkg = "project_x_ecobot" test-name = "tests_DebrisCollection" type = "tests_DebrisCollection"/>
-
-</launch>

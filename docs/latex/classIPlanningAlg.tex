@@ -1,0 +1,102 @@
+\hypertarget{classIPlanningAlg}{}\section{I\+Planning\+Alg Class Reference}
+\label{classIPlanningAlg}\index{I\+Planning\+Alg@{I\+Planning\+Alg}}
+
+
+{\ttfamily \#include $<$I\+Planning\+Alg.\+hpp$>$}
+
+
+
+Inheritance diagram for I\+Planning\+Alg\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=216pt]{classIPlanningAlg__inherit__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \hyperlink{classIPlanningAlg_abae4e6198042e0acf9abec46e624cd14}{create\+Plan} (\hyperlink{classPoint}{Point} robot\+Location)=0
+\begin{DoxyCompactList}\small\item\em Virtual function for creating Plan. \end{DoxyCompactList}\item 
+virtual void \hyperlink{classIPlanningAlg_a2bda969cf89a041cb9fbbc7574e7b94f}{push} (\hyperlink{classPoint}{Point} debris\+Location)=0
+\begin{DoxyCompactList}\small\item\em Virtual function pusing debris into debris vector. \end{DoxyCompactList}\item 
+virtual \hyperlink{classPoint}{Point} \hyperlink{classIPlanningAlg_a4f881df301b194754b1b81ddccad1ed4}{pop} (\hyperlink{classPoint}{Point} robot\+Location)=0
+\begin{DoxyCompactList}\small\item\em Virtual function reading and removing top element of debris vector. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\index{I\+Planning\+Alg@{I\+Planning\+Alg}!create\+Plan@{create\+Plan}}
+\index{create\+Plan@{create\+Plan}!I\+Planning\+Alg@{I\+Planning\+Alg}}
+\subsubsection[{\texorpdfstring{create\+Plan(\+Point robot\+Location)=0}{createPlan(Point robotLocation)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void I\+Planning\+Alg\+::create\+Plan (
+\begin{DoxyParamCaption}
+\item[{{\bf Point}}]{robot\+Location}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classIPlanningAlg_abae4e6198042e0acf9abec46e624cd14}{}\label{classIPlanningAlg_abae4e6198042e0acf9abec46e624cd14}
+
+
+Virtual function for creating Plan. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Robot\textquotesingle{}s} & (x,y) location \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+None 
+\end{DoxyReturn}
+
+
+Implemented in \hyperlink{classLowXAlg_a570c9f04bf3b37b38619e6e6c6f31591}{Low\+X\+Alg}, and \hyperlink{classGreedyAlg_a5048e07294c60d726fdd7c82f0647dc6}{Greedy\+Alg}.
+
+\index{I\+Planning\+Alg@{I\+Planning\+Alg}!pop@{pop}}
+\index{pop@{pop}!I\+Planning\+Alg@{I\+Planning\+Alg}}
+\subsubsection[{\texorpdfstring{pop(\+Point robot\+Location)=0}{pop(Point robotLocation)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf Point} I\+Planning\+Alg\+::pop (
+\begin{DoxyParamCaption}
+\item[{{\bf Point}}]{robot\+Location}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classIPlanningAlg_a4f881df301b194754b1b81ddccad1ed4}{}\label{classIPlanningAlg_a4f881df301b194754b1b81ddccad1ed4}
+
+
+Virtual function reading and removing top element of debris vector. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Robot\textquotesingle{}s} & (x,y) location \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+None 
+\end{DoxyReturn}
+
+
+Implemented in \hyperlink{classLowXAlg_a3f331a3ec443d39e07378a7412c2d2f0}{Low\+X\+Alg}, and \hyperlink{classGreedyAlg_a72f7ee716b3c2010070e0f729780d203}{Greedy\+Alg}.
+
+\index{I\+Planning\+Alg@{I\+Planning\+Alg}!push@{push}}
+\index{push@{push}!I\+Planning\+Alg@{I\+Planning\+Alg}}
+\subsubsection[{\texorpdfstring{push(\+Point debris\+Location)=0}{push(Point debrisLocation)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual void I\+Planning\+Alg\+::push (
+\begin{DoxyParamCaption}
+\item[{{\bf Point}}]{debris\+Location}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classIPlanningAlg_a2bda969cf89a041cb9fbbc7574e7b94f}{}\label{classIPlanningAlg_a2bda969cf89a041cb9fbbc7574e7b94f}
+
+
+Virtual function pusing debris into debris vector. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Debris} & current location \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+None 
+\end{DoxyReturn}
+
+
+Implemented in \hyperlink{classLowXAlg_ac7fdd27ebd0d53ac7d6cbac213324645}{Low\+X\+Alg}, and \hyperlink{classGreedyAlg_a4ce065242ae545ec81ea4599c3b5fcdd}{Greedy\+Alg}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/lydiazoghbi/catkin\+\_\+ws/src/project\+\_\+x\+\_\+ecobot/include/\hyperlink{IPlanningAlg_8hpp}{I\+Planning\+Alg.\+hpp}\end{DoxyCompactItemize}

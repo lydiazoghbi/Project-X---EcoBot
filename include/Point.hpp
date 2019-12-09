@@ -17,9 +17,9 @@
   */
 /**
  *  @file       Point.hpp
- *  @author     Lydia Zoghbi
+ *  @author     Lydia Zoghbi and Ryan Bates
  *  @copyright  Copyright Apache 2.0 License
- *  @date       11/25/2019
+ *  @date       12/09/2019
  *  @version    1.0
  *
  *  @brief      Header file for Point class
@@ -58,4 +58,4 @@ class Point {
 		double getY();
 };
 
-#endif //  INCLUDE_POINT_HPP
+#endif  // INCLUDE_POINT_HPP_

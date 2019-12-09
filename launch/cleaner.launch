@@ -1,5 +1,33 @@
 <launch>
-    <include file = "$(find turtlebot_gazebo)/launch/turtlebot_world.launch"> 
-    	<arg name="world_file" value = "$(find project_x_ecobot)/World/cleaning_world.world"/>
+
+  <arg name="base" default="kobuki"/>
+  <arg name="stacks" default="hexagons"/>
+  <arg name="3d_sensor" default="kinect"/>
+
+    <include file = "$(find gazebo_ros)/launch/empty_world.launch"> 
+    	<arg name="world_name" value = "$(find project_x_ecobot)/data/World/multiple_debris.world"/>
     </include>
+  
+  <arg name="record" default="false" />
+
+  <arg name="urdf_file" default="$(find xacro)/xacro.py '$(find project_x_ecobot)/data/urdf_package/modifiedKobuki/kobuki_hexagons_astra.urdf.xacro'" />
+  <param name="robot_description" command="$(arg urdf_file)" />
+  
+  <!-- Gazebo model spawner -->
+  <node name="spawn_turtlebot_model" pkg="gazebo_ros" type="spawn_model"
+        args="-unpause -urdf -param robot_description -model mobile_base -x 0.0 -y 0.0 -z 1.0 -R 0.0 -P 0.0 -Y 0.0"/>
+  
+  <!-- Velocity muxer -->
+  <node pkg="nodelet" type="nodelet" name="mobile_base_nodelet_manager" args="manager"/>
+  <node pkg="nodelet" type="nodelet" name="cmd_vel_mux"
+        args="load yocs_cmd_vel_mux/CmdVelMuxNodelet mobile_base_nodelet_manager">
+    <param name="yaml_cfg_file" value="$(find turtlebot_bringup)/param/mux.yaml" />
+    <remap from="cmd_vel_mux/output" to="mobile_base/commands/velocity"/>
+  </node>
+  <node pkg="project_x_ecobot" name="MainNode" type="MainNode"/>
+
+  <node pkg="rosbag" type="record" name="record"
+        args="-a -x /camera(.*) -O $(find project_x_ecobot)/results/cleaner.bag" output="screen"
+        if="$(arg record)" />
+
 </launch> 
