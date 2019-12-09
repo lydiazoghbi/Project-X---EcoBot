@@ -62,7 +62,7 @@
 
 #include <vector>
 
-class GreedyAlg : IPlanningAlg {
+class GreedyAlg : public IPlanningAlg {
 	private:
 		//double lastRobotX;
 		//double lastRobotY;

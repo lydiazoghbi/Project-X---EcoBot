@@ -62,7 +62,7 @@
 
 #include <vector>
 
-class LowXAlg : IPlanningAlg {
+class LowXAlg : public IPlanningAlg {
 	private:
 		std::vector<Point> debrisVector;
 	public:
