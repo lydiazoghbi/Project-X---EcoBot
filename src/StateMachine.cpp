@@ -204,13 +204,15 @@ double holeDistance = 0.35;
 	ros::Rate rate(10);
 
 	// Start by rotating the robot
-	velocity.linear.x = 0.0;
-	velocity.linear.y = 0.0;
-	velocity.linear.z = 0.0;
-	velocity.angular.x = 0.0;
-	velocity.angular.y = 0.0;
-	velocity.angular.z = 0.1;
+	//velocity.linear.x = 0.0;
+	//velocity.linear.y = 0.0;
+	//velocity.linear.z = 0.0;
+	//velocity.angular.x = 0.0;
+	//velocity.angular.y = 0.0;
+	//velocity.angular.z = 0.1;
 
+
+	velocity = stop(velocity);
 	// Publish the velocity to move the robot
 	pub.publish(velocity);
 
@@ -269,13 +271,15 @@ depth = fakeDepth;
 					if ((currentTarget.getX() < 0.0) && (currentTarget.getY() < 0.0)) {
 						state = done;
 						ROS_INFO_STREAM("	STATE TRANSITION: no trash objects left, state is now " << done);
-						velocity.linear.x = 0.0;
-						velocity.angular.z = 0.0;
+						//velocity.linear.x = 0.0;
+						//velocity.angular.z = 0.0;
+						velocity = stop(velocity);
 					} else {
 						// get first object from planning algorithm
 						// change state to turn towards first object
-						velocity.linear.x = 0.0;
-						velocity.angular.z = -0.1;
+						//velocity.linear.x = 0.0;
+						//velocity.angular.z = -0.1;
+						velocity = turnRight(velocity);
 						state = turnTowardsTarget;
 						ROS_INFO_STREAM("	STATE TRANSITION: turned past 90 degrees, now to state " << turnTowardsTarget);
 					}
@@ -288,8 +292,9 @@ depth = fakeDepth;
 				ROS_INFO_STREAM("	" << state << ": We are " << distanceTraveled << " out of " << registeredDepth);
 				if (distanceTraveled >= (registeredDepth - 0.35)) {
 					// Stop and rotate towards bin
-					velocity.linear.x = 0;
-					velocity.angular.z = 0.1;
+					//velocity.linear.x = 0;
+					//velocity.angular.z = 0.1;
+					velocity = turnLeft(velocity);
 					// Register current position and orientation
 					currentOrientation = orientation;
 					currentDistance = distanceTraveled;
@@ -338,8 +343,9 @@ ROS_INFO_STREAM("	" << state << ": We are pointing " << effectiveOrientationBin 
 				//if (orientation >= angle) {
 				if (((effectiveOrientationBin - targetAngleBin) * (effectiveOrientationBin - targetAngleBin)) < (angleThreshold * angleThreshold)) {
 					// Move to bin
-					velocity.linear.x = 0.2;
-					velocity.angular.z = 0;
+					//velocity.linear.x = 0.2;
+					//velocity.angular.z = 0;
+					velocity = moveStraight(velocity);
 					// Switch to state 3
 					state = driveTowardsBin;
 					ROS_INFO_STREAM("	STATE TRANSITION: pointed to trash bin, now to state " << driveTowardsBin);
@@ -360,11 +366,13 @@ ROS_INFO_STREAM("	" << state << ": We are pointing " << effectiveOrientationBin 
 					if ((currentTarget.getX() < 0.0) && (currentTarget.getY() < 0.0)) {
 						state = done;
 						ROS_INFO_STREAM("	STATE TRANSITION: no trash objects left, state is now " << done);
-						velocity.linear.x = 0.0;
-						velocity.angular.z = 0.0;
+						//velocity.linear.x = 0.0;
+						//velocity.angular.z = 0.0;
+						velocity = stop(velocity);
 					} else {
-						velocity.linear.x = 0.0;
-						velocity.angular.z = 0.1;
+						//velocity.linear.x = 0.0;
+						//velocity.angular.z = 0.1;
+						velocity = turnLeft(velocity);
 						state = turnTowardsTarget;
 						ROS_INFO_STREAM("	STATE TRANSITION: close to trash bin, now to state " << turnTowardsTarget);
 					}
@@ -405,8 +413,9 @@ ROS_INFO_STREAM("	" << state << ": We are pointing " << effectiveOrientationBin 
 
 				ROS_INFO_STREAM("	" << state << ": We are pointing " << effectiveOrientation << " and want to be at " << targetAngle);
 				if (((effectiveOrientation - targetAngle) * (effectiveOrientation - targetAngle)) < (angleThreshold * angleThreshold)) {
-					velocity.linear.x = 0.2;
-					velocity.angular.z = 0;
+					//velocity.linear.x = 0.2;
+					//velocity.angular.z = 0;
+					velocity = moveStraight(velocity);
 					registeredDepth = depth;
 					state = approachDebris;
 					ROS_INFO_STREAM("	STATE TRANSITION: pointed to target, now to state " << approachDebris);
@@ -428,6 +437,52 @@ if (state == endState) {
 }
 }
 
+
+
+geometry_msgs::Twist StateMachine::stop(geometry_msgs::Twist velocity) {
+	
+	velocity.linear.y = 0.0;
+	velocity.linear.z = 0.0;
+	velocity.angular.x = 0.0;
+	velocity.angular.y = 0.0;
+velocity.linear.x = 0.0;
+						velocity.angular.z = 0.0;
+	return velocity;
+}
+
+
+geometry_msgs::Twist StateMachine::turnLeft(geometry_msgs::Twist velocity) {
+	
+	velocity.linear.y = 0.0;
+	velocity.linear.z = 0.0;
+	velocity.angular.x = 0.0;
+	velocity.angular.y = 0.0;
+velocity.linear.x = 0.0;
+						velocity.angular.z = 0.1;
+	return velocity;
+}
+
+geometry_msgs::Twist StateMachine::turnRight(geometry_msgs::Twist velocity) {
+	
+	velocity.linear.y = 0.0;
+	velocity.linear.z = 0.0;
+	velocity.angular.x = 0.0;
+	velocity.angular.y = 0.0;
+velocity.linear.x = 0.0;
+						velocity.angular.z = -0.1;
+	return velocity;
+}
+
+geometry_msgs::Twist StateMachine::moveStraight(geometry_msgs::Twist velocity) {
+	
+	velocity.linear.y = 0.0;
+	velocity.linear.z = 0.0;
+	velocity.angular.x = 0.0;
+	velocity.angular.y = 0.0;
+	velocity.linear.x = 0.2;
+	velocity.angular.z = 0.0;
+	return velocity;
+}
 // Obtain depth data without using PCL Library, code obtained from link below
 // (https://answers.ros.org/question/90696/get-depth-from-kinect-sensor-in-gazebo-simulator/https://answers.ros.org/question/90696/get-depth-from-kinect-sensor-in-gazebo-simulator/) 
 double StateMachine::readDepthData(unsigned int heightPos, unsigned int widthPos, sensor_msgs::ImageConstPtr depthImage) {
@@ -444,7 +499,8 @@ double StateMachine::readDepthData(unsigned int heightPos, unsigned int widthPos
     // If data is 4 byte floats (rectified depth image)
     if ((depthImage->step/depthImage->width) == 4) {
         U_FloatConvert depthData;
-        int i, endianCheck = 1;
+    //    int i, endianCheck = 1;
+int endianCheck = 1;
         // If big endian
         if ((depthImage->is_bigendian && (*(char*)&endianCheck != 1)) ||  // Both big endian
            ((!depthImage->is_bigendian) && (*(char*)&endianCheck == 1))) { // Both lil endian
@@ -456,7 +512,7 @@ double StateMachine::readDepthData(unsigned int heightPos, unsigned int widthPos
             return -1;  // If depth data invalid
         }
         // else, one little endian, one big endian
-        for (i = 0; i < 4; i++) 
+        for (auto i = 0; i < 4; i++) 
             depthData.byteData[i] = depthImage->data[3 + index - i];
         // Make sure data is valid (check if NaN)
         if (depthData.floatData == depthData.floatData)
@@ -499,6 +555,9 @@ while (rawAngle < 0) {
 				}
 return rawAngle;
 }
+
+
+double StateMachine::getRawDepth() {return rawDepth;}
 
 double StateMachine::getDepth() {return depth;}
 double StateMachine::getRobotXPos() {return x;}

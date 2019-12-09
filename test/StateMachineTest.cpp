@@ -154,6 +154,101 @@ image_transport::ImageTransport it(nh);
 
 
 
+TEST(StateMachine, setLeftt) {
+	StateMachine stateMachine;
+
+	geometry_msgs::Twist velocity;
+
+	velocity.linear.y = 0.9;
+	velocity.linear.z = 0.9;
+	velocity.angular.x = 0.9;
+	velocity.angular.y = 0.9;
+	velocity.linear.x = 0.9;
+	velocity.angular.z = 0.9;
+
+	velocity = stateMachine.turnLeft(velocity);
+
+	EXPECT_EQ(0.0, velocity.linear.y);// = 0.0;
+	EXPECT_EQ(0.0, velocity.linear.z);// = 0.0;
+	EXPECT_EQ(0.0, velocity.angular.x);// = 0.0;
+	EXPECT_EQ(0.0, velocity.angular.y);// = 0.0;
+	EXPECT_EQ(0.0, velocity.linear.x);// = 0.2;
+	EXPECT_EQ(0.1, velocity.angular.z);// = 0.0;
+	
+}
+
+
+TEST(StateMachine, setRight) {
+	StateMachine stateMachine;
+
+	geometry_msgs::Twist velocity;
+
+	velocity.linear.y = 0.9;
+	velocity.linear.z = 0.9;
+	velocity.angular.x = 0.9;
+	velocity.angular.y = 0.9;
+	velocity.linear.x = 0.9;
+	velocity.angular.z = 0.9;
+
+	velocity = stateMachine.turnRight(velocity);
+
+	EXPECT_EQ(0.0, velocity.linear.y);// = 0.0;
+	EXPECT_EQ(0.0, velocity.linear.z);// = 0.0;
+	EXPECT_EQ(0.0, velocity.angular.x);// = 0.0;
+	EXPECT_EQ(0.0, velocity.angular.y);// = 0.0;
+	EXPECT_EQ(0.0, velocity.linear.x);// = 0.2;
+	EXPECT_EQ(-0.1, velocity.angular.z);// = 0.0;
+	
+}
+
+TEST(StateMachine, setStop) {
+	StateMachine stateMachine;
+
+	geometry_msgs::Twist velocity;
+
+	velocity.linear.y = 0.9;
+	velocity.linear.z = 0.9;
+	velocity.angular.x = 0.9;
+	velocity.angular.y = 0.9;
+	velocity.linear.x = 0.9;
+	velocity.angular.z = 0.9;
+
+	velocity = stateMachine.stop(velocity);
+
+	EXPECT_EQ(0.0, velocity.linear.y);// = 0.0;
+	EXPECT_EQ(0.0, velocity.linear.z);// = 0.0;
+	EXPECT_EQ(0.0, velocity.angular.x);// = 0.0;
+	EXPECT_EQ(0.0, velocity.angular.y);// = 0.0;
+	EXPECT_EQ(0.0, velocity.linear.x);// = 0.2;
+	EXPECT_EQ(0.0, velocity.angular.z);// = 0.0;
+	
+}
+
+
+TEST(StateMachine, setStraight) {
+	StateMachine stateMachine;
+
+	geometry_msgs::Twist velocity;
+
+	velocity.linear.y = 0.9;
+	velocity.linear.z = 0.9;
+	velocity.angular.x = 0.9;
+	velocity.angular.y = 0.9;
+	velocity.linear.x = 0.9;
+	velocity.angular.z = 0.9;
+
+	velocity = stateMachine.moveStraight(velocity);
+
+	EXPECT_EQ(0.0, velocity.linear.y);// = 0.0;
+	EXPECT_EQ(0.0, velocity.linear.z);// = 0.0;
+	EXPECT_EQ(0.0, velocity.angular.x);// = 0.0;
+	EXPECT_EQ(0.0, velocity.angular.y);// = 0.0;
+	EXPECT_EQ(0.2, velocity.linear.x);// = 0.2;
+	EXPECT_EQ(0.0, velocity.angular.z);// = 0.0;
+	
+}
+
+
 TEST(StateMachine, verifyGiantAngle) {
 
 	StateMachine stateMachine;
@@ -261,6 +356,45 @@ TEST(StateMachine, DepthCallback) {
 
 	for (int i=0; i<5; i++) {
 		depth = stateMachine.getDepth();
+		ros::spinOnce();
+	}
+
+	if (! (depth == -1)) {
+		valueReturned = true;
+	}
+		
+	EXPECT_TRUE(valueReturned);
+}
+
+
+
+
+
+TEST(StateMachine, DeepDepthCallback) {
+ 
+	StateMachine stateMachine;
+	double depth;
+	bool valueReturned = false;
+	ros::NodeHandle nh;
+
+	image_transport::ImageTransport it(nh);
+	image_transport::Publisher pub = it.advertise("/camera/depth/image_raw", 1);
+
+	cv::Mat image = cv::imread("../catkin_ws/src/project_x_ecobot/test/testImages/depth.png", CV_LOAD_IMAGE_COLOR);
+	sensor_msgs::ImagePtr msg = cv_bridge::CvImage(std_msgs::Header(), "32fc1", image).toImageMsg();
+
+	pub.publish(msg);
+
+
+	image_transport::Publisher pub2 = it.advertise("/camera/rgb/image_raw", 1);
+
+	cv::Mat image2 = cv::imread("../catkin_ws/src/project_x_ecobot/test/testImages/colored.png", CV_LOAD_IMAGE_COLOR);
+	sensor_msgs::ImagePtr msg2 = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image2).toImageMsg();
+
+	pub.publish(msg2);
+
+	for (int i=0; i<5; i++) {
+		depth = stateMachine.getRawDepth();
 		ros::spinOnce();
 	}
 

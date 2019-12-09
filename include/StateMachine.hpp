@@ -114,6 +114,8 @@ done = 5
 
 		bool pickupDebris(State endState = placeholderState, State startState = initialScanForDebris, double registeredDepth = 0.0, double fakeDepth = -1.0);
 
+
+		double getRawDepth();
 		int getState();
 		cv::Mat getImage();
 		double getRobotXPos();
@@ -121,6 +123,10 @@ done = 5
 		double getRobotYaw();
 		double getDepth();
 		double verifyAngle(double rawAngle);
+geometry_msgs::Twist stop(geometry_msgs::Twist velocity);
+geometry_msgs::Twist moveStraight(geometry_msgs::Twist velocity);
+geometry_msgs::Twist turnRight(geometry_msgs::Twist velocity);
+geometry_msgs::Twist turnLeft(geometry_msgs::Twist velocity);
 		//bool finishOnState(int stateToFinishOn);
 
 	private:
