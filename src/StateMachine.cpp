@@ -19,62 +19,62 @@
  *  @file       StateMachine.cpp
  *  @author     Lydia Zoghbi and Ryan Bates
  *  @copyright  Copyright Apache 2.0 License
- *  @date       12/05/2019
+ *  @date       12/09/2019
  *  @version    1.0
  *
  *  @brief      Implementation class of StateMachine class
  *
  */
 
+#include <math.h>
+
 #include <cv_bridge/cv_bridge.h>
+#include <tf/transform_datatypes.h>
 #include <image_transport/image_transport.h>
 
 #include <cmath>
 #include <vector>
 #include <string>
+#include <memory>
+#include <utility>
 #include <iostream>
+#include <algorithm>
 
-#include <math.h>
 #include "ros/ros.h"
 #include "sensor_msgs/Image.h"
 #include "nav_msgs/Odometry.h"
 #include "geometry_msgs/Twist.h"
-#include <tf/transform_datatypes.h>
 
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/imgcodecs/imgcodecs.hpp>
 
 #include "Point.hpp"
-#include "ImageAnalysis.hpp"
+#include "LowXAlg.hpp"
+#include "GreedyAlg.hpp"
 #include "StateMachine.hpp"
+#include "IPlanningAlg.hpp"
+#include "ImageAnalysis.hpp"
 
 // Class constructor for debris collection
 StateMachine::StateMachine(bool startImmediately, bool useLowXAlgorithm) {
 
+	// Initialize readings to 0
 	x = 0;
 	y = 0;
 
+	// Choose which algorithm you want to use, greedy or sorting by distance
 	if (useLowXAlgorithm) {
-		//algorithm = new LowXAlg();
 		algorithm.reset(new LowXAlg());
 	} else {
-		//algorithm = new GreedyAlg();
 		algorithm.reset(new GreedyAlg());
 	}
-
 
 	// Subscribe to RGB images
 	imgSub = nh.subscribe("/camera/rgb/image_raw", 500, &StateMachine::imageRGBCallback, this);
 
-	// Subscribe to depth information
-	
-//it = image_transport::ImageTransport(nh);
-
-	//it = new image_transport::ImageTransport(nh);
-
+	// Subscribe to depth information from RGB-D camera
 	it.reset(new image_transport::ImageTransport(nh));
-	
 	depthSub = it->subscribe("/camera/depth/image_raw", 5, &StateMachine::depthCallback, this);
 
 	// Subscribe to odometry readings
@@ -85,9 +85,7 @@ StateMachine::StateMachine(bool startImmediately, bool useLowXAlgorithm) {
 
 	ROS_INFO_STREAM("Subscriptions made successfully");
 
-	// Call function for running turtlebot to pick up the debris
-	//StateMachine::pickupDebris();
-
+	// If no waiting is needed, start running code (this is added for testing purposes)
 	if (startImmediately) {
 		StateMachine::pickupDebris();
 	}
@@ -103,21 +101,22 @@ void StateMachine::imageRGBCallback(const sensor_msgs::ImageConstPtr& message) {
 	try {
 		cv_ptr = cv_bridge::toCvCopy(message, sensor_msgs::image_encodings::BGR8);
 	} catch (cv_bridge::Exception& e) {
-		ROS_INFO_STREAM("Error");
+		ROS_ERROR_STREAM("Error");
 	}
-	
-	cv::Mat rawIm = cv_ptr->image;
-cv::rectangle(rawIm, cv::Point(0, 0), cv::Point(210, 480), cv::Scalar(0, 0, 0), cv::FILLED, cv::LINE_8);
 
-cv::rectangle(rawIm, cv::Point(430, 0), cv::Point(640, 480), cv::Scalar(0, 0, 0), cv::FILLED, cv::LINE_8);
-	// Call filtering function to start analyzing possiblity of debris existence
-	//lastSnapshot = cv_ptr->image;
-	//cv::imwrite("colored.png", cv_ptr->image);
+	// Extract image
+	cv::Mat rawIm = cv_ptr->image;
+
+	// Add rectangles on image's sides to block the robot from seeing multiple debris at once
+	cv::rectangle(rawIm, cv::Point(0, 0), cv::Point(210, 480), cv::Scalar(0, 0, 0), cv::FILLED, cv::LINE_8);
+	cv::rectangle(rawIm, cv::Point(430, 0), cv::Point(640, 480), cv::Scalar(0, 0, 0), cv::FILLED, cv::LINE_8);
+
+	// Apply filter to image
 	lastSnapshot = imageAnalysis.filter(rawIm);
 
-	// Show image, uncomment if needed
-	//cv::imshow("Window", rawIm);
-	//cv::waitKey(1);
+	// Show image, uncomment if needed for debugging
+	// cv::imshow("Window", rawIm);
+	// cv::waitKey(1);
 }
 
 // Callback function for obtaining robot's odometry measurements
@@ -139,7 +138,7 @@ void StateMachine::odometryCallback(const nav_msgs::Odometry::ConstPtr& message)
 
 // Callback function for obtaining depth information without using PCL library
 void StateMachine::depthCallback(const sensor_msgs::ImageConstPtr& depthMessage) {
-	
+
 	// Create image pointer
 	cv_bridge::CvImagePtr cv_ptr;
 
@@ -147,29 +146,22 @@ void StateMachine::depthCallback(const sensor_msgs::ImageConstPtr& depthMessage)
 	try {
 		cv_ptr = cv_bridge::toCvCopy(depthMessage, sensor_msgs::image_encodings::TYPE_32FC1);
 	} catch (cv_bridge::Exception& e) {
-		ROS_INFO_STREAM("Error");
+		ROS_ERROR_STREAM("Error");
 	}
-	
-	// Call filtering function to start analyzing possiblity of debris existence
-	//lastSnapshot = cv_ptr->image;
-	// cv::imshow("Window", cv_ptr->image);
-	//cv::imwrite("depth.png", cv_ptr->image);
-	//cv::waitKey(10);
 
 	// Obtain depth information on a single pixel in image
 	rawDepth = StateMachine::readDepthData(imageAnalysis.getDebrisImageLocation().getX(), imageAnalysis.getDebrisImageLocation().getY(), depthMessage);
-	//depth = StateMachine::readDepthData(320, 310, depthMessage);
 }
 
-// Function for controlling the turlebot
-// int endState = -1, int startState = 0
+// Function for controlling the turlebot (this is the essence of the robot)
 bool StateMachine::pickupDebris(State endState, State startState, double registeredDepth, double fakeDepth) {
 
+	// Define angular threshold to stop the robot's rotation when needed
+	double angleThreshold = 0.01;
 
-
-
-	double angleThreshold = 0.01;//0.03;//0.087;
+	// Define target Point class for storing information about debris
 	Point currentTarget;
+
 	// Define robot states
 	state = startState;
 
@@ -177,389 +169,355 @@ bool StateMachine::pickupDebris(State endState, State startState, double registe
 	double currentOrientation;
 	double distanceTraveled;
 	double currentDistance;
-	//double registeredDepth;
-	double angle;
 
+	// Number of trash debris detected
 	int trashCount = 0;
 
+	// Current and target angles of robot
+	double angle;
+	double targetAngle = 0.0;
 
-double targetAngle = 0.0;
+	// Adjusted angles, making sure the angles are between 0 and 2PI instead of -PI and PI
+	double effectiveOrientation = 0.0;
+	double targetAngleBin = 0.0;
+	double effectiveOrientationBin = 0.0;
 
-				double effectiveOrientation = 0.0;
-
-
-double targetAngleBin = 0.0;
-
-				double effectiveOrientationBin = 0.0;
-
-
+	// Boolean to keep track of the debris detection to avoid counting one debris multiple times
 	bool haveJustSeenDebris = false;
 
+	// Distance to disposal bin
+	double holeDistance = 0.35;
 
-double holeDistance = 0.35;
-				double calculatedDistance = 0;
+	// Distance from robot to disposal bin
+	double calculatedDistance = 0;
 
 	// Create velocity to publish velocities to turtlebot
 	geometry_msgs::Twist velocity;
 	ros::Rate rate(10);
 
-	// Start by rotating the robot
-	//velocity.linear.x = 0.0;
-	//velocity.linear.y = 0.0;
-	//velocity.linear.z = 0.0;
-	//velocity.angular.x = 0.0;
-	//velocity.angular.y = 0.0;
-	//velocity.angular.z = 0.1;
-
-
+	// Rotate left
 	velocity = turnLeft(velocity);
 	// Publish the velocity to move the robot
 	pub.publish(velocity);
 
+	// If ros is functioning properly, and the state the robot is at is not the final state (after cleaning up)
 	while ((ros::ok()) && !(state == endState)) {
 
 	// Variable for storing distance traveled by robot
 	distanceTraveled = sqrt(x*x + y*y);
-		//ROS_INFO_STREAM("State is " << state);
-		// Switch to modify robot's states
+	ROS_DEBUG_STREAM("State is " << state);
 
-if (fakeDepth < 0) {
+	// If loop added to allow for Level 2 testing integration. If in testing mode we send the depth info instead of callback
+	if (fakeDepth < 0) {
+		depth = rawDepth;
+	} else {
+	depth = fakeDepth;
+	}
 
+	// Switch case to modify robot's states
+	switch(state) {
+		// Keep searching for debris
+		case initialScanForDebris:
 
-	
-depth = rawDepth;
-} else {
-depth = fakeDepth;
-}
+			// If a debris is found in the middle of an image
+			if ((imageAnalysis.getDebrisImageLocation().getX() > 310) && (imageAnalysis.getDebrisImageLocation().getX() < 330)) {
+				// If we have not seen a debris previously
+				if (!haveJustSeenDebris) {
+					haveJustSeenDebris = true;
 
-
-		switch(state) {
-			// Keep searching for debris
-			case initialScanForDebris:
-				// If a debris is found in the middle of an image
-				//ROS_INFO_STREAM("	haveJustSeenDebris is " << haveJustSeenDebris << " and trash count is " << );
-				ROS_INFO_STREAM("	Trash count is " << trashCount);
-				if ((imageAnalysis.getDebrisImageLocation().getX() > 310) && (imageAnalysis.getDebrisImageLocation().getX() < 330)) {
-
-					if (!haveJustSeenDebris) {
-						haveJustSeenDebris = true;
-						// Find depth of debris
-						registeredDepth = depth;
-						// Move towards debris
-						//velocity.linear.x = 0.2;
-						//velocity.angular.z = 0.0;
-						// Switch to state 1
-						Point newTarget(registeredDepth * cos(orientation), registeredDepth * sin(orientation));
-						// take depth and orientation of robot to create point and give to planning algorithm
-						algorithm->push(newTarget);
-						trashCount++;
-						ROS_INFO_STREAM("	We saw new red - registered new target at " << newTarget.getX() << ", " << newTarget.getY() << " at depth " << depth);
-					} else {
-						ROS_INFO_STREAM("	Still seeing same red object.");
-					}
-					//state = approachDebris;
-				} else {
-					haveJustSeenDebris = false;
-					ROS_INFO_STREAM("	No red object seen in center.");
-				}
-
-
-				
-				// if we have turned 90 degrees
-				if (orientation > 1.571) {
-					currentTarget = algorithm->pop(Point(x, y));
-					if ((currentTarget.getX() < 0.0) && (currentTarget.getY() < 0.0)) {
-						state = done;
-						ROS_INFO_STREAM("	STATE TRANSITION: no trash objects left, state is now " << done);
-						//velocity.linear.x = 0.0;
-						//velocity.angular.z = 0.0;
-						velocity = stop(velocity);
-					} else {
-						// get first object from planning algorithm
-						// change state to turn towards first object
-						//velocity.linear.x = 0.0;
-						//velocity.angular.z = -0.1;
-						velocity = turnRight(velocity);
-						state = turnTowardsTarget;
-						ROS_INFO_STREAM("	STATE TRANSITION: turned past 90 degrees, now to state " << turnTowardsTarget);
-					}
-				}
-			break;
-
-			// Move towards debris
-			case approachDebris:
-				// If the robot gets close enough to the debris
-				ROS_INFO_STREAM("	" << state << ": We are " << distanceTraveled << " out of " << registeredDepth);
-				if (distanceTraveled >= (registeredDepth - 0.35)) {
-					// Stop and rotate towards bin
-					//velocity.linear.x = 0;
-					//velocity.angular.z = 0.1;
-					velocity = turnLeft(velocity);
-					// Register current position and orientation
-					currentOrientation = orientation;
-					currentDistance = distanceTraveled;
-					// Switch to state 2
-					state = turnTowardsBin;
-					ROS_INFO_STREAM("	STATE TRANSITION: close to target debris, now to state " << turnTowardsBin);
-				}
-			break;
-
-			// Rotate towards bin
-			case turnTowardsBin:
-				// invalidate depth
-				registeredDepth = 99999999.0;
-				// Find angle to rotate the robot
-
-				targetAngleBin = M_PI - atan((1.5 - y) / (0.2 + x));//targetAngleBin = atan((1.5 - y) / (-0.2 - x));
-				//if ((x + 0.2) > 0.0) {
-				//	targetAngleBin = -1.0 * targetAngleBin;
-				//}
-
-				effectiveOrientationBin = orientation;
-
-				effectiveOrientationBin = verifyAngle(effectiveOrientationBin);
-				targetAngleBin = verifyAngle(targetAngleBin);
-				/*
-				while (effectiveOrientationBin < 0) {
-					effectiveOrientationBin+=2.0*M_PI;
-				}
-
-				while (effectiveOrientationBin > (2.0*M_PI)) {
-					effectiveOrientationBin-=2.0*M_PI;
-				}
-
-				while (targetAngleBin < 0) {
-					targetAngleBin+=2.0*M_PI;
-				}
-
-				while (targetAngleBin > (2.0*M_PI)) {
-					targetAngleBin-=2.0*M_PI;
-				}
-				*/
-
-ROS_INFO_STREAM("	" << state << ": We are pointing " << effectiveOrientationBin << " and want to be at " << targetAngleBin);
-				//angle = imageAnalysis.getRotationAngle(currentOrientation, currentDistance);
-				// If robot turned completely to bin
-				//if (orientation >= angle) {
-				if (((effectiveOrientationBin - targetAngleBin) * (effectiveOrientationBin - targetAngleBin)) < (angleThreshold * angleThreshold)) {
-					// Move to bin
-					//velocity.linear.x = 0.2;
-					//velocity.angular.z = 0;
-					velocity = moveStraight(velocity);
-					// Switch to state 3
-					state = driveTowardsBin;
-					ROS_INFO_STREAM("	STATE TRANSITION: pointed to trash bin, now to state " << driveTowardsBin);
-				}
-			break;
-
-			// Stop before bin
-			case driveTowardsBin:
-				// If we reached close enough to the bin
-				//if ((x <= 0.2) && (y <= 1.5)) {//if ((x <= 0.1) && (y <= 1.4)) {
-				holeDistance = 0.42;//0.5;//.35;
-				calculatedDistance = sqrt(((0.2 + x) * (0.2 + x)) + ((1.5 - y) * (1.5 - y)));
-				ROS_INFO_STREAM("	" << state << ": We are " << calculatedDistance << " out of " << holeDistance);
-				if (calculatedDistance < holeDistance) {
-
-
-					currentTarget = algorithm->pop(Point(x, y));
-					if ((currentTarget.getX() < 0.0) && (currentTarget.getY() < 0.0)) {
-						state = done;
-						ROS_INFO_STREAM("	STATE TRANSITION: no trash objects left, state is now " << done);
-						//velocity.linear.x = 0.0;
-						//velocity.angular.z = 0.0;
-						velocity = stop(velocity);
-					} else {
-						//velocity.linear.x = 0.0;
-						//velocity.angular.z = 0.1;
-						velocity = turnLeft(velocity);
-						state = turnTowardsTarget;
-						ROS_INFO_STREAM("	STATE TRANSITION: close to trash bin, now to state " << turnTowardsTarget);
-					}
-				}
-			break;	
-
-			case turnTowardsTarget:
-				
-
-				targetAngle = atan((currentTarget.getY() - y) / (currentTarget.getX() - x));
-				if ((x - currentTarget.getX()) > 0.0) {
-					targetAngle = -1.0 * targetAngle;
-				}
-
-				effectiveOrientation = orientation;
-
-				effectiveOrientation = verifyAngle(effectiveOrientation);
-				targetAngle = verifyAngle(targetAngle);
-				/*
-				while (effectiveOrientation < 0) {
-					effectiveOrientation+=2.0*M_PI;
-				}
-
-				while (effectiveOrientation > (2.0*M_PI)) {
-					effectiveOrientation-=2.0*M_PI;
-				}
-
-				while (targetAngle < 0) {
-					targetAngle+=2.0*M_PI;
-				}
-
-				while (targetAngle > (2.0*M_PI)) {
-					targetAngle-=2.0*M_PI;
-				}
-				*/
-
-
-
-				ROS_INFO_STREAM("	" << state << ": We are pointing " << effectiveOrientation << " and want to be at " << targetAngle);
-				if (((effectiveOrientation - targetAngle) * (effectiveOrientation - targetAngle)) < (angleThreshold * angleThreshold)) {
-					//velocity.linear.x = 0.2;
-					//velocity.angular.z = 0;
-					velocity = moveStraight(velocity);
+					// Find depth of debris
 					registeredDepth = depth;
-					state = approachDebris;
-					ROS_INFO_STREAM("	STATE TRANSITION: pointed to target, now to state " << approachDebris);
+					// Find position of detected debris
+					Point newTarget(registeredDepth * cos(orientation), registeredDepth * sin(orientation));
+					// Take depth and orientation of robot to create point and give to planning algorithm
+					algorithm->push(newTarget);
+					trashCount++;
+					ROS_DEBUG_STREAM("We saw new red - registered new target at " << newTarget.getX() << ", " << newTarget.getY() << " at depth " << depth);
+					} else {
+						ROS_DEBUG_STREAM("	Still seeing same red object.");
+					}
+				} else {
+					// If we did see a debris previously, don't count the same debris more than once
+					haveJustSeenDebris = false;
+					ROS_DEBUG_STREAM("No red object seen in center.");
 				}
-				
-			break;
-			//case done:
-			//	ROS_INFO_STREAM("	DONE!");
-		}
 
+			// If we have turned 90 degrees
+			if (orientation > 1.571) {
+				currentTarget = algorithm->pop(Point(x, y));
+				if ((currentTarget.getX() < 0.0) && (currentTarget.getY() < 0.0)) {
+					state = done;
+					ROS_DEBUG_STREAM("STATE TRANSITION: no trash objects left, state is now " << done);
+					velocity = stop(velocity);
+				} else {
+					// Get first object from planning algorithm
+					velocity = turnRight(velocity);
+					state = turnTowardsTarget;
+					ROS_DEBUG_STREAM("	STATE TRANSITION: turned past 90 degrees, now to state " << turnTowardsTarget);
+				}
+			}
+		break;
+
+		// Move towards debris state
+		case approachDebris:
+			// If the robot gets close enough to the debris
+			ROS_DEBUG_STREAM("	" << state << ": We are " << distanceTraveled << " out of " << registeredDepth);
+			if (distanceTraveled >= (registeredDepth - 0.35)) {
+
+				// Stop and rotate towards bin
+				velocity = turnLeft(velocity);
+
+				// Register current position and orientation
+				currentOrientation = orientation;
+				currentDistance = distanceTraveled;
+
+				// Switch to state 2
+				state = turnTowardsBin;
+				ROS_DEBUG_STREAM("	STATE TRANSITION: close to target debris, now to state " << turnTowardsBin);
+				}
+			break;
+
+		// Rotate towards bin
+		case turnTowardsBin:
+
+			// Invalidate depth
+			registeredDepth = 99999999.0;
+
+			// Find angle to rotate the robot
+			targetAngleBin = M_PI - atan((1.5 - y) / (0.2 + x));
+			effectiveOrientationBin = orientation;
+			effectiveOrientationBin = verifyAngle(effectiveOrientationBin);
+			targetAngleBin = verifyAngle(targetAngleBin);
+
+			ROS_DEBUG_STREAM("	" << state << ": We are pointing " << effectiveOrientationBin << " and want to be at " << targetAngleBin);
+
+			// If we have rotated enough (square is to keep numbers positive)
+			if (((effectiveOrientationBin - targetAngleBin) * (effectiveOrientationBin - targetAngleBin)) < (angleThreshold * angleThreshold)) {
+
+				// Move to bin
+				velocity = moveStraight(velocity);
+				state = driveTowardsBin;
+				ROS_DEBUG_STREAM("STATE TRANSITION: pointed to trash bin, now to state " << driveTowardsBin);
+				}
+		break;
+
+		// Stop before bin
+		case driveTowardsBin:
+
+			// If we reached close enough to the bin
+			holeDistance = 0.42;
+			calculatedDistance = sqrt(((0.2 + x) * (0.2 + x)) + ((1.5 - y) * (1.5 - y)));
+			ROS_DEBUG_STREAM("	" << state << ": We are " << calculatedDistance << " out of " << holeDistance);
+
+			// If we reached close enough to the bin
+			if (calculatedDistance < holeDistance) {
+				currentTarget = algorithm->pop(Point(x, y));
+				// If no debris are left, the robot goes to its final state
+				if ((currentTarget.getX() < 0.0) && (currentTarget.getY() < 0.0)) {
+					state = done;
+					ROS_INFO_STREAM("STATE TRANSITION: no trash objects left, state is now " << done);
+					velocity = stop(velocity);
+				} else {
+					// If some debris are left, the robot will go to the next one
+					velocity = turnLeft(velocity);
+					state = turnTowardsTarget;
+					ROS_DEBUG_STREAM("STATE TRANSITION: close to trash bin, now to state " << turnTowardsTarget);
+					}
+				}
+		break;
+
+		// Rotate towards the debris
+		case turnTowardsTarget:
+
+			// Getting angle to rotate towards debris
+			targetAngle = atan((currentTarget.getY() - y) / (currentTarget.getX() - x));
+			if ((x - currentTarget.getX()) > 0.0) {
+				targetAngle = -1.0 * targetAngle;
+			}
+			effectiveOrientation = orientation;
+			effectiveOrientation = verifyAngle(effectiveOrientation);
+			targetAngle = verifyAngle(targetAngle);
+
+			ROS_DEBUG_STREAM("	" << state << ": We are pointing " << effectiveOrientation << " and want to be at " << targetAngle);
+
+			// If we are close to the correct angle
+			if (((effectiveOrientation - targetAngle) * (effectiveOrientation - targetAngle)) < (angleThreshold * angleThreshold)) {
+				velocity = moveStraight(velocity);
+				registeredDepth = depth;
+				state = approachDebris;
+				ROS_DEBUG_STREAM("STATE TRANSITION: pointed to target, now to state " << approachDebris);
+				}
+
+		break;
+	}
+
+	// Publish all computed velocities
 	pub.publish(velocity);
-	ros::spinOnce();// TODO: see if there is a better loop sleep for a specific rate here
+	ros::spinOnce();
 	rate.sleep();
 	}
-if (state == endState) {
-	return true;
-} else {
-	return false;
+
+	// If we reached the final clean state, return true, otherwise false
+	if (state == endState) {
+		return true;
+	} else {
+		return false;
+	}
 }
-}
 
-
-
+// Function for stopping the robot
 geometry_msgs::Twist StateMachine::stop(geometry_msgs::Twist velocity) {
-	
+
 	velocity.linear.y = 0.0;
 	velocity.linear.z = 0.0;
 	velocity.angular.x = 0.0;
 	velocity.angular.y = 0.0;
-velocity.linear.x = 0.0;
-						velocity.angular.z = 0.0;
+	velocity.linear.x = 0.0;
+	velocity.angular.z = 0.0;
+
 	return velocity;
 }
 
-
+// Function for turning the robot to the left
 geometry_msgs::Twist StateMachine::turnLeft(geometry_msgs::Twist velocity) {
-	
+
 	velocity.linear.y = 0.0;
 	velocity.linear.z = 0.0;
 	velocity.angular.x = 0.0;
 	velocity.angular.y = 0.0;
-velocity.linear.x = 0.0;
-						velocity.angular.z = 0.1;
+	velocity.linear.x = 0.0;
+	velocity.angular.z = 0.1;
+
 	return velocity;
 }
 
+// Function for turning the robot to the right
 geometry_msgs::Twist StateMachine::turnRight(geometry_msgs::Twist velocity) {
-	
+
 	velocity.linear.y = 0.0;
 	velocity.linear.z = 0.0;
 	velocity.angular.x = 0.0;
 	velocity.angular.y = 0.0;
-velocity.linear.x = 0.0;
-						velocity.angular.z = -0.1;
+	velocity.linear.x = 0.0;
+	velocity.angular.z = -0.1;
+
 	return velocity;
 }
 
+// Function for moving the robot forward
 geometry_msgs::Twist StateMachine::moveStraight(geometry_msgs::Twist velocity) {
-	
+
 	velocity.linear.y = 0.0;
 	velocity.linear.z = 0.0;
 	velocity.angular.x = 0.0;
 	velocity.angular.y = 0.0;
 	velocity.linear.x = 0.2;
 	velocity.angular.z = 0.0;
+
 	return velocity;
 }
-// Obtain depth data without using PCL Library, code obtained from link below
-// (https://answers.ros.org/question/90696/get-depth-from-kinect-sensor-in-gazebo-simulator/https://answers.ros.org/question/90696/get-depth-from-kinect-sensor-in-gazebo-simulator/) 
+
+// Obtain depth data without using PCL Library, code inspired from link below
+// (https://answers.ros.org/question/90696/get-depth-from-kinect-sensor-in-gazebo-simulator/https://answers.ros.org/question/90696/get-depth-from-kinect-sensor-in-gazebo-simulator/)
 double StateMachine::readDepthData(unsigned int heightPos, unsigned int widthPos, sensor_msgs::ImageConstPtr depthImage) {
 
+	// Defined needed structure
 	typedef union U_FloatParse {
 		float floatData;
 		unsigned char byteData[4];
 	} U_FloatConvert;
 
-    // If position is invalid
-    if ((heightPos >= depthImage->height) || (widthPos >= depthImage->width))
-        return -1;
-    int index = (heightPos*depthImage->step) + (widthPos*(depthImage->step/depthImage->width));
-    // If data is 4 byte floats (rectified depth image)
-    if ((depthImage->step/depthImage->width) == 4) {
-        U_FloatConvert depthData;
-    //    int i, endianCheck = 1;
-int endianCheck = 1;
+	// If position is invalid
+	if ((heightPos >= depthImage->height) || (widthPos >= depthImage->width))
+        	return -1;
+		ROS_WARN_STREAM("Position invalid on image");
+    	int index = (heightPos*depthImage->step) + (widthPos*(depthImage->step/depthImage->width));
+    	// If data is 4 byte floats (rectified depth image)
+    	if ((depthImage->step/depthImage->width) == 4) {
+     	   U_FloatConvert depthData;
+
+	int endianCheck = 1;
+
         // If big endian
-        if ((depthImage->is_bigendian && (*(char*)&endianCheck != 1)) ||  // Both big endian
-           ((!depthImage->is_bigendian) && (*(char*)&endianCheck == 1))) { // Both lil endian
+        if ((depthImage->is_bigendian && (*reinterpret_cast<char*>(&endianCheck) != 1)) ||  // Both big endian
+           ((!depthImage->is_bigendian) && (*reinterpret_cast<char*>(&endianCheck) == 1))) { // Both lil endian
             for (auto i = 0; i < 4; i++)
                 depthData.byteData[i] = depthImage->data[index + i];
             // Make sure data is valid (check if NaN)
             if (depthData.floatData == depthData.floatData)
-                return double(depthData.floatData);
+		return static_cast<double>(depthData.floatData);
             return -1;  // If depth data invalid
+	    ROS_WARN_STREAM("No debris detected");
         }
-        // else, one little endian, one big endian
-        for (auto i = 0; i < 4; i++) 
+        // Else, one little endian, one big endian
+        for (auto i = 0; i < 4; i++)
             depthData.byteData[i] = depthImage->data[3 + index - i];
         // Make sure data is valid (check if NaN)
         if (depthData.floatData == depthData.floatData)
-            return double(depthData.floatData);
+           return static_cast<double>(depthData.floatData);
         return -1;  // If depth data invalid
-    }
-    // Otherwise, data is 2 byte integers (raw depth image)
-   int tempVal;
-   // If big endian
-   if (depthImage->is_bigendian)
-       tempVal = (depthImage->data[index] << 8) + depthImage->data[index + 1];
-   // If little endian
-   else
-       tempVal = depthImage->data[index] + (depthImage->data[index + 1] << 8);
-   // Make sure data is valid (check if NaN)
-   if (tempVal == tempVal)
-       return tempVal;
-   return -1;  // If depth data invalid
+	ROS_WARN_STREAM("No debris detected");
+    	}
+
+	// Otherwise, data is 2 byte integers (raw depth image)
+	int tempVal;
+	// If big endian
+   	if (depthImage->is_bigendian)
+     	  tempVal = (depthImage->data[index] << 8) + depthImage->data[index + 1];
+   	// If little endian
+   	else
+     	  tempVal = depthImage->data[index] + (depthImage->data[index + 1] << 8);
+ 	  // Make sure data is valid (check if NaN)
+  	 if (tempVal == tempVal)
+    	   return tempVal;
+   	return -1;  // If depth data invalid
+	ROS_WARN_STREAM("No debris detected");
 }
 
+// Function for setting the state of the robot
 int StateMachine::getState() {
 	return state;
 }
 
+// Function for getting images for testing purposes
 cv::Mat StateMachine::getImage() {
 	return lastSnapshot;
 }
 
-
-//bool StateMachine::finishOnState(int stateToFinishOn) {
-//return false;
-//}
+// Function for veriyfing that the angle falls between 0 and 2PI
 double StateMachine::verifyAngle(double rawAngle) {
-while (rawAngle < 0) {
-					rawAngle+=2.0*M_PI;
-				}
+	while (rawAngle < 0) {
+		rawAngle+=2.0*M_PI;
+	}
 
-				while (rawAngle > (2.0*M_PI)) {
-					rawAngle-=2.0*M_PI;
-				}
-return rawAngle;
+	while (rawAngle > (2.0*M_PI)) {
+		rawAngle -= 2.0*M_PI;
+	}
+
+	return rawAngle;
 }
 
+// Function for getting the depth information from the depth callback function
+double StateMachine::getRawDepth() {
+	return rawDepth;
+}
 
-double StateMachine::getRawDepth() {return rawDepth;}
+// Function for getting the depth information from the depth callback function (assigned differently than getRawDepth)
+double StateMachine::getDepth() {
+	return depth;
+}
 
-double StateMachine::getDepth() {return depth;}
-double StateMachine::getRobotXPos() {return x;}
-double StateMachine::getRobotYPos() {return y;}
-double StateMachine::getRobotYaw() {return orientation;}
+// Function for getting robot's x position
+double StateMachine::getRobotXPos() {
+	return x;
+}
+
+// Function for getting the robot's y position
+double StateMachine::getRobotYPos() {
+	return y;
+}
+
+// Function for getting the robot's orientation
+double StateMachine::getRobotYaw() {
+	return orientation;
+}

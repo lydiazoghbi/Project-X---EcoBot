@@ -16,39 +16,28 @@
   *
   */
 /**
- *  @file       Point.cpp
+ *  @file       ImageAnalysis.cpp
  *  @author     Lydia Zoghbi
  *  @copyright  Copyright Apache 2.0 License
- *  @date       11/25/2019
+ *  @date       12/09/2019
  *  @version    1.0
  *
- *  @brief      Implementation class of VelocityGenerator class
+ *  @brief      Implementation class of ImageAnalysis class
  *
  */
 
-//#include "DebrisCollection.hpp"
-#include <ros/ros.h>
-#include <vector>
-#include <cv_bridge/cv_bridge.h>
-#include <image_transport/image_transport.h>
-#include <string>
-#include "Point.hpp"
-#include <iostream>
-#include "ImageAnalysis.hpp"
-#include <cv_bridge/cv_bridge.h>
-#include <image_transport/image_transport.h>
+// #include <ros/ros.h>
+// #include <cv_bridge/cv_bridge.h>
+// #include <image_transport/image_transport.h>
+// #include <cv_bridge/cv_bridge.h>
+// #include <image_transport/image_transport.h>
+
+#include <math.h>
 
 #include <cmath>
 #include <vector>
 #include <string>
 #include <iostream>
-
-#include <math.h>
-#include "ros/ros.h"
-#include "sensor_msgs/Image.h"
-#include "nav_msgs/Odometry.h"
-#include "geometry_msgs/Twist.h"
-#include <tf/transform_datatypes.h>
 
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -57,11 +46,13 @@
 #include "Point.hpp"
 #include "ImageAnalysis.hpp"
 
-ImageAnalysis::ImageAnalysis() {};
+// Constructor for the image analysis class
+ImageAnalysis::ImageAnalysis() {}
 
+// Function to obtain angle by which robot needs to rotate
 double ImageAnalysis::getRotationAngle(double currentOrientation, double currentDistance) {
 
-	// Get Robot's (x,y) position 
+	// Get Robot's (x,y) position
 	double xRobotPosition = currentDistance * cos(currentOrientation);
 	double yRobotPosition = currentDistance * sin(currentOrientation);
 
@@ -75,17 +66,18 @@ double ImageAnalysis::getRotationAngle(double currentOrientation, double current
 
 }
 
+// Function for applying HSV filter to RGB image
 cv::Mat ImageAnalysis::filter(cv::Mat rawImage) {
- 
+
 	cv::Mat hsvImage, thresholdImage;
 
-	// Convert image from RGB to HSV	
+	// Convert image from RGB to HSV
 	cv::cvtColor(rawImage, hsvImage, cv::COLOR_BGR2HSV);
 
 	// Apply Hue, Saturation and Value thresholds on HSV image
 	cv::inRange(hsvImage, cv::Scalar(0, 33, 50), cv::Scalar(6, 255, 153), thresholdImage);
 
-	// Show image, uncomment if needed
+	// Show image, uncomment if needed for debugging
 	// cv::imshow("FilteredImage", thresholdImage);
 	// cv::waitKey(1);
 
@@ -95,22 +87,23 @@ cv::Mat ImageAnalysis::filter(cv::Mat rawImage) {
 	return thresholdImage;
 }
 
+// Function for detecting the debris in the filtered image
 void ImageAnalysis::detectDebris(cv::Mat filteredImage) {
 
-	// Apply moments function to obtain centroid of debris 
+	// Apply moments function to obtain centroid of debris
 	cv::Moments moment = moments(filteredImage, true);
 	cv::Point cvPoint(moment.m10/moment.m00, moment.m01/moment.m00);
 
 	// If a debris is not detected in the image return -1 as error
 	if (cv::countNonZero(filteredImage) < 1) {
 		imageDebrisLocation = Point(-1.0, -1.0);
-	}
+	} else {
 	// If a debris is detected, return the position of debris in image to get depth
-	else {
 	imageDebrisLocation = Point(cvPoint.x, cvPoint.y);
 	}
 }
 
+// Getter for location of debris detected by the detectDebris function
 Point ImageAnalysis::getDebrisImageLocation() {
 	return imageDebrisLocation;
 }

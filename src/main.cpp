@@ -19,32 +19,47 @@
  *  @file       main.cpp
  *  @author     Lydia Zoghbi and Ryan Bates
  *  @copyright  Copyright Apache 2.0 License
- *  @date       12/02/2019
+ *  @date       12/09/2019
  *  @version    1.0
  *
  *  @brief      Main function
  *
  */
 
-#include <vector>
-#include "ros/ros.h"
-#include "StateMachine.hpp"
-#include <Point.hpp>
-#include <string>
+#include <math.h>
+
 #include <cv_bridge/cv_bridge.h>
+#include <tf/transform_datatypes.h>
 #include <image_transport/image_transport.h>
-#include "sensor_msgs/CompressedImage.h"
-#include "sensor_msgs/image_encodings.h"
-#include "sensor_msgs/Image.h"
+
+#include <cmath>
+#include <vector>
+#include <string>
+#include <memory>
+#include <utility>
 #include <iostream>
+#include <algorithm>
+
+#include "ros/ros.h"
+#include "sensor_msgs/Image.h"
+#include "nav_msgs/Odometry.h"
+#include "geometry_msgs/Twist.h"
+
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include "geometry_msgs/Twist.h"
+#include <opencv2/imgcodecs/imgcodecs.hpp>
+
+#include "Point.hpp"
+#include "LowXAlg.hpp"
+#include "GreedyAlg.hpp"
+#include "StateMachine.hpp"
+#include "IPlanningAlg.hpp"
+#include "ImageAnalysis.hpp"
 
 /**
 *  @brief      Main loop
 *  @param      Argc and argv
-*  @return     None, exit status as 0
+*  @return     None, exit status 0 if successful
 */
 int main(int argc, char **argv) {
 	// Initalize ROS node
@@ -52,7 +67,7 @@ int main(int argc, char **argv) {
 
 	// Initialize node handle
 	ros::NodeHandle nh;
-	//ros::Rate loop_rate(1);
+	// ros::Rate loop_rate(1);
 
 	// Call StateMachine constructor and output successful initialization
 	StateMachine stateMachine(false);
