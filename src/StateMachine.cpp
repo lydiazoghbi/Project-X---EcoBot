@@ -212,7 +212,7 @@ double holeDistance = 0.35;
 	//velocity.angular.z = 0.1;
 
 
-	velocity = stop(velocity);
+	velocity = turnLeft(velocity);
 	// Publish the velocity to move the robot
 	pub.publish(velocity);
 
