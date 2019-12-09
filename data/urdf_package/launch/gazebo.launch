@@ -5,6 +5,6 @@
     name="spawn_model"
     pkg="gazebo_ros"
     type="spawn_model"
-    args="-file $(find urdf_package)/urdf/Part1.urdf -urdf -model Part1"
+    args="-file $(find urdf_package)/data/urdf/Part1.urdf -urdf -model Part1"
     output="screen" />
 </launch>
