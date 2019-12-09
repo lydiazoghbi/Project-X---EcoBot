@@ -1,0 +1,136 @@
+\hypertarget{classGreedyAlg}{}\section{Greedy\+Alg Class Reference}
+\label{classGreedyAlg}\index{Greedy\+Alg@{Greedy\+Alg}}
+
+
+{\ttfamily \#include $<$Greedy\+Alg.\+hpp$>$}
+
+
+
+Inheritance diagram for Greedy\+Alg\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=151pt]{classGreedyAlg__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Greedy\+Alg\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=151pt]{classGreedyAlg__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classGreedyAlg_acd3e65e201585039b6d5135d8a75fe24}{$\sim$\+Greedy\+Alg} ()
+\begin{DoxyCompactList}\small\item\em Destructor for the \hyperlink{classGreedyAlg}{Greedy\+Alg} class. \end{DoxyCompactList}\item 
+void \hyperlink{classGreedyAlg_a5048e07294c60d726fdd7c82f0647dc6}{create\+Plan} (\hyperlink{classPoint}{Point} robot\+Location)
+\begin{DoxyCompactList}\small\item\em Plan creation for how to pick up the debris. \end{DoxyCompactList}\item 
+void \hyperlink{classGreedyAlg_a4ce065242ae545ec81ea4599c3b5fcdd}{push} (\hyperlink{classPoint}{Point} debris\+Location)
+\begin{DoxyCompactList}\small\item\em Function for adding the debris into a debris vector. \end{DoxyCompactList}\item 
+\hyperlink{classPoint}{Point} \hyperlink{classGreedyAlg_a72f7ee716b3c2010070e0f729780d203}{pop} (\hyperlink{classPoint}{Point} robot\+Location)
+\begin{DoxyCompactList}\small\item\em Function for extracting the debris on the top of the vector. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Greedy\+Alg@{Greedy\+Alg}!````~Greedy\+Alg@{$\sim$\+Greedy\+Alg}}
+\index{````~Greedy\+Alg@{$\sim$\+Greedy\+Alg}!Greedy\+Alg@{Greedy\+Alg}}
+\subsubsection[{\texorpdfstring{$\sim$\+Greedy\+Alg()}{~GreedyAlg()}}]{\setlength{\rightskip}{0pt plus 5cm}Greedy\+Alg\+::$\sim$\+Greedy\+Alg (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classGreedyAlg_acd3e65e201585039b6d5135d8a75fe24}{}\label{classGreedyAlg_acd3e65e201585039b6d5135d8a75fe24}
+
+
+Destructor for the \hyperlink{classGreedyAlg}{Greedy\+Alg} class. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em None} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+None 
+\end{DoxyReturn}
+
+
+\subsection{Member Function Documentation}
+\index{Greedy\+Alg@{Greedy\+Alg}!create\+Plan@{create\+Plan}}
+\index{create\+Plan@{create\+Plan}!Greedy\+Alg@{Greedy\+Alg}}
+\subsubsection[{\texorpdfstring{create\+Plan(\+Point robot\+Location)}{createPlan(Point robotLocation)}}]{\setlength{\rightskip}{0pt plus 5cm}void Greedy\+Alg\+::create\+Plan (
+\begin{DoxyParamCaption}
+\item[{{\bf Point}}]{robot\+Location}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\hypertarget{classGreedyAlg_a5048e07294c60d726fdd7c82f0647dc6}{}\label{classGreedyAlg_a5048e07294c60d726fdd7c82f0647dc6}
+
+
+Plan creation for how to pick up the debris. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Robot\textquotesingle{}s} & current (x,y) location \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+None 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classIPlanningAlg_abae4e6198042e0acf9abec46e624cd14}{I\+Planning\+Alg}.
+
+\index{Greedy\+Alg@{Greedy\+Alg}!pop@{pop}}
+\index{pop@{pop}!Greedy\+Alg@{Greedy\+Alg}}
+\subsubsection[{\texorpdfstring{pop(\+Point robot\+Location)}{pop(Point robotLocation)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Point} Greedy\+Alg\+::pop (
+\begin{DoxyParamCaption}
+\item[{{\bf Point}}]{robot\+Location}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\hypertarget{classGreedyAlg_a72f7ee716b3c2010070e0f729780d203}{}\label{classGreedyAlg_a72f7ee716b3c2010070e0f729780d203}
+
+
+Function for extracting the debris on the top of the vector. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Robot\textquotesingle{}s} & current (x,y) location \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Position of debris 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classIPlanningAlg_a4f881df301b194754b1b81ddccad1ed4}{I\+Planning\+Alg}.
+
+\index{Greedy\+Alg@{Greedy\+Alg}!push@{push}}
+\index{push@{push}!Greedy\+Alg@{Greedy\+Alg}}
+\subsubsection[{\texorpdfstring{push(\+Point debris\+Location)}{push(Point debrisLocation)}}]{\setlength{\rightskip}{0pt plus 5cm}void Greedy\+Alg\+::push (
+\begin{DoxyParamCaption}
+\item[{{\bf Point}}]{debris\+Location}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\hypertarget{classGreedyAlg_a4ce065242ae545ec81ea4599c3b5fcdd}{}\label{classGreedyAlg_a4ce065242ae545ec81ea4599c3b5fcdd}
+
+
+Function for adding the debris into a debris vector. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Observed} & debris location \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+None 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classIPlanningAlg_a2bda969cf89a041cb9fbbc7574e7b94f}{I\+Planning\+Alg}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/lydiazoghbi/catkin\+\_\+ws/src/project\+\_\+x\+\_\+ecobot/include/\hyperlink{GreedyAlg_8hpp}{Greedy\+Alg.\+hpp}\end{DoxyCompactItemize}

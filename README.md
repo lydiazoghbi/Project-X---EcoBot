@@ -91,7 +91,7 @@ sudo ldconfig
 ```
 If you're not confident with your installation because you chose to ignore some previous errors and hope for the best, this [link](https://www.learnopencv.com/install-opencv3-on-ubuntu/) provides at the end a small test example which you can run to make sure you have everything set up correctly.
 
-## Poject Demonstration
+## Project Demonstration
 You can see here our turtlebot in cleaning action. The environment of the robot was designed using Solidworks to provide us some flexibility with the specific requirements of our idea, and exported as a URDF package. A scooper was attached to the robot via 3 rectangular blocks. They were added by directy modifying the turtlebot's URDF, and saving it to this repository. The code was changed to have the launch file call the turtlebot in this repository, and not the one from your system. The robot first scans the entire region in search for debris, and as they are detected, they are stored in a vector. A Kinect RGB-D camera is used to obtain the images, and a simple HSV filter (for simplicity's sake) is applied to detect the debris. Once a debris is detected, a callback function determines the depth of the debris, which effectively represents the distance between the robot and the debris. The orientation of the robot and depth of the debris are used as guiding information to pick it up. The robot's odometry readings are used to localize its position in the world frame. For simplicity's sake, we assume a no-slip condition. The robot will move towards the debris, rotate towards the disposal bin, and head towards it until the debris is thrown out. It will then rotate to the other debris, and follow the same routine until all debris are disposed of.
 
 ## Build Instructions
@@ -142,7 +142,7 @@ rosbag play ./cleaner.bag
 ```
 If you wish to inspect the topics, type in a new terminal:
 ```
-rosptopic echo <topic_name>
+rostopic echo <topic_name>
 ```
 Note that the camera readings are disabled for the recording from the launch file, since the size of the data saved will be humongous. If you want to play the rosbag files and see the output in Gazebo, copy the compressed rosbag file from this [link](https://drive.google.com/drive/folders/1IastyQtKzbnmYYO9zhNUdQvRHhwVX-AE?usp=sharing) into the results directory, and type in a terminal (don't forget to uncompress!):
 ```
@@ -172,7 +172,7 @@ sudo apt install doxygen
 ```
 Chances are high that you aready have it, but nevertheless, never a bad idea to double check. Then run:
 ```
-cd ~/catkin_ws/src/project_x_ecobot
+cd ~/catkin_ws/src/project_x_ecobot/docs
 doxygen DoxyFile
 ```
 This will generate doxygen files in the /docs folder. To view them in a browser, type:

@@ -1,0 +1,128 @@
+\hypertarget{classImageAnalysis}{}\section{Image\+Analysis Class Reference}
+\label{classImageAnalysis}\index{Image\+Analysis@{Image\+Analysis}}
+
+
+{\ttfamily \#include $<$Image\+Analysis.\+hpp$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classImageAnalysis_a9a05460445d26581927b73f26b454db1}{Image\+Analysis} ()
+\begin{DoxyCompactList}\small\item\em Constructor for \hyperlink{classImageAnalysis}{Image\+Analysis} class. \end{DoxyCompactList}\item 
+double \hyperlink{classImageAnalysis_a71f0d5076443121ea81c7142e854cb32}{get\+Rotation\+Angle} (double current\+Orientation, double current\+Distance)
+\begin{DoxyCompactList}\small\item\em Obtaining the angle by which the robot should rotate. \end{DoxyCompactList}\item 
+cv\+::\+Mat \hyperlink{classImageAnalysis_ad138d68fd0f31fa0e896321d56a4d7e0}{filter} (cv\+::\+Mat raw\+Image)
+\begin{DoxyCompactList}\small\item\em Filter function using H\+SV. \end{DoxyCompactList}\item 
+void \hyperlink{classImageAnalysis_a8bab2847e38371a8a0bbeb7a4ae46dd8}{detect\+Debris} (cv\+::\+Mat filtered\+Image)
+\begin{DoxyCompactList}\small\item\em Debris detection function. \end{DoxyCompactList}\item 
+\hyperlink{classPoint}{Point} \hyperlink{classImageAnalysis_aedf9a6a46c20c2dc01579d80df30ee7e}{get\+Debris\+Image\+Location} ()
+\begin{DoxyCompactList}\small\item\em Getter function. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Image\+Analysis@{Image\+Analysis}!Image\+Analysis@{Image\+Analysis}}
+\index{Image\+Analysis@{Image\+Analysis}!Image\+Analysis@{Image\+Analysis}}
+\subsubsection[{\texorpdfstring{Image\+Analysis()}{ImageAnalysis()}}]{\setlength{\rightskip}{0pt plus 5cm}Image\+Analysis\+::\+Image\+Analysis (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classImageAnalysis_a9a05460445d26581927b73f26b454db1}{}\label{classImageAnalysis_a9a05460445d26581927b73f26b454db1}
+
+
+Constructor for \hyperlink{classImageAnalysis}{Image\+Analysis} class. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em None} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+None 
+\end{DoxyReturn}
+
+
+\subsection{Member Function Documentation}
+\index{Image\+Analysis@{Image\+Analysis}!detect\+Debris@{detect\+Debris}}
+\index{detect\+Debris@{detect\+Debris}!Image\+Analysis@{Image\+Analysis}}
+\subsubsection[{\texorpdfstring{detect\+Debris(cv\+::\+Mat filtered\+Image)}{detectDebris(cv::Mat filteredImage)}}]{\setlength{\rightskip}{0pt plus 5cm}void Image\+Analysis\+::detect\+Debris (
+\begin{DoxyParamCaption}
+\item[{cv\+::\+Mat}]{filtered\+Image}
+\end{DoxyParamCaption}
+)}\hypertarget{classImageAnalysis_a8bab2847e38371a8a0bbeb7a4ae46dd8}{}\label{classImageAnalysis_a8bab2847e38371a8a0bbeb7a4ae46dd8}
+
+
+Debris detection function. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Filtered} & image using H\+SV \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+None 
+\end{DoxyReturn}
+\index{Image\+Analysis@{Image\+Analysis}!filter@{filter}}
+\index{filter@{filter}!Image\+Analysis@{Image\+Analysis}}
+\subsubsection[{\texorpdfstring{filter(cv\+::\+Mat raw\+Image)}{filter(cv::Mat rawImage)}}]{\setlength{\rightskip}{0pt plus 5cm}cv\+::\+Mat Image\+Analysis\+::filter (
+\begin{DoxyParamCaption}
+\item[{cv\+::\+Mat}]{raw\+Image}
+\end{DoxyParamCaption}
+)}\hypertarget{classImageAnalysis_ad138d68fd0f31fa0e896321d56a4d7e0}{}\label{classImageAnalysis_ad138d68fd0f31fa0e896321d56a4d7e0}
+
+
+Filter function using H\+SV. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em R\+GB} & image \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Filtered image 
+\end{DoxyReturn}
+\index{Image\+Analysis@{Image\+Analysis}!get\+Debris\+Image\+Location@{get\+Debris\+Image\+Location}}
+\index{get\+Debris\+Image\+Location@{get\+Debris\+Image\+Location}!Image\+Analysis@{Image\+Analysis}}
+\subsubsection[{\texorpdfstring{get\+Debris\+Image\+Location()}{getDebrisImageLocation()}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Point} Image\+Analysis\+::get\+Debris\+Image\+Location (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classImageAnalysis_aedf9a6a46c20c2dc01579d80df30ee7e}{}\label{classImageAnalysis_aedf9a6a46c20c2dc01579d80df30ee7e}
+
+
+Getter function. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em None} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Position of debris in image frame 
+\end{DoxyReturn}
+\index{Image\+Analysis@{Image\+Analysis}!get\+Rotation\+Angle@{get\+Rotation\+Angle}}
+\index{get\+Rotation\+Angle@{get\+Rotation\+Angle}!Image\+Analysis@{Image\+Analysis}}
+\subsubsection[{\texorpdfstring{get\+Rotation\+Angle(double current\+Orientation, double current\+Distance)}{getRotationAngle(double currentOrientation, double currentDistance)}}]{\setlength{\rightskip}{0pt plus 5cm}double Image\+Analysis\+::get\+Rotation\+Angle (
+\begin{DoxyParamCaption}
+\item[{double}]{current\+Orientation, }
+\item[{double}]{current\+Distance}
+\end{DoxyParamCaption}
+)}\hypertarget{classImageAnalysis_a71f0d5076443121ea81c7142e854cb32}{}\label{classImageAnalysis_a71f0d5076443121ea81c7142e854cb32}
+
+
+Obtaining the angle by which the robot should rotate. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Robot\textquotesingle{}s} & current orientation \\
+\hline
+{\em Distance} & from robot to debris location \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The angle by which robot should rotate 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/lydiazoghbi/catkin\+\_\+ws/src/project\+\_\+x\+\_\+ecobot/include/\hyperlink{ImageAnalysis_8hpp}{Image\+Analysis.\+hpp}\end{DoxyCompactItemize}
