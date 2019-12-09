@@ -49,7 +49,7 @@ TEST(GreedyAlg, firstDebris) {
 	alg.push(debrisFar);
 	alg.push(debrisNear);
 
-	alg.createPlan();
+	alg.createPlan(robotStartLocation);
 
 	// no need to plan for the greedy algorithm - it is dynamic
 

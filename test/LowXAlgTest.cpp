@@ -51,7 +51,7 @@ TEST(LowXAlg, firstDebris) {
 	alg.push(debrisFarX);
 	alg.push(debrisLowX);
 
-	alg.createPlan();
+	alg.createPlan(robotStartLocation);
 
 	// no need to plan for the greedy algorithm - it is dynamic
 
