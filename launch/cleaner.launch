@@ -1,4 +1,5 @@
 <launch>
+<<<<<<< HEAD
 
   <arg name="base" default="kobuki"/>
   <arg name="stacks" default="hexagons"/>
@@ -30,4 +31,9 @@
         args="-a -x /camera(.*) -O $(find project_x_ecobot)/results/cleaner.bag" output="screen"
         if="$(arg record)" />
 
+=======
+    <include file = "$(find turtlebot_gazebo)/launch/turtlebot_world.launch"> 
+    	<arg name="world_file" value = "$(find project_x_ecobot)/World/cleaning_world.world"/>
+    </include>
+>>>>>>> master
 </launch> 

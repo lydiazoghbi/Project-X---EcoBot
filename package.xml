@@ -18,22 +18,36 @@
   <build_depend>roscpp</build_depend>
   <build_depend>rospy</build_depend>
   <build_depend>std_msgs</build_depend>
+<<<<<<< HEAD
   <build_depend>sensor_msgs</build_depend>
   <build_depend>rostest</build_depend>
   <build_depend>tf</build_depend>
+=======
+  <build_depend>turtlebot_gazebo</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>opencv</build_depend>
+  <build_depend>rostest</build_depend>
+>>>>>>> master
 
   <build_export_depend>cv_bridge</build_export_depend>
   <build_export_depend>image_transport</build_export_depend>
   <build_export_depend>roscpp</build_export_depend>
   <build_export_depend>rospy</build_export_depend>
   <build_export_depend>std_msgs</build_export_depend>
+<<<<<<< HEAD
   <build_export_depend>sensor_msgs</build_export_depend>
+=======
+  <build_export_depend>turtlebot_gazebo</build_export_depend>
+  <build_export_depend>sensor_msgs</build_export_depend>
+  <build_export_depend>opencv</build_export_depend>
+>>>>>>> master
 
   <exec_depend>cv_bridge</exec_depend>
   <exec_depend>image_transport</exec_depend>
   <exec_depend>roscpp</exec_depend>
   <exec_depend>rospy</exec_depend>
   <exec_depend>std_msgs</exec_depend>
+<<<<<<< HEAD
   <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>rostest</exec_depend>
   <exec_depend>tf</exec_depend>
@@ -48,6 +62,15 @@
   <test_depend>image_transport</test_depend>
   <test_depend>sensor_msgs</test_depend>
   <test_depend>tf</test_depend>
+=======
+  <exec_depend>turtlebot_gazebo</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>opencv</exec_depend>
+  <exec_depend>rostest</exec_depend>
+
+  <test_depend>rosunit</test_depend>
+  <test_depend>gtest</test_depend>
+>>>>>>> master
 
   <export>
   </export>

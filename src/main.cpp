@@ -19,13 +19,18 @@
  *  @file       main.cpp
  *  @author     Lydia Zoghbi and Ryan Bates
  *  @copyright  Copyright Apache 2.0 License
+<<<<<<< HEAD
  *  @date       12/09/2019
+=======
+ *  @date       12/02/2019
+>>>>>>> master
  *  @version    1.0
  *
  *  @brief      Main function
  *
  */
 
+<<<<<<< HEAD
 #include <math.h>
 
 #include <cv_bridge/cv_bridge.h>
@@ -55,10 +60,19 @@
 #include "StateMachine.hpp"
 #include "IPlanningAlg.hpp"
 #include "ImageAnalysis.hpp"
+=======
+#include <iostream>
+#include "Point.hpp"
+#include "DebrisCollection.hpp"
+#include "VelocityGenerator.hpp"
+#include <cv_bridge/cv_bridge.h>
+#include "ros/ros.h"
+>>>>>>> master
 
 /**
 *  @brief      Main loop
 *  @param      Argc and argv
+<<<<<<< HEAD
 *  @return     None, exit status 0 if successful
 */
 int main(int argc, char **argv) {
@@ -72,6 +86,19 @@ int main(int argc, char **argv) {
 	// Call StateMachine constructor and output successful initialization
 	StateMachine stateMachine(false);
 	stateMachine.pickupDebris();
+=======
+*  @return     None, exit status as 0
+*/
+int main(int argc, char **argv) {
+	// Initalize ROS node
+	ros::init(argc, argv, "DebrisCollection");
+
+	// Initialize node handle
+	ros::NodeHandle nh;
+
+	// Call DebrisCollection constructor
+	DebrisCollection debrisCollection;
+>>>>>>> master
 	ROS_INFO_STREAM("Node initialized.");
 
 	return 0;
