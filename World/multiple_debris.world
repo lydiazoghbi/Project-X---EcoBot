@@ -133,18 +133,18 @@
       <pose frame=''>0 0 0 0 -0 0</pose>
     </model>
     <state world_name='default'>
-      <sim_time>508 226000000</sim_time>
-      <real_time>59 702336534</real_time>
-      <wall_time>1575865914 864105015</wall_time>
-      <iterations>58785</iterations>
+      <sim_time>578 414000000</sim_time>
+      <real_time>70 510903043</real_time>
+      <wall_time>1575868804 671337045</wall_time>
+      <iterations>70188</iterations>
       <model name='Part1'>
-        <pose frame=''>-0.599471 -0.6 -0.000774 -1.5708 -0 0.000274</pose>
+        <pose frame=''>-0.599242 -0.600007 -0.001892 -1.5708 3e-06 0.000398</pose>
         <scale>1 1 1</scale>
         <link name='urdf_package'>
-          <pose frame=''>-0.599471 -0.6 -0.000774 -1.5708 -0 0.000274</pose>
+          <pose frame=''>-0.599242 -0.600007 -0.001892 -1.5708 3e-06 0.000398</pose>
           <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 -9.80005 -1.3e-05 -6e-06 -0</acceleration>
-          <wrench>-1.1e-05 2.4e-05 -56907.9 0 -0 0</wrench>
+          <acceleration>0 0 -9.80005 -1.9e-05 3e-06 0</acceleration>
+          <wrench>4.2e-05 -1e-05 -56907.9 0 -0 0</wrench>
         </link>
       </model>
       <model name='ground_plane'>
@@ -158,20 +158,20 @@
         </link>
       </model>
       <model name='trash_unit_cylinder_0'>
-        <pose frame=''>0.81831 1.24073 0.549223 0.000121 -7.9e-05 0.00192</pose>
+        <pose frame=''>0.82062 1.23866 0.548112 -6.9e-05 0.000328 0.002879</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose frame=''>0.81831 1.24073 0.549223 0.000121 -7.9e-05 0.00192</pose>
+          <pose frame=''>0.82062 1.23866 0.548112 -6.9e-05 0.000328 0.002879</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>0 0 -9.8 0 -0 0</acceleration>
           <wrench>0 0 -0.098 0 -0 0</wrench>
         </link>
       </model>
       <model name='trash_unit_cylinder_0_clone_0'>
-        <pose frame=''>1.14901 0.071529 0.549227 0.000232 2e-05 0.002908</pose>
+        <pose frame=''>1.72474 0.47953 0.548102 0.00021 3.9e-05 0.00466</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose frame=''>1.14901 0.071529 0.549227 0.000232 2e-05 0.002908</pose>
+          <pose frame=''>1.72474 0.47953 0.548102 0.00021 3.9e-05 0.00466</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>0 0 -9.8 0 -0 0</acceleration>
           <wrench>0 0 -0.098 0 -0 0</wrench>
