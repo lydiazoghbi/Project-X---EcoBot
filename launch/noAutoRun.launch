@@ -5,12 +5,12 @@
   <arg name="3d_sensor" default="kinect"/>
 
     <include file = "$(find gazebo_ros)/launch/empty_world.launch"> 
-    	<arg name="world_name" value = "$(find project_x_ecobot)/World/multiple_debris.world"/>
+    	<arg name="world_name" value = "$(find project_x_ecobot)/data/World/multiple_debris.world"/>
     </include>
   
   <arg name="record" default="false" />
 
-  <arg name="urdf_file" default="$(find xacro)/xacro.py '$(find project_x_ecobot)/urdf_package/modifiedKobuki/kobuki_hexagons_astra.urdf.xacro'" />
+  <arg name="urdf_file" default="$(find xacro)/xacro.py '$(find project_x_ecobot)/data/urdf_package/modifiedKobuki/kobuki_hexagons_astra.urdf.xacro'" />
   <param name="robot_description" command="$(arg urdf_file)" />
   
   <!-- Gazebo model spawner -->
