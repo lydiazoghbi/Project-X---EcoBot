@@ -22,6 +22,7 @@ Point LowXAlg::pop(Point robotLocation) {
 	Point closestPoint = debrisVector.front();
 	int closestPointIndex = 0;
 	int indexCounter = 0;
+	if (debrisVector.size() > 0) {
 	for (auto a : debrisVector) {
 
 		if (a.getX() < closestPoint.getX()) {
@@ -32,6 +33,9 @@ Point LowXAlg::pop(Point robotLocation) {
 	}
 	debrisVector.erase(debrisVector.begin()+closestPointIndex);
 	return closestPoint;
+} else {
+		return Point(-1, -1);
+	}
 }
 /*
 		bool sortClosest(Point a, Point b) {

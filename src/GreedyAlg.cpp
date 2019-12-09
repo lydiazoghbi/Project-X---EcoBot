@@ -22,6 +22,7 @@ Point GreedyAlg::pop(Point robotLocation) {
 	Point closestPoint = debrisVector.front();
 	int closestPointIndex = 0;
 	int indexCounter = 0;
+	if (debrisVector.size() > 0) {
 	for (auto a : debrisVector) {
 		double squaredADistance = ((a.getX() - lastRobotX) * (a.getX() - lastRobotX)) + ((a.getY() - lastRobotY) * (a.getY() - lastRobotY));
 		double squaredBDistance = ((closestPoint.getX() - lastRobotX) * (closestPoint.getX() - lastRobotX)) + ((closestPoint.getY() - lastRobotY) * (closestPoint.getY() - lastRobotY));
@@ -34,6 +35,9 @@ Point GreedyAlg::pop(Point robotLocation) {
 	}
 	debrisVector.erase(debrisVector.begin()+closestPointIndex);
 	return closestPoint;
+	} else {
+		return Point(-1, -1);
+	}
 }
 /*
 		bool sortClosest(Point a, Point b) {
