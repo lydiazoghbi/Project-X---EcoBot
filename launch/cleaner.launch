@@ -27,7 +27,7 @@
   <node pkg="project_x_ecobot" name="MainNode" type="MainNode"/>
 
   <node pkg="rosbag" type="record" name="record"
-        args="-a -x /camera(.*) -O $(find project_x_ecobot)/results/walker.bag" output="screen"
+        args="-a -x /camera(.*) -O $(find project_x_ecobot)/results/cleaner.bag" output="screen"
         if="$(arg record)" />
 
 </launch> 

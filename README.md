@@ -137,14 +137,22 @@ roscore
 ```
 In a new terminal, type:
 ```
-cd ~/catkin_ws/src/turtlebot_walker/results
-rosbag play ./walker.bag
+cd ~/catkin_ws/src/project_x_ecobot/results
+rosbag play ./cleaner.bag
 ```
 If you wish to inspect the topics, type in a new terminal:
 ```
 rosptopic echo <topic_name>
 ```
-Note that the camera readings are disabled for the recording from the launch file, since the size of the data saved will be humongous. 
+Note that the camera readings are disabled for the recording from the launch file, since the size of the data saved will be humongous. If you want to play the rosbag files and see the output in Gazebo, copy the compressed rosbag file from this [link](https://drive.google.com/drive/folders/1IastyQtKzbnmYYO9zhNUdQvRHhwVX-AE?usp=sharing) into the results directory, and type in a terminal (don't forget to uncompress!):
+```
+roslaunch project_x_ecobot noAutoRun.launch 
+```
+Then in a new terminal, type:
+```
+cd ~/catkin_ws/src/project_x_ecobot/results
+rosbag play ./cleaner.bag
+```
 
 ## Running GTests
 The tests coverage is shown on the Coveralls badge at the top of the repository, however if you want to run them yourself and look for the tests that pass, then simply run in a terminal:
