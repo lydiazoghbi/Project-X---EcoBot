@@ -41,6 +41,136 @@ The Apache Software Foundation (http://www.apache.org/).
 #include "StateMachine.hpp"
 
 
+TEST(StateMachine, initialScanForDebrisStasis) {
+/*
+	double x;
+	double y;
+	double yaw;
+
+	StateMachine stateMachine;
+	ros::NodeHandle nh;
+
+	ros::Publisher odom_pub = nh.advertise<nav_msgs::Odometry>("/odom", 50);
+
+	nav_msgs::Odometry odom;
+
+	odom.pose.pose.position.x = 0.5;
+	odom.pose.pose.position.y = 1.5;
+	geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(M_PI);
+	odom.pose.pose.orientation = odom_quat;
+
+	//odom_pub.publish(odom);
+
+
+image_transport::ImageTransport it(nh);
+	image_transport::Publisher pub = it.advertise("/camera/rgb/image_raw", 1);
+
+	cv::Mat image = cv::imread("../catkin_ws/src/project_x_ecobot/test/testImages/colored.png", CV_LOAD_IMAGE_COLOR);
+	sensor_msgs::ImagePtr msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image).toImageMsg();
+
+	pub.publish(msg);
+
+
+	//for (int i=0; i<5; i++) {
+	//	x = stateMachine.getRobotXPos();
+	//	y = stateMachine.getRobotYPos();
+	//	yaw = stateMachine.getRobotYaw();
+	//	ros::spinOnce();
+	//}
+
+	EXPECT_TRUE(stateMachine.pickupDebris(StateMachine::State::approachDebris, StateMachine::State::turnTowardsBin, 0.01, 0.01));
+	//EXPECT_TRUE(stateMachine.pickupDebris(StateMachine::State::turnTowardsBin, StateMachine::State::approachDebris, 0.46));
+	
+	for (int i=0; i<5; i++) {
+		x = stateMachine.getRobotXPos();
+		y = stateMachine.getRobotYPos();
+		yaw = stateMachine.getRobotYaw();
+		ros::spinOnce();
+	}
+	
+
+	//EXPECT_EQ(0.5, x);
+	//EXPECT_EQ(1.5, y);
+	//EXPECT_EQ(0.0, yaw);
+*/
+
+}
+
+
+TEST(StateMachine, initialScanForDebris) {
+/*
+	double x;
+	double y;
+	double yaw;
+
+	StateMachine stateMachine;
+	ros::NodeHandle nh;
+
+	ros::Publisher odom_pub = nh.advertise<nav_msgs::Odometry>("/odom", 50);
+
+	nav_msgs::Odometry odom;
+
+	odom.pose.pose.position.x = 0.5;
+	odom.pose.pose.position.y = 1.5;
+	geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(M_PI);
+	odom.pose.pose.orientation = odom_quat;
+
+	//odom_pub.publish(odom);
+
+
+image_transport::ImageTransport it(nh);
+	image_transport::Publisher pub = it.advertise("/camera/rgb/image_raw", 1);
+
+	cv::Mat image = cv::imread("../catkin_ws/src/project_x_ecobot/test/testImages/colored.png", CV_LOAD_IMAGE_COLOR);
+	sensor_msgs::ImagePtr msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image).toImageMsg();
+
+	pub.publish(msg);
+
+
+	//for (int i=0; i<5; i++) {
+	//	x = stateMachine.getRobotXPos();
+	//	y = stateMachine.getRobotYPos();
+	//	yaw = stateMachine.getRobotYaw();
+	//	ros::spinOnce();
+	//}
+
+	EXPECT_TRUE(stateMachine.pickupDebris(StateMachine::State::approachDebris, StateMachine::State::turnTowardsBin, 0.01, 0.01));
+	//EXPECT_TRUE(stateMachine.pickupDebris(StateMachine::State::turnTowardsBin, StateMachine::State::approachDebris, 0.46));
+	
+	for (int i=0; i<5; i++) {
+		x = stateMachine.getRobotXPos();
+		y = stateMachine.getRobotYPos();
+		yaw = stateMachine.getRobotYaw();
+		ros::spinOnce();
+	}
+	
+
+	//EXPECT_EQ(0.5, x);
+	//EXPECT_EQ(1.5, y);
+	//EXPECT_EQ(0.0, yaw);
+
+*/
+}
+
+
+
+TEST(StateMachine, verifyGiantAngle) {
+
+	StateMachine stateMachine;
+EXPECT_NEAR((2.0*M_PI), stateMachine.verifyAngle(4.0*M_PI), 0.01);
+
+
+}
+
+TEST(StateMachine, verifyNegativeAngle) {
+
+	StateMachine stateMachine;
+EXPECT_NEAR((2.0*M_PI) - 1.0, stateMachine.verifyAngle(-1.0), 0.01);
+
+
+}
+
+
 TEST(StateMachine, ImageRGBCallback) {
 
 	StateMachine stateMachine;

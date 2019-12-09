@@ -157,13 +157,16 @@ void StateMachine::depthCallback(const sensor_msgs::ImageConstPtr& depthMessage)
 	//cv::waitKey(10);
 
 	// Obtain depth information on a single pixel in image
-	depth = StateMachine::readDepthData(imageAnalysis.getDebrisImageLocation().getX(), imageAnalysis.getDebrisImageLocation().getY(), depthMessage);
+	rawDepth = StateMachine::readDepthData(imageAnalysis.getDebrisImageLocation().getX(), imageAnalysis.getDebrisImageLocation().getY(), depthMessage);
 	//depth = StateMachine::readDepthData(320, 310, depthMessage);
 }
 
 // Function for controlling the turlebot
 // int endState = -1, int startState = 0
-bool StateMachine::pickupDebris(State endState, State startState, double registeredDepth) {
+bool StateMachine::pickupDebris(State endState, State startState, double registeredDepth, double fakeDepth) {
+
+
+
 
 	double angleThreshold = 0.01;//0.03;//0.087;
 	Point currentTarget;
@@ -217,6 +220,17 @@ double holeDistance = 0.35;
 	distanceTraveled = sqrt(x*x + y*y);
 		//ROS_INFO_STREAM("State is " << state);
 		// Switch to modify robot's states
+
+if (fakeDepth < 0) {
+
+
+	
+depth = rawDepth;
+} else {
+depth = fakeDepth;
+}
+
+
 		switch(state) {
 			// Keep searching for debris
 			case initialScanForDebris:
@@ -234,7 +248,7 @@ double holeDistance = 0.35;
 						//velocity.angular.z = 0.0;
 						// Switch to state 1
 						Point newTarget(registeredDepth * cos(orientation), registeredDepth * sin(orientation));
-						// TODO: take depth and orientation of robot to create point and give to planning algorithm
+						// take depth and orientation of robot to create point and give to planning algorithm
 						algorithm->push(newTarget);
 						trashCount++;
 						ROS_INFO_STREAM("	We saw new red - registered new target at " << newTarget.getX() << ", " << newTarget.getY() << " at depth " << depth);
@@ -248,7 +262,7 @@ double holeDistance = 0.35;
 				}
 
 
-				// TODO
+				
 				// if we have turned 90 degrees
 				if (orientation > 1.571) {
 					currentTarget = algorithm->pop(Point(x, y));
@@ -298,7 +312,9 @@ double holeDistance = 0.35;
 
 				effectiveOrientationBin = orientation;
 
-
+				effectiveOrientationBin = verifyAngle(effectiveOrientationBin);
+				targetAngleBin = verifyAngle(targetAngleBin);
+				/*
 				while (effectiveOrientationBin < 0) {
 					effectiveOrientationBin+=2.0*M_PI;
 				}
@@ -314,6 +330,7 @@ double holeDistance = 0.35;
 				while (targetAngleBin > (2.0*M_PI)) {
 					targetAngleBin-=2.0*M_PI;
 				}
+				*/
 
 ROS_INFO_STREAM("	" << state << ": We are pointing " << effectiveOrientationBin << " and want to be at " << targetAngleBin);
 				//angle = imageAnalysis.getRotationAngle(currentOrientation, currentDistance);
@@ -364,7 +381,9 @@ ROS_INFO_STREAM("	" << state << ": We are pointing " << effectiveOrientationBin 
 
 				effectiveOrientation = orientation;
 
-
+				effectiveOrientation = verifyAngle(effectiveOrientation);
+				targetAngle = verifyAngle(targetAngle);
+				/*
 				while (effectiveOrientation < 0) {
 					effectiveOrientation+=2.0*M_PI;
 				}
@@ -380,7 +399,7 @@ ROS_INFO_STREAM("	" << state << ": We are pointing " << effectiveOrientationBin 
 				while (targetAngle > (2.0*M_PI)) {
 					targetAngle-=2.0*M_PI;
 				}
-
+				*/
 
 
 
@@ -411,50 +430,50 @@ if (state == endState) {
 
 // Obtain depth data without using PCL Library, code obtained from link below
 // (https://answers.ros.org/question/90696/get-depth-from-kinect-sensor-in-gazebo-simulator/https://answers.ros.org/question/90696/get-depth-from-kinect-sensor-in-gazebo-simulator/) 
-double StateMachine::readDepthData(unsigned int height_pos, unsigned int width_pos, sensor_msgs::ImageConstPtr depth_image) {
+double StateMachine::readDepthData(unsigned int heightPos, unsigned int widthPos, sensor_msgs::ImageConstPtr depthImage) {
 
 	typedef union U_FloatParse {
-		float float_data;
-		unsigned char byte_data[4];
+		float floatData;
+		unsigned char byteData[4];
 	} U_FloatConvert;
 
     // If position is invalid
-    if ((height_pos >= depth_image->height) || (width_pos >= depth_image->width))
+    if ((heightPos >= depthImage->height) || (widthPos >= depthImage->width))
         return -1;
-    int index = (height_pos*depth_image->step) + (width_pos*(depth_image->step/depth_image->width));
+    int index = (heightPos*depthImage->step) + (widthPos*(depthImage->step/depthImage->width));
     // If data is 4 byte floats (rectified depth image)
-    if ((depth_image->step/depth_image->width) == 4) {
-        U_FloatConvert depth_data;
-        int i, endian_check = 1;
+    if ((depthImage->step/depthImage->width) == 4) {
+        U_FloatConvert depthData;
+        int i, endianCheck = 1;
         // If big endian
-        if ((depth_image->is_bigendian && (*(char*)&endian_check != 1)) ||  // Both big endian
-           ((!depth_image->is_bigendian) && (*(char*)&endian_check == 1))) { // Both lil endian
-            for (i = 0; i < 4; i++)
-                depth_data.byte_data[i] = depth_image->data[index + i];
+        if ((depthImage->is_bigendian && (*(char*)&endianCheck != 1)) ||  // Both big endian
+           ((!depthImage->is_bigendian) && (*(char*)&endianCheck == 1))) { // Both lil endian
+            for (auto i = 0; i < 4; i++)
+                depthData.byteData[i] = depthImage->data[index + i];
             // Make sure data is valid (check if NaN)
-            if (depth_data.float_data == depth_data.float_data)
-                return double(depth_data.float_data);
+            if (depthData.floatData == depthData.floatData)
+                return double(depthData.floatData);
             return -1;  // If depth data invalid
         }
         // else, one little endian, one big endian
         for (i = 0; i < 4; i++) 
-            depth_data.byte_data[i] = depth_image->data[3 + index - i];
+            depthData.byteData[i] = depthImage->data[3 + index - i];
         // Make sure data is valid (check if NaN)
-        if (depth_data.float_data == depth_data.float_data)
-            return double(depth_data.float_data);
+        if (depthData.floatData == depthData.floatData)
+            return double(depthData.floatData);
         return -1;  // If depth data invalid
     }
     // Otherwise, data is 2 byte integers (raw depth image)
-   int temp_val;
+   int tempVal;
    // If big endian
-   if (depth_image->is_bigendian)
-       temp_val = (depth_image->data[index] << 8) + depth_image->data[index + 1];
+   if (depthImage->is_bigendian)
+       tempVal = (depthImage->data[index] << 8) + depthImage->data[index + 1];
    // If little endian
    else
-       temp_val = depth_image->data[index] + (depth_image->data[index + 1] << 8);
+       tempVal = depthImage->data[index] + (depthImage->data[index + 1] << 8);
    // Make sure data is valid (check if NaN)
-   if (temp_val == temp_val)
-       return temp_val;
+   if (tempVal == tempVal)
+       return tempVal;
    return -1;  // If depth data invalid
 }
 
@@ -470,7 +489,16 @@ cv::Mat StateMachine::getImage() {
 //bool StateMachine::finishOnState(int stateToFinishOn) {
 //return false;
 //}
+double StateMachine::verifyAngle(double rawAngle) {
+while (rawAngle < 0) {
+					rawAngle+=2.0*M_PI;
+				}
 
+				while (rawAngle > (2.0*M_PI)) {
+					rawAngle-=2.0*M_PI;
+				}
+return rawAngle;
+}
 
 double StateMachine::getDepth() {return depth;}
 double StateMachine::getRobotXPos() {return x;}

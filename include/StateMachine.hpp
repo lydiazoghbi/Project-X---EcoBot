@@ -110,9 +110,9 @@ done = 5
  		*  @param      Depth image from RGB-D camera
  		*  @return     Depth of specified pixel on image
  		*/
-		double readDepthData(unsigned int height_pos, unsigned int width_pos, sensor_msgs::ImageConstPtr depth_image);
+		double readDepthData(unsigned int heightPos, unsigned int widthPos, sensor_msgs::ImageConstPtr depthImage);
 
-		bool pickupDebris(State endState = placeholderState, State startState = initialScanForDebris, double registeredDepth = 0.0);
+		bool pickupDebris(State endState = placeholderState, State startState = initialScanForDebris, double registeredDepth = 0.0, double fakeDepth = -1.0);
 
 		int getState();
 		cv::Mat getImage();
@@ -120,7 +120,7 @@ done = 5
 		double getRobotYPos();
 		double getRobotYaw();
 		double getDepth();
-
+		double verifyAngle(double rawAngle);
 		//bool finishOnState(int stateToFinishOn);
 
 	private:
@@ -139,6 +139,7 @@ State state;
 		double orientation;
 
 		double depth;
+double rawDepth;
 
 		double x;
 		double y;
