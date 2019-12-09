@@ -16,63 +16,58 @@
   *
   */
 /**
- *  @file       VelocityGenerator.hpp
- *  @author     Lydia Zoghbi
+ *  @file       GreedyAlg.hpp
+ *  @author     Lydia Zoghbi and Ryan Bates
  *  @copyright  Copyright Apache 2.0 License
- *  @date       11/25/2019
+ *  @date       12/09/2019
  *  @version    1.0
  *
- *  @brief      Header file for ImageAnalysis class
+ *  @brief      Header file for GreedyAlg class
  *
  */
 
 #ifndef INCLUDE_GREEDYALG_HPP_
 #define INCLUDE_GREEDYALG_HPP_
 
-//#include "DebrisCollection.hpp"
-#include <ros/ros.h>
 #include <vector>
-#include <cv_bridge/cv_bridge.h>
-#include <image_transport/image_transport.h>
-#include <string>
-#include "Point.hpp"
-#include <iostream>
-
-#include <cv_bridge/cv_bridge.h>
-#include <image_transport/image_transport.h>
-
-#include <cmath>
-#include <vector>
-#include <string>
-#include <iostream>
-
-#include <math.h>
-#include "ros/ros.h"
-#include "sensor_msgs/Image.h"
-#include "nav_msgs/Odometry.h"
-#include "geometry_msgs/Twist.h"
-#include <tf/transform_datatypes.h>
-
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/imgcodecs/imgcodecs.hpp>
+#include <algorithm>
 
 #include "Point.hpp"
 #include "IPlanningAlg.hpp"
 
-#include <vector>
-
 class GreedyAlg : public IPlanningAlg {
+
 	private:
-		//double lastRobotX;
-		//double lastRobotY;
 		std::vector<Point> debrisVector;
+
 	public:
-		~GreedyAlg();		
-		
+		/**
+ 		*  @brief      Destructor for the GreedyAlg class
+ 		*  @param      None
+ 		*  @return     None
+ 		*/
+		~GreedyAlg();
+
+		/**
+ 		*  @brief      Plan creation for how to pick up the debris
+ 		*  @param      Robot's current (x,y) location
+ 		*  @return     None
+ 		*/
 		void createPlan(Point robotLocation);
+
+		/**
+ 		*  @brief      Function for adding the debris into a debris vector
+ 		*  @param      Observed debris location
+ 		*  @return     None
+ 		*/
 		void push(Point debrisLocation);
+
+		/**
+ 		*  @brief      Function for extracting the debris on the top of the vector
+ 		*  @param      Robot's current (x,y) location
+ 		*  @return     Position of debris
+ 		*/
 		Point pop(Point robotLocation);
 };
-//bool sortClosest(Point a, Point b);
-#endif //  INCLUDE_GREEDYALG_HPP
+
+#endif  // INCLUDE_GREEDYALG_HPP_

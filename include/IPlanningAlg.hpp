@@ -16,56 +16,45 @@
   *
   */
 /**
- *  @file       VelocityGenerator.hpp
- *  @author     Lydia Zoghbi
+ *  @file       Point.hpp
+ *  @author     Lydia Zoghbi and Ryan Bates
  *  @copyright  Copyright Apache 2.0 License
- *  @date       11/25/2019
+ *  @date       12/09/2019
  *  @version    1.0
  *
- *  @brief      Header file for ImageAnalysis class
+ *  @brief      Header file for IPlanningAlg.hpp
  *
  */
 
 #ifndef INCLUDE_IPLANNINGALG_HPP_
 #define INCLUDE_IPLANNINGALG_HPP_
 
-//#include "DebrisCollection.hpp"
-#include <ros/ros.h>
 #include <vector>
-#include <cv_bridge/cv_bridge.h>
-#include <image_transport/image_transport.h>
-#include <string>
-#include "Point.hpp"
-#include <iostream>
-
-#include <cv_bridge/cv_bridge.h>
-#include <image_transport/image_transport.h>
-
-#include <cmath>
-#include <vector>
-#include <string>
-#include <iostream>
-
-#include <math.h>
-#include "ros/ros.h"
-#include "sensor_msgs/Image.h"
-#include "nav_msgs/Odometry.h"
-#include "geometry_msgs/Twist.h"
-#include <tf/transform_datatypes.h>
-
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/imgcodecs/imgcodecs.hpp>
-
 #include "Point.hpp"
 
 class IPlanningAlg {
 
 	public:
-		//virtual ~IPlanningAlg() = 0;		
+		/**
+ 		*  @brief      Virtual function for creating Plan
+ 		*  @param      Robot's (x,y) location
+ 		*  @return     None
+ 		*/
 		virtual void createPlan(Point robotLocation) = 0;
+
+		/**
+ 		*  @brief      Virtual function pusing debris into debris vector
+ 		*  @param      Debris current location
+ 		*  @return     None
+ 		*/
 		virtual void push(Point debrisLocation) = 0;
+
+		/**
+ 		*  @brief      Virtual function reading and removing top element of debris vector
+ 		*  @param      Robot's (x,y) location
+ 		*  @return     None
+ 		*/
 		virtual Point pop(Point robotLocation) = 0;
 };
 
-#endif //  INCLUDE_IPLANNINGALG_HPP
+#endif  // INCLUDE_IPLANNINGALG_HPP_

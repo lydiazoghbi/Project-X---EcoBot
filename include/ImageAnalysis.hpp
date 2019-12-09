@@ -16,7 +16,7 @@
   *
   */
 /**
- *  @file       VelocityGenerator.hpp
+ *  @file       ImageAnalysis.hpp
  *  @author     Lydia Zoghbi
  *  @copyright  Copyright Apache 2.0 License
  *  @date       11/25/2019
@@ -29,29 +29,12 @@
 #ifndef INCLUDE_IMAGEANALYSIS_HPP_
 #define INCLUDE_IMAGEANALYSIS_HPP_
 
-//#include "DebrisCollection.hpp"
-#include <ros/ros.h>
-#include <vector>
-#include <cv_bridge/cv_bridge.h>
-#include <image_transport/image_transport.h>
-#include <string>
-#include "Point.hpp"
-#include <iostream>
-
-#include <cv_bridge/cv_bridge.h>
-#include <image_transport/image_transport.h>
+#include <math.h>
 
 #include <cmath>
 #include <vector>
 #include <string>
 #include <iostream>
-
-#include <math.h>
-#include "ros/ros.h"
-#include "sensor_msgs/Image.h"
-#include "nav_msgs/Odometry.h"
-#include "geometry_msgs/Twist.h"
-#include <tf/transform_datatypes.h>
 
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -65,18 +48,41 @@ class ImageAnalysis {
 		Point imageDebrisLocation;
 
 	public:
-
+		/**
+ 		*  @brief      Constructor for ImageAnalysis class
+		*  @param      None
+ 		*  @return     None
+ 		*/
 		ImageAnalysis();
 
+		/**
+ 		*  @brief      Obtaining the angle by which the robot should rotate
+		*  @param      Robot's current orientation
+		*  @param      Distance from robot to debris location
+ 		*  @return     The angle by which robot should rotate
+ 		*/
 		double getRotationAngle(double currentOrientation, double currentDistance);
 
+		/**
+ 		*  @brief      Filter function using HSV
+		*  @param      RGB image
+ 		*  @return     Filtered image
+ 		*/
 		cv::Mat filter(cv::Mat rawImage);
 
+		/**
+ 		*  @brief      Debris detection function
+		*  @param      Filtered image using HSV
+ 		*  @return     None
+ 		*/
 		void detectDebris(cv::Mat filteredImage);
 
+		/**
+ 		*  @brief      Getter function
+		*  @param      None
+ 		*  @return     Position of debris in image frame
+ 		*/
 		Point getDebrisImageLocation();
-
-
 };
 
-#endif //  INCLUDE_IMAGEANALYSIS_HPP
+#endif  // INCLUDE_IMAGEANALYSIS_HPP_

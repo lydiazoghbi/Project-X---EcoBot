@@ -17,9 +17,9 @@
   */
 /**
  *  @file       StateMachine.hpp
- *  @author     Lydia Zoghbi
+ *  @author     Lydia Zoghbi and Ryan Bates
  *  @copyright  Copyright Apache 2.0 License
- *  @date       12/05/2019
+ *  @date       12/09/2019
  *  @version    1.0
  *
  *  @brief      Header file for StateMachine class
@@ -29,12 +29,19 @@
 #ifndef INCLUDE_STATEMACHINE_HPP_
 #define INCLUDE_STATEMACHINE_HPP_
 
+#include <math.h>
+
 #include <cv_bridge/cv_bridge.h>
+#include <tf/transform_datatypes.h>
 #include <image_transport/image_transport.h>
 
-#include <iostream>
+#include <cmath>
 #include <vector>
 #include <string>
+#include <memory>
+#include <utility>
+#include <iostream>
+#include <algorithm>
 
 #include "ros/ros.h"
 #include "sensor_msgs/Image.h"
@@ -45,41 +52,38 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/imgcodecs/imgcodecs.hpp>
 
-#include "IPlanningAlg.hpp"
-#include "GreedyAlg.hpp"
-#include "LowXAlg.hpp"
-
 #include "Point.hpp"
+#include "LowXAlg.hpp"
+#include "GreedyAlg.hpp"
+#include "IPlanningAlg.hpp"
 #include "ImageAnalysis.hpp"
-#include <memory>
-#include <utility>
-
-/**
- *  @brief      Elements and members of StateMachine class
- */
 
 class StateMachine {
 
 	public:
-enum State: int {
-placeholderState = -1,
-	initialScanForDebris = 0,
-approachDebris = 1,
-turnTowardsBin = 2,
-driveTowardsBin = 3,
 
-turnTowardsTarget = 4,
-done = 5
-
-
-
-};
 		/**
- 		*  @brief      Constructor
+ 		*  @brief      Enum state elements
  		*  @param      None
+ 		*  @return     Enum
+ 		*/
+		enum State: int {
+			placeholderState = -1,
+			initialScanForDebris = 0,
+			approachDebris = 1,
+			turnTowardsBin = 2,
+			driveTowardsBin = 3,
+			turnTowardsTarget = 4,
+			done = 5
+		};
+
+		/**
+ 		*  @brief      Constructor for StateMachine
+ 		*  @param      Boolean for starting immediately or waiting
+ 		*  @param      Boolean for choosing which algorithm to use
  		*  @return     None
  		*/
-		StateMachine(bool startImmediately = false, bool useLowXAlgorithm = false);
+		explicit StateMachine(bool startImmediately = false, bool useLowXAlgorithm = false);
 
 		/**
  		*  @brief      Callback function to obtain the images
@@ -89,7 +93,7 @@ done = 5
 		void imageRGBCallback(const sensor_msgs::ImageConstPtr& message);
 
 		/**
- 		*  @brief      Callback function to obtain the images
+ 		*  @brief      Callback function to obtain the odometry
  		*  @param      A ros message which is odometry message
  		*  @return     Turtlebot position and orientation to the subscriber, nothing explicit from 
 		*              function
@@ -112,41 +116,123 @@ done = 5
  		*/
 		double readDepthData(unsigned int heightPos, unsigned int widthPos, sensor_msgs::ImageConstPtr depthImage);
 
+		/**
+ 		*  @brief      Function for running the main ros loop
+ 		*  @param      State enum for a placeholderState
+ 		*  @param      State enum for the end state
+ 		*  @param      Depth parameter, added for testing purposes
+ 		*  @param      Depth parameter, added for testing purposes
+ 		*  @return     Boolean true on successful loop termination
+ 		*/
 		bool pickupDebris(State endState = placeholderState, State startState = initialScanForDebris, double registeredDepth = 0.0, double fakeDepth = -1.0);
 
-
+		/**
+ 		*  @brief      Getter function for taking depth as input
+ 		*  @param      None
+ 		*  @return     Double depth
+ 		*/
 		double getRawDepth();
+
+		/**
+ 		*  @brief      Getter function for reading robot's state
+ 		*  @param      None
+ 		*  @return     Integer robot's state
+ 		*/
 		int getState();
+
+		/**
+ 		*  @brief      Getter function for taking in the image
+ 		*  @param      None
+ 		*  @return     Returned image
+ 		*/
 		cv::Mat getImage();
+
+		/**
+ 		*  @brief      Getter function for obtaining robot's x position
+ 		*  @param      None
+ 		*  @return     Double x position
+ 		*/
 		double getRobotXPos();
+
+		/**
+ 		*  @brief      Getter function for obtaining robot's y position
+ 		*  @param      None
+ 		*  @return     Double y position
+ 		*/
 		double getRobotYPos();
+
+		/**
+ 		*  @brief      Getter function for obtaining robot's yaw angle (orientation)
+ 		*  @param      None
+ 		*  @return     Orientattion
+ 		*/
 		double getRobotYaw();
+
+		/**
+ 		*  @brief      Getter function for obtaining depth read from camera
+ 		*  @param      None
+ 		*  @return     Double depth value
+ 		*/
 		double getDepth();
+
+		/**
+ 		*  @brief      Function for casting angle between 0 and 2PI
+ 		*  @param      An angle in radians
+ 		*  @return     An angle in radians between 0 and 2PI
+ 		*/
 		double verifyAngle(double rawAngle);
-geometry_msgs::Twist stop(geometry_msgs::Twist velocity);
-geometry_msgs::Twist moveStraight(geometry_msgs::Twist velocity);
-geometry_msgs::Twist turnRight(geometry_msgs::Twist velocity);
-geometry_msgs::Twist turnLeft(geometry_msgs::Twist velocity);
-		//bool finishOnState(int stateToFinishOn);
+
+		/**
+ 		*  @brief      Function to stop robot's motion
+ 		*  @param      Geometry message velocity
+ 		*  @return     Geometry message velocity
+ 		*/
+		geometry_msgs::Twist stop(geometry_msgs::Twist velocity);
+
+		/**
+ 		*  @brief      Function to move the robot forward (straight)
+ 		*  @param      Geometry message velocity
+ 		*  @return     Geometry message velocity
+ 		*/
+		geometry_msgs::Twist moveStraight(geometry_msgs::Twist velocity);
+
+		/**
+ 		*  @brief      Function to turn the robot to the right
+ 		*  @param      Geometry message velocity
+ 		*  @return     Geometry message velocity
+ 		*/
+		geometry_msgs::Twist turnRight(geometry_msgs::Twist velocity);
+
+		/**
+ 		*  @brief      Function to turn the robot to the left
+ 		*  @param      Geometry message velocity
+ 		*  @return     Geometry message velocity
+ 		*/
+		geometry_msgs::Twist turnLeft(geometry_msgs::Twist velocity);
 
 	private:
+		// Virtual functions
 		std::unique_ptr<IPlanningAlg> algorithm;
 
+		// ImageAnalysis object
 		ImageAnalysis imageAnalysis;
 
 		// Storage Point for debris position in pixels
 		Point imageDebrisLocation;
-		
-//		int state;
-State state;
 
-		//int endState;
+		// State object
+		State state;
 
+		// Orientation of robot
 		double orientation;
 
+		// Depth of object
 		double depth;
-double rawDepth;
 
+		// Depth of object for timing purposes
+		double rawDepth;
+
+		// (x,y) positions of robot
 		double x;
 		double y;
 
@@ -161,22 +247,13 @@ double rawDepth;
 
 		// Defining node subscriber for RGB image callback
 		ros::Subscriber imgSub;
+
 		// Defining node subscriber for odometry callback
                 ros::Subscriber odomSub;
 
-//		ros::Subscriber depthSub;
-
-	 image_transport::Subscriber depthSub;
-
-//	image_transport::ImageTransport *it;
-std::unique_ptr<image_transport::ImageTransport> it;
-
-//image_transport::ImageTransport it;
-
-
-
-
-
+		// Subscriber elements for depth callback
+		image_transport::Subscriber depthSub;
+		std::unique_ptr<image_transport::ImageTransport> it;
 };
 
 #endif  // INCLUDE_STATEMACHINE_HPP_
