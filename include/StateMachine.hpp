@@ -45,6 +45,10 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/imgcodecs/imgcodecs.hpp>
 
+#include "IPlanningAlg.hpp"
+#include "GreedyAlg.hpp"
+#include "LowXAlg.hpp"
+
 #include "Point.hpp"
 #include "ImageAnalysis.hpp"
 

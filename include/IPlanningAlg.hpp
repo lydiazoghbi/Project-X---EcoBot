@@ -62,7 +62,7 @@
 class IPlanningAlg {
 
 	public:
-		virtual ~IPlanningAlg() = 0;		
+		//virtual ~IPlanningAlg() = 0;		
 		virtual void createPlan(Point robotLocation) = 0;
 		virtual void push(Point debrisLocation) = 0;
 		virtual Point pop(Point robotLocation) = 0;
