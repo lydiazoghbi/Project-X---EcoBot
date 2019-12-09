@@ -51,6 +51,8 @@ TEST(LowXAlg, firstDebris) {
 	alg.push(debrisFarX);
 	alg.push(debrisLowX);
 
+	alg.createPlan();
+
 	// no need to plan for the greedy algorithm - it is dynamic
 
 	Point firstTarget = alg.pop(robotStartLocation);
