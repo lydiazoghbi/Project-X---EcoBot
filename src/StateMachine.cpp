@@ -107,8 +107,8 @@ void StateMachine::imageRGBCallback(const sensor_msgs::ImageConstPtr& message) {
 	lastSnapshot = imageAnalysis.filter(cv_ptr->image);
 
 	// Show image, uncomment if needed
-	//cv::imshow("Window", cv_ptr->image);
-	//cv::waitKey(1);
+	cv::imshow("Window", cv_ptr->image);
+	cv::waitKey(1);
 }
 
 // Callback function for obtaining robot's odometry measurements
@@ -156,7 +156,7 @@ void StateMachine::depthCallback(const sensor_msgs::ImageConstPtr& depthMessage)
 // int endState = -1, int startState = 0
 bool StateMachine::pickupDebris(State endState, State startState, double registeredDepth) {
 
-	double angleThreshold = 0.03;//0.087;
+	double angleThreshold = 0.01;//0.03;//0.087;
 	Point currentTarget;
 	// Define robot states
 	state = startState;
@@ -168,7 +168,13 @@ bool StateMachine::pickupDebris(State endState, State startState, double registe
 	//double registeredDepth;
 	double angle;
 
+	int trashCount = 0;
+
 	bool haveJustSeenDebris = false;
+
+
+double holeDistance = 0.35;
+				double calculatedDistance = 0;
 
 	// Create velocity to publish velocities to turtlebot
 	geometry_msgs::Twist velocity;
@@ -195,6 +201,8 @@ bool StateMachine::pickupDebris(State endState, State startState, double registe
 			// Keep searching for debris
 			case initialScanForDebris:
 				// If a debris is found in the middle of an image
+				//ROS_INFO_STREAM("	haveJustSeenDebris is " << haveJustSeenDebris << " and trash count is " << );
+				ROS_INFO_STREAM("	Trash count is " << trashCount);
 				if ((imageAnalysis.getDebrisImageLocation().getX() > 310) && (imageAnalysis.getDebrisImageLocation().getX() < 330)) {
 
 					if (!haveJustSeenDebris) {
@@ -208,7 +216,8 @@ bool StateMachine::pickupDebris(State endState, State startState, double registe
 						Point newTarget(registeredDepth * cos(orientation), registeredDepth * sin(orientation));
 						// TODO: take depth and orientation of robot to create point and give to planning algorithm
 						algorithm->push(newTarget);
-						ROS_INFO_STREAM("	We saw new red - registered new target at " << newTarget.getX() << ", " << newTarget.getY());
+						trashCount++;
+						ROS_INFO_STREAM("	We saw new red - registered new target at " << newTarget.getX() << ", " << newTarget.getY() << " at depth " << depth);
 					} else {
 						ROS_INFO_STREAM("	Still seeing same red object.");
 					}
@@ -273,9 +282,11 @@ bool StateMachine::pickupDebris(State endState, State startState, double registe
 			// Stop before bin
 			case driveTowardsBin:
 				// If we reached close enough to the bin
-				if ((x <= 0.2) && (y <= 1.5)) {//if ((x <= 0.1) && (y <= 1.4)) {
-
-
+				//if ((x <= 0.2) && (y <= 1.5)) {//if ((x <= 0.1) && (y <= 1.4)) {
+				holeDistance = 0.5;//.35;
+				calculatedDistance = sqrt(((0.2 + x) * (0.2 + x)) + ((1.5 - y) * (1.5 - y)));
+				ROS_INFO_STREAM("	We are " << calculatedDistance << " out of " << holeDistance);
+				if (calculatedDistance < holeDistance) {
 
 
 					currentTarget = algorithm->pop(Point(x, y));
